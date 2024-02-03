@@ -26,7 +26,14 @@ import java.util.Map;
  * <h3>Keyframes</h3>
  * <p>Consist of 3 parts in 1 line: type-defining character (T, R or S), moment in time in which the keyframe is placed (@%somefloatnumber%)
  * and a vector (a b c), where a, b and c are floats. All parts must be written in one line back-to-back without any symbols in between</p>
- *
+ * <h3>Example:</h3>
+ * <p>!_0.5_!</p>
+ * <p>$_left_arm_$</p>
+ * <p>T@0.0@(0 0 0)</p>
+ * <p>T@0.5@(0 2 0)C</p>
+ * <p>R@0.0@(0 0 0)</p>
+ * <p>R@0.5@(90 90 90)C</p>
+ * <p>$$</p>
  */
 public class Pyranim {
 
