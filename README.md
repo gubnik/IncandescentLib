@@ -2,11 +2,18 @@
 A light-weight library providing API for entity & player animations with included utility
 
 ## API
-To use Incandescent Lib for your project, include the following line in your build.gradle:
-(Temporary unavailable, sorry if someone reads this)
+To use Incandescent Lib for your project, include the following line in your build.gradle:\
 ```groovy
+repositories {
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+}
 dependancies {
-    implementation fg.deobf("curse.maven:incandescent_lib-______:________")
+    implementation fg.deobf("curse.maven:incandescent_lib-971520:5084944")
 }
 ```
 
