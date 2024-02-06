@@ -37,12 +37,34 @@ import java.util.Map;
  */
 public class Pyranim {
 
+    /**
+     * Creates an AnimationDefinition from .pyranim file for an entity.
+     * @param location      Location of pyranim from resources folder
+     * @return              AnimationDefinition created from a provided .pyranim
+     */
+    public static AnimationDefinition ofEntity(String location)
+    {
+        return new Pyranim(location).createEntity();
+    }
+
+    /**
+     * Creates an AnimationDefinition from .pyranim file for a player.<p>
+     * Fails if .pyranim defines animations for a part not present in humanoid model
+     * @param location      Location of pyranim from resources folder
+     * @return              AnimationDefinition created from a provided .pyranim
+     */
+    public static AnimationDefinition ofPlayer(String location)
+    {
+        return new Pyranim(location).createPlayer();
+    }
+
     private final List<String> contents;
     private Map<String, List<AnimationChannel>> map = new HashMap<>();
     private float animLength = 0f;
 
     private Pyranim(String location)
     {
+        if(!location.endsWith(".pyranim")) location += ".pyranim";
         float t = 0f;
         this.contents = new ArrayList<>();
         ClassLoader classloader = Thread.currentThread().getContextClassLoader();
@@ -156,8 +178,27 @@ public class Pyranim {
         return builder.build();
     }
 
-    public static AnimationDefinition ofEntity(String location)
+    private AnimationDefinition createPlayer()
     {
-        return new Pyranim(location).createEntity();
+        this.toMap();
+        AnimationDefinition.Builder builder = AnimationDefinition.Builder.withLength(this.animLength);
+        for(String part : map.keySet())
+        {
+            if(!acceptablePart(part)) throw new RuntimeException("Unable to create player animation from .pyranim. Cause: part '" + part + "' is not a part of humanoid model");
+            for(AnimationChannel channel : map.get(part))
+            {
+                builder.addAnimation(part, channel);
+            }
+        }
+        return builder.build();
     }
+
+    private static boolean acceptablePart(String key) {
+        return switch (key)
+                {
+                    case ("body"), ("right_leg"), ("left_arm"), ("left_leg"), ("right_arm"), ("hat"), ("head") -> true;
+                    default -> false;
+                };
+    }
+
 }
