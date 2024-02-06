@@ -13,7 +13,7 @@ repositories {
     }
 }
 dependancies {
-    implementation fg.deobf("curse.maven:incandescent_lib-971520:5084944")
+    implementation fg.deobf("curse.maven:incandescent_lib-971520:5085003")
 }
 ```
 
