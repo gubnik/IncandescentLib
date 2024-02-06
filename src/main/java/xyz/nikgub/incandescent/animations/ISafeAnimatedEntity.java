@@ -26,7 +26,7 @@ public interface ISafeAnimatedEntity {
 
     byte OVERRIDE_DELTA = 32;
 
-    private Entity self()
+    private Entity asEntity()
     {
         return (Entity) this;
     }
@@ -88,7 +88,7 @@ public interface ISafeAnimatedEntity {
     default void runAnimationByState(AnimationState animationState, boolean override) {
         byte msg = byteOfAnimationState(animationState);
         if(override) msg += OVERRIDE_DELTA;
-        self().level().broadcastEntityEvent(self(), msg);
+        asEntity().level().broadcastEntityEvent(asEntity(), msg);
     }
 
     /**
@@ -100,7 +100,7 @@ public interface ISafeAnimatedEntity {
     default void runAnimationByPurpose(DeterminedAnimation.AnimationPurpose animationPurpose, boolean override)
     {
         AnimationState animationState = ofPurpose(animationPurpose).stream().findFirst().orElseThrow(
-                () -> new RuntimeException("[" + Incandescent.MOD_ID + "] Unable to find animation of purpose " + animationPurpose + " for entity " + self()));
+                () -> new RuntimeException("[" + Incandescent.MOD_ID + "] Unable to find animation of purpose " + animationPurpose + " for entity " + asEntity()));
         runAnimationByState(animationState, override);
     }
 
@@ -124,7 +124,7 @@ public interface ISafeAnimatedEntity {
                 // Stop the animation just in case
                 determinedAnimation.animationState().stop();
                 // Run the animation
-                determinedAnimation.animationState().start(self().tickCount);
+                determinedAnimation.animationState().start(asEntity().tickCount);
                 return;
             }
             // For each running animation...
@@ -137,13 +137,13 @@ public interface ISafeAnimatedEntity {
                 // Stop the animation just in case
                 determinedAnimation.animationState().stop();
                 // Run the animation
-                determinedAnimation.animationState().start(self().tickCount);
+                determinedAnimation.animationState().start(asEntity().tickCount);
             });
         }
     }
 
     private RuntimeException handlerException(byte bt)
     {
-        return new RuntimeException("Cannot handle the byte " + bt + " supplied by " + self().getDisplayName().getString());
+        return new RuntimeException("Cannot handle the byte " + bt + " supplied by " + asEntity().getDisplayName().getString());
     }
 }
