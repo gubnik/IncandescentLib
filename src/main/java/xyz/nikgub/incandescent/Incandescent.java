@@ -49,11 +49,6 @@ public class Incandescent
     {
     }
 
-    private void clientTick(final TickEvent.ClientTickEvent event)
-    {
-        clientTick++;
-    }
-
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
     @SuppressWarnings("unused")
     public static class ClientForgeEvents {
