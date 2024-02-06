@@ -12,8 +12,6 @@ buildscript {
 
 plugins {
     id "com.modrinth.minotaur" version "2.+"
-    // It's safest to have this on 2.+ to get the latest features and
-    // bug fixes without having to worry about breaking changes.
 }
 
 apply plugin: 'maven-publish'
@@ -107,13 +105,12 @@ repositories {
     maven { url = 'https://maven.minecraftforge.net/' }
     maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
 }
+
 dependencies {
 }
 
 mixin {
-    //add sourceSets.main, "incandescent.refmap.json"
     config "incandescent.mixins.json"
-
     debug.export = true
 }
 
@@ -146,12 +143,12 @@ publishing {
 }
 
 modrinth {
-    token = "$System.env.MODRINTH_TOKEN" // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
-    projectId = "incandescent-lib" // This can be the project ID or the slug. Either will work!
-    versionNumber = "1.0.0" // You don't need to set this manually. Will fail if Modrinth has this version already
-    versionType = "release" // This is the default -- can also be `beta` or `alpha`
-    uploadFile = jar // With Loom, this MUST be set to `remapJar` instead of `jar`!
-    gameVersions = ["1.20.1"] // Must be an array, even with only one version
+    token = System.getenv('MODRINTH_TOKEN') // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
+    projectId = "incandescent-lib"
+    versionNumber = "1.0.0"
+    versionType = "release"
+    uploadFile = jar
+    gameVersions = ["1.20.1"]
 }
 
 tasks.withType(JavaCompile).configureEach {
