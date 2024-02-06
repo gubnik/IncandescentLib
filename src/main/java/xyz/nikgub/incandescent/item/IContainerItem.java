@@ -19,7 +19,6 @@
 package xyz.nikgub.incandescent.item;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -34,10 +33,6 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 @SuppressWarnings("unused")
 public interface IContainerItem {
-    private Item self()
-    {
-        return (Item) this;
-    }
     @SuppressWarnings("unused")
     ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt);
 

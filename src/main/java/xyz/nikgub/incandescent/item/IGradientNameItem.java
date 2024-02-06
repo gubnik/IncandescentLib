@@ -19,10 +19,9 @@
 package xyz.nikgub.incandescent.item;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import xyz.nikgub.incandescent.util.GeneralUtils;
 import xyz.nikgub.incandescent.mixin.ItemStackMixin;
+import xyz.nikgub.incandescent.util.GeneralUtils;
 
 import java.util.function.Function;
 
@@ -32,10 +31,6 @@ import java.util.function.Function;
  */
 @SuppressWarnings("unused")
 public interface IGradientNameItem {
-    private Item self()
-    {
-        return (Item) this;
-    }
     /**
      * Method that provides an additional condition to display gradient name
      * @param itemStack         ItemStack of this item

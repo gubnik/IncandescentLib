@@ -22,7 +22,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 
 import java.util.Map;
 import java.util.UUID;
@@ -35,10 +34,6 @@ import java.util.function.BiFunction;
  */
 @SuppressWarnings("unused")
 public interface INotStupidTooltipItem {
-    private Item self()
-    {
-        return (Item) this;
-    }
     /**
      * Determines format transformations of attribute's tooltip <p>
      * New format overrides the default one
