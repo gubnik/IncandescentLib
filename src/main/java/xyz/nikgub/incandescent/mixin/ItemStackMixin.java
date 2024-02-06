@@ -252,7 +252,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
         return (p_41627_ & p_41628_.getMask()) == 0;
     }
 
-    private int getHideFlags() {
+    public int getHideFlags() {
         ItemStack self = (ItemStack) (Object) this;
         return self.hasTag() && self.getOrCreateTag().contains("HideFlags", 99) ? self.getOrCreateTag().getInt("HideFlags") : this.getItem().getDefaultTooltipHideFlags(self);
     }
