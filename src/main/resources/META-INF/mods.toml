@@ -1,11 +1,11 @@
 modLoader="javafml"
 loaderVersion="[47,)"
-license="All rights reserved"
+license="GNU General Public License, version 3"
 [[mods]]
 modId="incandescent_lib" #mandatory
 version="1.0.0"
 displayName="Incandescent Lib" #mandatory
-credits="If only could be so grossly incandescent" #optional
+credits="If only I could be so grossly incandescent" #optional
 authors="nikgub_" #optional
 description='''
 A light-weight library providing API for entity animations, player animations and other little things
