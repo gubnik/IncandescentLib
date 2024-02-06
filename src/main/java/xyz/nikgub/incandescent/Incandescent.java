@@ -42,6 +42,7 @@ public class Incandescent
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::clientTick);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
