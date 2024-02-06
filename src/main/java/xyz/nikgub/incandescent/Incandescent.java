@@ -42,7 +42,6 @@ public class Incandescent
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
-        modEventBus.addListener(this::clientTick);
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -55,12 +54,12 @@ public class Incandescent
         clientTick++;
     }
 
-    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-    public static class ClientModEvents
-    {
+    @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+    @SuppressWarnings("unused")
+    public static class ClientForgeEvents {
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
+        public static void clientTick(final TickEvent.ClientTickEvent event) {
+            clientTick++;
         }
     }
 }
