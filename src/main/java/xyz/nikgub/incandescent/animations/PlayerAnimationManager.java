@@ -2,6 +2,7 @@ package xyz.nikgub.incandescent.animations;
 
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.player.Player;
+import xyz.nikgub.incandescent.animations.from_text.Pyranim;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,11 +16,18 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class PlayerAnimationManager {
 
+    private static final AnimationDefinition EMPTY = Pyranim.ofPlayer("empty.pyranim");
+
     private static final Map<Player, AnimationInstance> runningAnimations = new HashMap<>();
 
     public static void launchAnimation(Player player, AnimationDefinition animationDefinition, boolean override)
     {
         PlayerAnimationManager.runningAnimations.put(player, new AnimationInstance(animationDefinition, override));
+    }
+
+    public static void endAnimation(Player player)
+    {
+        PlayerAnimationManager.runningAnimations.put(player, new AnimationInstance(EMPTY, true));
     }
 
     public static AnimationInstance consumeAnimationFor(Player player)
