@@ -166,7 +166,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
                         AttributeModifier attributemodifier = entry.getValue();
                         double d0 = attributemodifier.getAmount();
                         boolean flag = false;
-                        ChatFormatting chatFormatting = ChatFormatting.RED;
+                        ChatFormatting chatFormatting = ChatFormatting.DARK_GREEN;
                         if (player != null) {
                             Map<Attribute, Pair<UUID, ChatFormatting>> special = notStupidTooltipItem.specialColoredUUID();
                             for(Attribute attribute : special.keySet().stream().toList()) {
