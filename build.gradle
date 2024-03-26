@@ -31,7 +31,7 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
-version = '1.0.3'
+version = '1.0.2'
 group = 'xyz.nikgub.incandescent'
 archivesBaseName = 'incandescent'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
