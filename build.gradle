@@ -31,7 +31,7 @@ dependencies {
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
-version = '1.0.2'
+version = '1.0.3'
 group = 'xyz.nikgub.incandescent'
 archivesBaseName = 'incandescent'
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -119,7 +119,7 @@ jar {
         attributes([
                 "Specification-Title"     : "incandescent",
                 "Specification-Vendor"    : "nikgub",
-                "Specification-Version"   : "1",
+                "Specification-Version"   : "1.0.2",
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "nikgub",
@@ -145,7 +145,7 @@ publishing {
 modrinth {
     token = System.getenv('MODRINTH_TOKEN') // Remember to have the MODRINTH_TOKEN environment variable set or else this will fail - just make sure it stays private!
     projectId = "incandescent-lib"
-    versionNumber = "1.0.0"
+    versionNumber = "1.0.2"
     versionType = "release"
     uploadFile = jar
     gameVersions = ["1.20.1"]
