@@ -13,8 +13,17 @@ public class IncandescentConfig
 {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 
+    public static final ForgeConfigSpec.ConfigValue<Double> SCREEN_SHAKE_INTENSITY = BUILDER
+            .comment("Defines how severe is screenshake produced by Void Tome effects")
+            .defineInRange("Screenshake amount", 0.01d, 0, 1f);
+
+    static final ForgeConfigSpec SPEC = BUILDER.build();
+
+    public static double screen_shake_intensity;
+
     @SubscribeEvent
     static void onLoad(final ModConfigEvent event)
     {
+        screen_shake_intensity = SCREEN_SHAKE_INTENSITY.get();
     }
 }
