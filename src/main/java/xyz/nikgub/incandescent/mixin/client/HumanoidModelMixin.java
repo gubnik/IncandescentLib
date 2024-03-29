@@ -25,7 +25,7 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 @Mixin(value = HumanoidModel.class)
-public abstract class HumanoidModelMixin<T extends LivingEntity> extends AgeableListModel<T> implements ArmedModel, HeadedModel {
+public abstract class HumanoidModelMixin<T extends LivingEntity> extends AgeableListModel<T> implements ArmedModel, HeadedModel{
 
     private final AnimationState STATE = new AnimationState();
     private AnimationDefinition RUNNING_ANIMATION_DEFINITION = null;
@@ -68,6 +68,8 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
                     }
                     if(i == akeyframe.length - 1) this.RUNNING_ANIMATION_DEFINITION = null;
                     keyframe1.interpolation().apply(vector3f, f2, akeyframe, i, j, v);
+                    modelPart.xRot = 0; modelPart.yRot = 0; modelPart.zRot = 0;
+                    //modelPart.x = 0; modelPart.y = 0; modelPart.z = 0;
                     animationChannel.target().apply(modelPart, vector3f);
                 }
             }
