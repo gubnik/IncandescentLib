@@ -3,7 +3,7 @@ loaderVersion="[47,)"
 license="GNU General Public License, version 3"
 [[mods]]
 modId="incandescent_lib" #mandatory
-version="1.0.0"
+version="1.0.3"
 displayName="Incandescent Lib" #mandatory
 credits="If only I could be so grossly incandescent" #optional
 authors="nikgub_" #optional
