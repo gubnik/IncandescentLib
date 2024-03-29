@@ -18,6 +18,7 @@
 
 package xyz.nikgub.incandescent;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -36,6 +37,7 @@ import org.slf4j.Logger;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 
 @Mod(Incandescent.MOD_ID)
 public class Incandescent
@@ -45,7 +47,7 @@ public class Incandescent
     private static final Logger LOGGER = LogUtils.getLogger();
     public static int clientTick;
 
-    private static final Map<LocalPlayer, Double> screenShakeMap = new HashMap<>();
+    private static final Map<LocalPlayer, Pair<Double, Predicate<LocalPlayer>>> screenShakeMap = new HashMap<>();
 
     public Incandescent()
     {
@@ -55,9 +57,9 @@ public class Incandescent
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, IncandescentConfig.SPEC);
     }
 
-    public static void runShakeFor(double amount)
+    public static void runShakeFor(double amount, Predicate<LocalPlayer> whenToStop)
     {
-        screenShakeMap.put(Minecraft.getInstance().player, amount);
+        screenShakeMap.put(Minecraft.getInstance().player, Pair.of(amount, whenToStop));
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -83,12 +85,19 @@ public class Incandescent
             float delta = Minecraft.getInstance().getFrameTime();
             float ticksExistedDelta = player.tickCount + delta;
             double intensity = IncandescentConfig.screen_shake_intensity;
+            double amount;
             if (!Minecraft.getInstance().isPaused() && player.level().isClientSide()
                     && screenShakeMap.containsKey(player)
             ) {
-                event.setPitch((float) (event.getPitch() + intensity * Math.cos(ticksExistedDelta * screenShakeMap.get(player)) * 25));
-                event.setYaw((float) (event.getYaw() + intensity * Math.cos(ticksExistedDelta * screenShakeMap.get(player)) * 25));
-                event.setRoll((float) (event.getRoll() + intensity * Math.cos(ticksExistedDelta * screenShakeMap.get(player)) * 25));
+                if (screenShakeMap.get(player).getSecond().test(player))
+                {
+                    screenShakeMap.remove(player);
+                    return;
+                }
+                amount = intensity * Math.cos(ticksExistedDelta * screenShakeMap.get(player).getFirst()) * 25;
+                event.setPitch((float) (event.getPitch() + amount));
+                event.setYaw((float) (event.getYaw() + amount));
+                event.setRoll((float) (event.getRoll() + amount));
             }
         }
     }
