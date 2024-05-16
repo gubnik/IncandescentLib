@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.util;
+package xyz.nikgub.incandescent.common.util;
 
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;

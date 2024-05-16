@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.entity;
+package xyz.nikgub.incandescent.common.entity;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;

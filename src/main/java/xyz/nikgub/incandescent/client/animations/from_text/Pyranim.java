@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.animations.from_text;
+package xyz.nikgub.incandescent.client.animations.from_text;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;

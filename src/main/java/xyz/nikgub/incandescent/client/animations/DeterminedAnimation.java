@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.animations;
+package xyz.nikgub.incandescent.client.animations;
 
 import net.minecraft.world.entity.AnimationState;
 

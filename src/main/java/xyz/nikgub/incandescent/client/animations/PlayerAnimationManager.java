@@ -1,9 +1,9 @@
-package xyz.nikgub.incandescent.animations;
+package xyz.nikgub.incandescent.client.animations;
 
 import io.netty.util.internal.UnstableApi;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.player.Player;
-import xyz.nikgub.incandescent.animations.from_text.Pyranim;
+import xyz.nikgub.incandescent.client.animations.from_text.Pyranim;
 
 import java.util.HashMap;
 import java.util.Map;

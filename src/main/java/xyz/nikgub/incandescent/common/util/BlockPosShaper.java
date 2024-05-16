@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.util;
+package xyz.nikgub.incandescent.common.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -16,12 +16,12 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.item;
+package xyz.nikgub.incandescent.common.item;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.ItemStack;
 import xyz.nikgub.incandescent.mixin.ItemStackMixin;
-import xyz.nikgub.incandescent.util.GeneralUtils;
+import xyz.nikgub.incandescent.common.util.GeneralUtils;
 
 import java.util.function.Function;
 

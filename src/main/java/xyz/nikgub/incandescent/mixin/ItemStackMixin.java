@@ -44,9 +44,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.nikgub.incandescent.Incandescent;
-import xyz.nikgub.incandescent.item.AbstractItem;
-import xyz.nikgub.incandescent.item.IGradientNameItem;
-import xyz.nikgub.incandescent.item.INotStupidTooltipItem;
+import xyz.nikgub.incandescent.common.item.AbstractItem;
+import xyz.nikgub.incandescent.common.item.IGradientNameItem;
+import xyz.nikgub.incandescent.common.item.INotStupidTooltipItem;
 
 import javax.annotation.Nullable;
 import java.util.*;

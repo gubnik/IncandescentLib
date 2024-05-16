@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.item;
+package xyz.nikgub.incandescent.common.item;
 
 import net.minecraft.world.item.Item;
 
