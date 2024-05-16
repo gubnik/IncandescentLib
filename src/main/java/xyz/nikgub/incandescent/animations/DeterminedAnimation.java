@@ -3,7 +3,7 @@ package xyz.nikgub.incandescent.animations;
 import net.minecraft.world.entity.AnimationState;
 
 /**
- * Record used by {@link xyz.nikgub.incandescent.animations.ISafeAnimatedEntity}
+ * Record used by {@link IAnimationPurposeEntity}
  * @param animationState            AnimationState of an entity
  * @param animationPurpose          Type of animation, must be declared properly for generalized behaviour
  * @param signal                    Byte value of a signal used by Entity.handleEntityEvent(byte)
