@@ -1,5 +1,6 @@
 package xyz.nikgub.incandescent.animations;
 
+import io.netty.util.internal.UnstableApi;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.player.Player;
 import xyz.nikgub.incandescent.animations.from_text.Pyranim;
@@ -12,8 +13,11 @@ import java.util.Map;
  * <p>When you launch an animation via a method, AnimationInstance containing info about launched animation will be put into a hash map.</p>
  * <p>Then player's model will try to consume the animation for its player, making it null if successful.</p>
  * @author nikgub_
+ *
+ * @apiNote Animations break if started in first person and then switched to third person
  */
 @SuppressWarnings("unused")
+@UnstableApi
 public class PlayerAnimationManager {
 
     private static final AnimationDefinition EMPTY = Pyranim.ofPlayer("empty.pyranim");

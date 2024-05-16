@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,28 +28,32 @@ import java.util.Map;
 @Mixin(value = HumanoidModel.class)
 public abstract class HumanoidModelMixin<T extends LivingEntity> extends AgeableListModel<T> implements ArmedModel, HeadedModel{
 
-    private final AnimationState STATE = new AnimationState();
+    @Unique
+    private final AnimationState incandescentLib$STATE = new AnimationState();
+    @Unique
     private AnimationDefinition RUNNING_ANIMATION_DEFINITION = null;
+    @Unique
     private final Vector3f ANIMATION_VECTOR_CACHE = new Vector3f();
 
-    @Inject(method = "Lnet/minecraft/client/model/HumanoidModel;setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",
-            at = @At("TAIL"), cancellable = true)
+    @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",
+            at = @At("TAIL"))
     public void setupAnimMixinTail(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo callbackInfo)
     {
         if(!(entity instanceof Player player)) return; // Asserts that only player model is animated
-        this.animate(STATE, RUNNING_ANIMATION_DEFINITION, ageInTicks); // Tries to play RUNNING_ANIMATION_DEFINITION every tick, null handling included
+        this.incandescentLib$animate(incandescentLib$STATE, RUNNING_ANIMATION_DEFINITION, ageInTicks); // Tries to play RUNNING_ANIMATION_DEFINITION every tick, null handling included
         PlayerAnimationManager.AnimationInstance instance = PlayerAnimationManager.consumeAnimationFor(player); // Gets animation for player, otherwise gets null
         if(instance == null) return; // Quit if no animation was supplied
         if(!instance.override() && this.RUNNING_ANIMATION_DEFINITION != null) return; // Quit if animation doesn't override current animation
         RUNNING_ANIMATION_DEFINITION = instance.animation();
-        STATE.start(entity.tickCount);
+        incandescentLib$STATE.start(entity.tickCount);
     }
 
-    void keyframesAnimate(HumanoidModel<?> model, AnimationDefinition definition, long l, float v, Vector3f vector3f) {
-        float f = getElapsedSeconds(definition, l);
+    @Unique
+    void incandescentLib$keyframesAnimate(HumanoidModel<?> model, AnimationDefinition definition, long l, float v, Vector3f vector3f) {
+        float f = incandescentLib$getElapsedSeconds(definition, l);
 
         for(Map.Entry<String, List<AnimationChannel>> entry : definition.boneAnimations().entrySet()) {
-            ModelPart modelPart = acceptablePart(model, entry.getKey());
+            ModelPart modelPart = incandescentLib$acceptablePart(model, entry.getKey());
             List<AnimationChannel> list = entry.getValue();
             if(modelPart != null)
             {
@@ -77,7 +82,8 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
 
     }
 
-    private static ModelPart acceptablePart(HumanoidModel<?> model, String key) {
+    @Unique
+    private static ModelPart incandescentLib$acceptablePart(HumanoidModel<?> model, String key) {
         return switch (key)
                 {
                     case ("body") -> model.body;
@@ -91,16 +97,19 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
                 };
     }
 
-    private static float getElapsedSeconds(AnimationDefinition definition, long l) {
+    @Unique
+    private static float incandescentLib$getElapsedSeconds(AnimationDefinition definition, long l) {
         float f = (float)l / 1000.0F;
         return definition.looping() ? f % definition.lengthInSeconds() : f;
     }
 
-    private void animate(AnimationState state, AnimationDefinition definition, float v) {
-        this.animate(state, definition, v, 1.0F);
+    @Unique
+    private void incandescentLib$animate(AnimationState state, AnimationDefinition definition, float v) {
+        this.incandescentLib$animate(state, definition, v, 1.0F);
     }
 
-    private void animate(AnimationState state, AnimationDefinition definition, float v, float v1) {
+    @Unique
+    private void incandescentLib$animate(AnimationState state, AnimationDefinition definition, float v, float v1) {
         if(definition == null)
         {
             state.stop();
@@ -108,6 +117,6 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
             return;
         }
         state.updateTime(v, v1);
-        state.ifStarted((animationState) -> this.keyframesAnimate((HumanoidModel<?>) (Object) this, definition, animationState.getAccumulatedTime(), 1.0F, this.ANIMATION_VECTOR_CACHE));
+        state.ifStarted((animationState) -> this.incandescentLib$keyframesAnimate((HumanoidModel<?>) (Object) this, definition, animationState.getAccumulatedTime(), 1.0F, this.ANIMATION_VECTOR_CACHE));
     }
 }

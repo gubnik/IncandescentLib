@@ -9,15 +9,18 @@ public class GeneralUtils {
     public static int rgbToColorInteger(int red, int green, int blue){
         return 65536 * red + 256 * green + blue;
     }
+
     public static int rgbaToColorInteger(int red, int green, int blue, int alpha){
         return 16777216 * alpha + 65536 * red + 256 * green + blue;
     }
+
     public static boolean hasCompletedTheAdvancement(ServerPlayer serverPlayer, Advancement advancement){
         if(advancement == null) return false;
         return serverPlayer.getAdvancements()
                 .getOrStartProgress(advancement)
                 .isDone();
     }
+
     public static void addAdvancement(ServerPlayer serverPlayer, ResourceLocation resourceLocation)
     {
         Advancement advancement = serverPlayer.server.getAdvancements().getAdvancement(resourceLocation);
