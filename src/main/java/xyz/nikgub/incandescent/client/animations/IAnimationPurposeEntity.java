@@ -21,7 +21,6 @@ import java.util.List;
  *
  * @author nikgub_
  */
-@ApiStatus.Experimental
 public interface IAnimationPurposeEntity {
 
     byte OVERRIDE_DELTA = 32;

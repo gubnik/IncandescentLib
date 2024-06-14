@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.nikgub.incandescent.client.animations.PlayerAnimationManager;
+import xyz.nikgub.incandescent.common.item.ICustomSwingItem;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,14 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
     private AnimationDefinition RUNNING_ANIMATION_DEFINITION = null;
     @Unique
     private final Vector3f ANIMATION_VECTOR_CACHE = new Vector3f();
+
+    @Inject(method = "setupAttackAnimation", at = @At("HEAD"), cancellable = true)
+    protected void setupAttackAnimationHead(T pLivingEntity, float pAgeInTicks, CallbackInfo callbackInfo) {
+        HumanoidModel<T> self = (HumanoidModel<T>) (Object) this;
+        if (self.attackTime <= 0.0F || !(pLivingEntity.getMainHandItem().getItem() instanceof ICustomSwingItem item)) return;
+        item.thirdPersonTransform(self, pLivingEntity, pAgeInTicks);
+        callbackInfo.cancel();
+    }
 
     @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",
             at = @At("TAIL"))
