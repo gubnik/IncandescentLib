@@ -47,7 +47,7 @@ public abstract class ItemInHandRendererMixin {
         boolean isRight = (arm == HumanoidArm.RIGHT);
         boolean customBehaviour = false;
         poseStack.pushPose();
-        if (!player.isAutoSpinAttack() && itemStack.getItem() instanceof ICustomSwingItem item)
+        if (!player.isAutoSpinAttack() && itemStack.getItem() instanceof ICustomSwingItem item && !player.isUsingItem())
         {
             customBehaviour = true;
             this.applyItemArmTransform(poseStack, arm, equippedProgress);
