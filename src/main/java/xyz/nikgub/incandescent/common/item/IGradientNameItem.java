@@ -31,39 +31,41 @@ import java.util.function.Function;
  */
 @SuppressWarnings("unused")
 public interface IGradientNameItem {
+
     /**
      * Method that provides an additional condition to display gradient name
      * @param itemStack         ItemStack of this item
      * @return                  boolean
      */
+
     boolean getGradientCondition(ItemStack itemStack);
     /**
      * Method that provides a pair of colors to switch between
      * @return                  Pair of integer RGB color values
      */
-    Pair<Integer, Integer> getGradientColors();
+    Pair<Integer, Integer> getGradientColors(ItemStack itemStack);
 
     /**
      * Method that provides time in ticks in which full color change happens
      * @return                  Integer time in ticks
      */
-    int getGradientTickTime();
+    int getGradientTickTime(ItemStack itemStack);
 
     /**
      * Method that provides a function that defines how does the color change depending on tick
      * @return                  Function that consumes an integer tick and returns an integer color code
      */
-    default Function<Integer, Integer> getGradientFunction()
+    default Function<Integer, Integer> getGradientFunction(ItemStack itemStack)
     {
-        final int redFirst = getGradientColors().getFirst() / 65536, greenFirst = (getGradientColors().getFirst() % 65536) / 256, blueFirst = getGradientColors().getFirst() % 256;
-        final int redSecond = getGradientColors().getSecond() / 65536, greenSecond = (getGradientColors().getSecond() % 65536) / 256, blueSecond = getGradientColors().getSecond() % 256;
+        final int redFirst = getGradientColors(itemStack).getFirst() / 65536, greenFirst = (getGradientColors(itemStack).getFirst() % 65536) / 256, blueFirst = getGradientColors(itemStack).getFirst() % 256;
+        final int redSecond = getGradientColors(itemStack).getSecond() / 65536, greenSecond = (getGradientColors(itemStack).getSecond() % 65536) / 256, blueSecond = getGradientColors(itemStack).getSecond() % 256;
         return (tick)->
         {
-            final int cT = Math.abs(getGradientTickTime() - tick % (getGradientTickTime() * 2));
+            final int cT = Math.abs(getGradientTickTime(itemStack) - tick % (getGradientTickTime(itemStack) * 2));
             return GeneralUtils.rgbToColorInteger(
-                    redFirst + ((redSecond - redFirst) / getGradientTickTime()) * cT,
-                    greenFirst + ((greenSecond - greenFirst) / getGradientTickTime()) * cT,
-                    blueFirst + ((blueSecond - blueFirst) / getGradientTickTime()) * cT
+                    redFirst + ((redSecond - redFirst) / getGradientTickTime(itemStack)) * cT,
+                    greenFirst + ((greenSecond - greenFirst) / getGradientTickTime(itemStack)) * cT,
+                    blueFirst + ((blueSecond - blueFirst) / getGradientTickTime(itemStack)) * cT
             );
         };
     }

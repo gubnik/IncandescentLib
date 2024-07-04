@@ -8,10 +8,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 public interface ICustomSwingItem {
 
-    default <T extends LivingEntity> void thirdPersonTransform(HumanoidModel<T> model, T entity, float ageInTicks)
+    default <T extends LivingEntity> void thirdPersonTransform(ItemStack itemStack, HumanoidModel<T> model, T entity, float ageInTicks)
     {
         if (!(model.attackTime <= 0.0F)) {
             HumanoidArm arm = entity.swingingArm == InteractionHand.MAIN_HAND ? entity.getMainArm() : entity.getMainArm().getOpposite();
@@ -41,7 +42,7 @@ public interface ICustomSwingItem {
         }
     }
 
-    default void firstPersonTransform(PoseStack poseStack, float swingProgress, float equippedProgress, boolean isRight)
+    default void firstPersonTransform(ItemStack itemStack, PoseStack poseStack, float swingProgress, float equippedProgress, boolean isRight)
     {
         HumanoidArm arm = isRight ? HumanoidArm.RIGHT : HumanoidArm.LEFT;
         int i = arm == HumanoidArm.RIGHT ? 1 : -1;

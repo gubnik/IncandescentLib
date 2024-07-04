@@ -22,6 +22,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Map;
 import java.util.UUID;
@@ -39,12 +40,12 @@ public interface INotStupidTooltipItem {
      * New format overrides the default one
      * @return      Map of attributes and pairs of attribute's UUID and its new format
      */
-    Map<Attribute, Pair<UUID, ChatFormatting>> specialColoredUUID();
+    Map<Attribute, Pair<UUID, ChatFormatting>> specialColoredUUID(ItemStack itemStack);
 
     /**
      * Determines additional bonus in attribute's value <p>
      * This value should be gathered from player and be solely visual
      * @return      Function that consumes player and returns double value
      */
-    BiFunction<Player, Attribute, Double> getAdditionalPlayerBonus();
+    BiFunction<Player, Attribute, Double> getAdditionalPlayerBonus(ItemStack itemStack);
 }

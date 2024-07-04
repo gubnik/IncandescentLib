@@ -51,7 +51,7 @@ public abstract class ItemInHandRendererMixin {
         {
             customBehaviour = true;
             this.applyItemArmTransform(poseStack, arm, equippedProgress);
-            item.firstPersonTransform(poseStack, swingProgress, equippedProgress, isRight);
+            item.firstPersonTransform(itemStack, poseStack, swingProgress, equippedProgress, isRight);
         }
         if (!customBehaviour) return;
         this.renderItem(minecraft.player, itemStack, isRight ? ItemDisplayContext.FIRST_PERSON_RIGHT_HAND : ItemDisplayContext.FIRST_PERSON_LEFT_HAND, !isRight, poseStack, multiBufferSource, pCombinedLight);

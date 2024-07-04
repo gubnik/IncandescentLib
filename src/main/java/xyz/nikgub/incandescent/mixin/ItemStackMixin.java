@@ -76,7 +76,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
         if(self.getItem() instanceof IGradientNameItem iGradientNameItem)
         {
             if(!(iGradientNameItem.getGradientCondition(self))) return;
-            colorFunction = iGradientNameItem.getGradientFunction();
+            colorFunction = iGradientNameItem.getGradientFunction(self);
         }
         else return;
         CompoundTag compoundtag = this.getTagElement("display");
@@ -168,12 +168,12 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
                         boolean flag = false;
                         ChatFormatting chatFormatting = ChatFormatting.DARK_GREEN;
                         if (player != null) {
-                            Map<Attribute, Pair<UUID, ChatFormatting>> special = notStupidTooltipItem.specialColoredUUID();
+                            Map<Attribute, Pair<UUID, ChatFormatting>> special = notStupidTooltipItem.specialColoredUUID(self);
                             for(Attribute attribute : special.keySet().stream().toList()) {
                                 if(attributemodifier.getId() == special.get(attribute).getFirst())
                                 {
                                     d0 += player.getAttributeValue(attribute);
-                                    d0 += notStupidTooltipItem.getAdditionalPlayerBonus().apply(player, attribute);
+                                    d0 += notStupidTooltipItem.getAdditionalPlayerBonus(self).apply(player, attribute);
                                     chatFormatting = special.get(attribute).getSecond();
                                     flag = true;
                                 }
