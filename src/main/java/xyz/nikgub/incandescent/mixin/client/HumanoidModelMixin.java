@@ -39,7 +39,7 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
     @Inject(method = "setupAttackAnimation", at = @At("HEAD"), cancellable = true)
     protected void setupAttackAnimationHead(T pLivingEntity, float pAgeInTicks, CallbackInfo callbackInfo) {
         HumanoidModel<T> self = (HumanoidModel<T>) (Object) this;
-        if (self.attackTime <= 0.0F || !(pLivingEntity.getMainHandItem().getItem() instanceof ICustomSwingItem item)) return;
+        if (!(pLivingEntity.getMainHandItem().getItem() instanceof ICustomSwingItem item)) return;
         item.thirdPersonTransform(pLivingEntity.getMainHandItem(), self, pLivingEntity, pAgeInTicks);
         callbackInfo.cancel();
     }
