@@ -166,15 +166,15 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
                         AttributeModifier attributemodifier = entry.getValue();
                         double d0 = attributemodifier.getAmount();
                         boolean flag = false;
-                        ChatFormatting chatFormatting = ChatFormatting.DARK_GREEN;
+                        Style style = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
                         if (player != null) {
-                            Map<Attribute, Pair<UUID, ChatFormatting>> special = notStupidTooltipItem.specialColoredUUID(self);
+                            Map<Attribute, Pair<UUID, Style>> special = notStupidTooltipItem.specialColoredUUID(self);
                             for(Attribute attribute : special.keySet().stream().toList()) {
                                 if(attributemodifier.getId() == special.get(attribute).getFirst())
                                 {
                                     d0 += player.getAttributeValue(attribute);
                                     d0 += notStupidTooltipItem.getAdditionalPlayerBonus(self).apply(player, attribute);
-                                    chatFormatting = special.get(attribute).getSecond();
+                                    style = special.get(attribute).getSecond();
                                     flag = true;
                                 }
                             }
@@ -197,7 +197,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
                         }
                         else d1 = d0 * 100.0D;
                         if (flag)
-                            list.add(CommonComponents.space().append(Component.translatable("attribute.modifier.equals." + attributemodifier.getOperation().toValue(), ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(entry.getKey().getDescriptionId()))).withStyle(chatFormatting));
+                            list.add(CommonComponents.space().append(Component.translatable("attribute.modifier.equals." + attributemodifier.getOperation().toValue(), ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(entry.getKey().getDescriptionId()))).withStyle(style));
                         else if (d0 > 0.0D)
                             list.add(Component.translatable("attribute.modifier.plus." + attributemodifier.getOperation().toValue(), ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(entry.getKey().getDescriptionId())).withStyle(ChatFormatting.BLUE));
                         else if (d0 < 0.0D)

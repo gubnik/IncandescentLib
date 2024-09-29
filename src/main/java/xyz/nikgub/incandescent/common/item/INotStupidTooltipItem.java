@@ -20,6 +20,7 @@ package xyz.nikgub.incandescent.common.item;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +41,7 @@ public interface INotStupidTooltipItem {
      * New format overrides the default one
      * @return      Map of attributes and pairs of attribute's UUID and its new format
      */
-    Map<Attribute, Pair<UUID, ChatFormatting>> specialColoredUUID(ItemStack itemStack);
+    Map<Attribute, Pair<UUID, Style>> specialColoredUUID(ItemStack itemStack);
 
     /**
      * Determines additional bonus in attribute's value <p>

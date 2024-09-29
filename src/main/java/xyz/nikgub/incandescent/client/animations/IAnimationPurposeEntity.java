@@ -1,5 +1,6 @@
 package xyz.nikgub.incandescent.client.animations;
 
+import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.ApiStatus;
@@ -30,6 +31,20 @@ public interface IAnimationPurposeEntity {
         return (Entity) this;
     }
 
+    /**
+     * @return entity's data accessor responsible for storing animation state
+     */
+    EntityDataAccessor<DeterminedAnimation.AnimationPurpose> getAnimationStateDataAccessor ();
+
+    default void setState (DeterminedAnimation.AnimationPurpose state)
+    {
+        this.asEntity().getEntityData().set(getAnimationStateDataAccessor(), state);
+    }
+
+    default DeterminedAnimation.AnimationPurpose getState ()
+    {
+        return this.asEntity().getEntityData().get(getAnimationStateDataAccessor());
+    }
     /**
      * Method that determines animations <p>
      * If an AnimationState exists for an entity but is not provided via this method it is ignored for all methods of this interface
@@ -79,11 +94,32 @@ public interface IAnimationPurposeEntity {
         }
     }
 
+    default AnimationState getAnimationOf(DeterminedAnimation.AnimationPurpose animationPurpose)
+    {
+        return getAllAnimations().stream().filter((determinedAnimation -> determinedAnimation.animationPurpose() == animationPurpose)).findFirst().orElseThrow().animationState();
+    }
+
+    default void runAnimationOf (DeterminedAnimation.AnimationPurpose animationPurpose)
+    {
+        EntityDataAccessor<DeterminedAnimation.AnimationPurpose> dataAccessor = this.getAnimationStateDataAccessor();
+        this.asEntity().getEntityData().set(dataAccessor, animationPurpose);
+    }
+
+    default void animationSyncedDataHandler (EntityDataAccessor<?> dataAccessor)
+    {
+        if (!(getAnimationStateDataAccessor().equals(dataAccessor))) return;
+        this.stopAllAnimations();
+        getAnimationOf(this.getState()).startIfStopped(this.asEntity().tickCount);
+    }
+
     /**
      * Method that sends a corresponding byte as an entity event to entity's level
      * @param animationState        AnimationState serving as a search key
      * @param override              True to override currently running animation
+     *
+     * @deprecated                  Use {@link #runAnimationOf(DeterminedAnimation.AnimationPurpose)} instead
      */
+    @Deprecated(forRemoval = true)
     default void runAnimationByState(AnimationState animationState, boolean override) {
         byte msg = byteOfAnimationState(animationState);
         if(override) msg += OVERRIDE_DELTA;
@@ -94,8 +130,10 @@ public interface IAnimationPurposeEntity {
      * Method that sends a corresponding byte as an entity event to entity's level
      * @param animationPurpose      AnimationPurpose serving as a search key
      * @param override              True to override currently running animation
+     *
+     * @deprecated                  Use {@link #runAnimationOf(DeterminedAnimation.AnimationPurpose)} instead
      */
-    @ApiStatus.Internal
+    @Deprecated(forRemoval = true)
     default void runAnimationByPurpose(DeterminedAnimation.AnimationPurpose animationPurpose, boolean override)
     {
         AnimationState animationState = ofPurpose(animationPurpose).stream().findFirst().orElseThrow(
@@ -106,7 +144,10 @@ public interface IAnimationPurposeEntity {
     /**
      * Default method that handles byte events
      * @param bt                    Byte event handled by Level.handleEntityEvent(Entity, byte)
+     *
+     * @deprecated                  Use {@link #animationSyncedDataHandler(EntityDataAccessor)} instead
      */
+    @Deprecated(forRemoval = true)
     default void safelyHandleAnimations(final byte bt)
     {
         // Biggest byte in declared animations
@@ -141,6 +182,7 @@ public interface IAnimationPurposeEntity {
         }
     }
 
+    @Deprecated(forRemoval = true)
     private RuntimeException handlerException(byte bt)
     {
         return new RuntimeException("Cannot handle the byte " + bt + " supplied by " + asEntity().getDisplayName().getString());

@@ -21,6 +21,7 @@ package xyz.nikgub.incandescent;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ViewportEvent;
@@ -38,6 +39,7 @@ import org.slf4j.Logger;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 @Mod(Incandescent.MOD_ID)
 public class Incandescent
@@ -64,6 +66,22 @@ public class Incandescent
 
     private void commonSetup(final FMLCommonSetupEvent event)
     {
+    }
+
+    @SuppressWarnings("unused")
+    public enum Key
+    {
+        ALT(Screen::hasAltDown),
+        CTRL(Screen::hasControlDown),
+        SHIFT(Screen::hasShiftDown);
+        private final Supplier<Boolean> supplier;
+        Key(Supplier<Boolean> supplier)
+        {
+            this.supplier = supplier;
+        }
+        public Supplier<Boolean> getSupplier() {
+            return supplier;
+        }
     }
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
