@@ -1,7 +1,6 @@
 package xyz.nikgub.incandescent.common.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
@@ -17,7 +16,12 @@ public interface IExtensibleTooltipItem
 {
     default void gatherTooltipLines (@NotNull List<Component> list, String hiddenKey, String subscriber, Incandescent.Key key)
     {
-        Optional<ResourceKey<Item>> optKey = ForgeRegistries.ITEMS.getResourceKey((Item) this);
+        this.gatherTooltipLines((Item) this, list, hiddenKey, subscriber, key);
+    }
+
+    default void gatherTooltipLines (Item item, @NotNull List<Component> list, String hiddenKey, String subscriber, Incandescent.Key key)
+    {
+        Optional<ResourceKey<Item>> optKey = ForgeRegistries.ITEMS.getResourceKey(item);
         if (optKey.isEmpty()) return;
         List<Component> fetchedLines = new ArrayList<>();
         String locName = optKey.get().location().getNamespace();
