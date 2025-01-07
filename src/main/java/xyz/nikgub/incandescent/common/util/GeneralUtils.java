@@ -5,7 +5,6 @@ import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -14,12 +13,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.ClipContext;
@@ -61,23 +57,6 @@ public class GeneralUtils {
                 for (String s : advancementProgress.getRemainingCriteria()) serverPlayer.getAdvancements().award(advancement, s);
             }
         }
-    }
-
-    public static void shortenEffect (final LivingEntity entity, final MobEffect effect, final int tick)
-    {
-        MobEffectInstance instance = entity.getEffect(effect);
-        assert instance != null;
-        MobEffectInstance newInstance = new MobEffectInstance(instance.getEffect(), Mth.clamp(instance.getDuration() - tick, 0, instance.getDuration()), instance.getAmplifier(), instance.isAmbient(), instance.isVisible(), instance.showIcon());
-        entity.removeEffect(effect);
-        entity.addEffect(newInstance);
-    }
-
-    public static void coverInParticles (final LivingEntity entity, final SimpleParticleType particleType, final double particleSpeed)
-    {
-        if (!(entity.level() instanceof ServerLevel level)) return;
-        float height = entity.getBbHeight();
-        float width = entity.getBbWidth();
-        level.sendParticles(particleType, entity.getX(), entity.getY() + height / 2, entity.getZ(), (int) (10 * width * height * width), width / 2, height / 2, width / 2, particleSpeed);
     }
 
     public static boolean isDirectDamage (final DamageSource damageSource)
