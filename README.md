@@ -2,8 +2,9 @@
 A light-weight library providing API for entity & player animations with included utility
 
 ## Features
-IncandescentLib provides following the set of features:
-- Item interface for simple keyframe entity animation implementation
+IncandescentLib provides the following set of features:
+- Entity interface for simple keyframe entity animation implementation
+- File format for easy animation creation
 - Item interface for automated description collection
 - Item interface for gradient-coloured name
 - Item interface for overriding attribute colours
