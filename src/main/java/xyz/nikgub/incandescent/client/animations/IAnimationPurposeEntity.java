@@ -3,11 +3,8 @@ package xyz.nikgub.incandescent.client.animations;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-import xyz.nikgub.incandescent.Incandescent;
 
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -23,8 +20,6 @@ import java.util.List;
  * @author nikgub_
  */
 public interface IAnimationPurposeEntity {
-
-    byte OVERRIDE_DELTA = 32;
 
     private Entity asEntity()
     {
@@ -59,16 +54,6 @@ public interface IAnimationPurposeEntity {
     default List<DeterminedAnimation> getRunningAnimations()
     {
         return getAllAnimations().stream().filter(determinedAnimation -> determinedAnimation.animationState().isStarted()).toList();
-    }
-
-    /**
-     * Method that finds a corresponding byte of an AnimationState
-     * @param animationState        AnimationState acting as a search key
-     * @return                      Byte, associated with AnimationState via DeterminedAnimation
-     */
-    default byte byteOfAnimationState(AnimationState animationState)
-    {
-        return getAllAnimations().stream().filter(determinedAnimation -> determinedAnimation.animationState().equals(animationState)).map(DeterminedAnimation::signal).findFirst().orElseThrow();
     }
 
     /**
@@ -110,81 +95,5 @@ public interface IAnimationPurposeEntity {
         if (!(getAnimationStateDataAccessor().equals(dataAccessor))) return;
         this.stopAllAnimations();
         getAnimationOf(this.getState()).startIfStopped(this.asEntity().tickCount);
-    }
-
-    /**
-     * Method that sends a corresponding byte as an entity event to entity's level
-     * @param animationState        AnimationState serving as a search key
-     * @param override              True to override currently running animation
-     *
-     * @deprecated                  Use {@link #runAnimationOf(DeterminedAnimation.AnimationPurpose)} instead
-     */
-    @Deprecated(forRemoval = true)
-    default void runAnimationByState(AnimationState animationState, boolean override) {
-        byte msg = byteOfAnimationState(animationState);
-        if(override) msg += OVERRIDE_DELTA;
-        asEntity().level().broadcastEntityEvent(asEntity(), msg);
-    }
-
-    /**
-     * Method that sends a corresponding byte as an entity event to entity's level
-     * @param animationPurpose      AnimationPurpose serving as a search key
-     * @param override              True to override currently running animation
-     *
-     * @deprecated                  Use {@link #runAnimationOf(DeterminedAnimation.AnimationPurpose)} instead
-     */
-    @Deprecated(forRemoval = true)
-    default void runAnimationByPurpose(DeterminedAnimation.AnimationPurpose animationPurpose, boolean override)
-    {
-        AnimationState animationState = ofPurpose(animationPurpose).stream().findFirst().orElseThrow(
-                () -> new RuntimeException("[" + Incandescent.MOD_ID + "] Unable to find animation of purpose " + animationPurpose + " for entity " + asEntity()));
-        runAnimationByState(animationState, override);
-    }
-
-    /**
-     * Default method that handles byte events
-     * @param bt                    Byte event handled by Level.handleEntityEvent(Entity, byte)
-     *
-     * @deprecated                  Use {@link #animationSyncedDataHandler(EntityDataAccessor)} instead
-     */
-    @Deprecated(forRemoval = true)
-    default void safelyHandleAnimations(final byte bt)
-    {
-        // Biggest byte in declared animations
-        final byte maxMessage = getAllAnimations().stream().max(Comparator.comparing(DeterminedAnimation::signal)).orElseThrow(() -> handlerException(bt)).signal();
-        // Determine if handler should override default behaviour
-        boolean override = bt > maxMessage;
-        final byte msg = (byte) (override ? bt -OVERRIDE_DELTA : bt);
-        // Check every determined animation
-        for(DeterminedAnimation determinedAnimation : getAllAnimations())
-        {
-            if(getRunningAnimations().isEmpty())
-            {
-                if(determinedAnimation.signal() != msg) return;
-                // Stop the animation just in case
-                determinedAnimation.animationState().stop();
-                // Run the animation
-                determinedAnimation.animationState().start(asEntity().tickCount);
-                return;
-            }
-            // For each running animation...
-            getRunningAnimations().forEach(runningAnimation ->
-            {
-                // Stop if byte doesn't align
-                if (determinedAnimation.signal() != msg) return;
-                // Stop if running animation's priority is greater than that of the animation with corresponding signal
-                if (runningAnimation.localPriority() > determinedAnimation.localPriority() && !override) return;
-                // Stop the animation just in case
-                determinedAnimation.animationState().stop();
-                // Run the animation
-                determinedAnimation.animationState().start(asEntity().tickCount);
-            });
-        }
-    }
-
-    @Deprecated(forRemoval = true)
-    private RuntimeException handlerException(byte bt)
-    {
-        return new RuntimeException("Cannot handle the byte " + bt + " supplied by " + asEntity().getDisplayName().getString());
     }
 }
