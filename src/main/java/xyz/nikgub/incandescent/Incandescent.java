@@ -41,17 +41,18 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+
 @Mod(Incandescent.MOD_ID)
 public class Incandescent
 {
     public static final String MOD_ID = "incandescent_lib";
 
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     public static int clientTick;
 
     private static final Map<LocalPlayer, Pair<Double, Predicate<LocalPlayer>>> screenShakeMap = new HashMap<>();
 
-    public Incandescent()
+    public Incandescent ()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         modEventBus.addListener(this::commonSetup);
@@ -59,12 +60,12 @@ public class Incandescent
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, IncandescentConfig.SPEC);
     }
 
-    public static void runShakeFor(double amount, Predicate<LocalPlayer> whenToStop)
+    public static void runShakeFor (double amount, Predicate<LocalPlayer> whenToStop)
     {
         screenShakeMap.put(Minecraft.getInstance().player, Pair.of(amount, whenToStop));
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
+    private void commonSetup (final FMLCommonSetupEvent event)
     {
     }
 
@@ -75,25 +76,30 @@ public class Incandescent
         CTRL(Screen::hasControlDown),
         SHIFT(Screen::hasShiftDown);
         private final Supplier<Boolean> supplier;
-        Key(Supplier<Boolean> supplier)
+
+        Key (Supplier<Boolean> supplier)
         {
             this.supplier = supplier;
         }
-        public Supplier<Boolean> getSupplier() {
+
+        public Supplier<Boolean> getSupplier ()
+        {
             return supplier;
         }
     }
 
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
     @SuppressWarnings("unused")
-    public static class ClientForgeEvents {
+    public static class ClientForgeEvents
+    {
         @SubscribeEvent
-        public static void clientTick(final TickEvent.ClientTickEvent event) {
+        public static void clientTick (final TickEvent.ClientTickEvent event)
+        {
             clientTick++;
         }
 
         @SubscribeEvent
-        public static void cameraSetupEvent(final ViewportEvent.ComputeCameraAngles event)
+        public static void cameraSetupEvent (final ViewportEvent.ComputeCameraAngles event)
         {
 
             Minecraft mc = Minecraft.getInstance();
@@ -105,8 +111,9 @@ public class Incandescent
             double intensity = IncandescentConfig.screen_shake_intensity;
             double amount;
             if (!Minecraft.getInstance().isPaused() && player.level().isClientSide()
-                    && screenShakeMap.containsKey(player)
-            ) {
+                && screenShakeMap.containsKey(player)
+            )
+            {
                 if (screenShakeMap.get(player).getSecond().test(player))
                 {
                     screenShakeMap.remove(player);

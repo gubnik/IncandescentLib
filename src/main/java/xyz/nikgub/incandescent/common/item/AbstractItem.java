@@ -25,11 +25,14 @@ import java.util.UUID;
 /**
  * Filler class to avoid using accesstransformer.cfg
  */
-public abstract class AbstractItem extends Item {
+public abstract class AbstractItem extends Item
+{
 
-    public AbstractItem(Properties p_41383_) {
+    public AbstractItem (Properties p_41383_)
+    {
         super(p_41383_);
     }
+
     public static UUID BASE_DAMAGE = Item.BASE_ATTACK_DAMAGE_UUID;
     public static UUID BASE_SPEED = Item.BASE_ATTACK_SPEED_UUID;
 }

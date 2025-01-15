@@ -27,7 +27,8 @@ import java.util.Map;
 
 @SuppressWarnings("unused")
 @Mixin(value = HumanoidModel.class)
-public abstract class HumanoidModelMixin<T extends LivingEntity> extends AgeableListModel<T> implements ArmedModel, HeadedModel{
+public abstract class HumanoidModelMixin<T extends LivingEntity> extends AgeableListModel<T> implements ArmedModel, HeadedModel
+{
 
     @Unique
     private final AnimationState incandescentLib$STATE = new AnimationState();
@@ -37,7 +38,8 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
     private final Vector3f ANIMATION_VECTOR_CACHE = new Vector3f();
 
     @Inject(method = "setupAttackAnimation", at = @At("HEAD"), cancellable = true)
-    protected void setupAttackAnimationHead(T pLivingEntity, float pAgeInTicks, CallbackInfo callbackInfo) {
+    protected void setupAttackAnimationHead (T pLivingEntity, float pAgeInTicks, CallbackInfo callbackInfo)
+    {
         HumanoidModel<T> self = (HumanoidModel<T>) (Object) this;
         if (!(pLivingEntity.getMainHandItem().getItem() instanceof ICustomSwingItem item)) return;
         item.thirdPersonTransform(pLivingEntity.getMainHandItem(), self, pLivingEntity, pAgeInTicks);
@@ -45,26 +47,29 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
     }
 
     @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",
-            at = @At("TAIL"))
-    public void setupAnimMixinTail(@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo callbackInfo)
+        at = @At("TAIL"))
+    public void setupAnimMixinTail (@NotNull T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, CallbackInfo callbackInfo)
     {
-        if(!(entity instanceof Player player)) return; // Asserts that only player model is animated
+        if (!(entity instanceof Player player)) return; // Asserts that only player model is animated
         this.incandescentLib$animate(incandescentLib$STATE, RUNNING_ANIMATION_DEFINITION, ageInTicks); // Tries to play RUNNING_ANIMATION_DEFINITION every tick, null handling included
         PlayerAnimationManager.AnimationInstance instance = PlayerAnimationManager.consumeAnimationFor(player); // Gets animation for player, otherwise gets null
-        if(instance == null) return; // Quit if no animation was supplied
-        if(!instance.override() && this.RUNNING_ANIMATION_DEFINITION != null) return; // Quit if animation doesn't override current animation
+        if (instance == null) return; // Quit if no animation was supplied
+        if (!instance.override() && this.RUNNING_ANIMATION_DEFINITION != null)
+            return; // Quit if animation doesn't override current animation
         RUNNING_ANIMATION_DEFINITION = instance.animation();
         incandescentLib$STATE.start(entity.tickCount);
     }
 
     @Unique
-    void incandescentLib$keyframesAnimate(HumanoidModel<?> model, AnimationDefinition definition, long l, float v, Vector3f vector3f) {
+    void incandescentLib$keyframesAnimate (HumanoidModel<?> model, AnimationDefinition definition, long l, float v, Vector3f vector3f)
+    {
         float f = incandescentLib$getElapsedSeconds(definition, l);
 
-        for(Map.Entry<String, List<AnimationChannel>> entry : definition.boneAnimations().entrySet()) {
+        for (Map.Entry<String, List<AnimationChannel>> entry : definition.boneAnimations().entrySet())
+        {
             ModelPart modelPart = incandescentLib$acceptablePart(model, entry.getKey());
             List<AnimationChannel> list = entry.getValue();
-            if(modelPart != null)
+            if (modelPart != null)
             {
                 for (AnimationChannel animationChannel : list)
                 {
@@ -75,14 +80,18 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
                     Keyframe keyframe1 = akeyframe[j];
                     float f1 = f - keyframe.timestamp();
                     float f2;
-                    if (j != i) {
+                    if (j != i)
+                    {
                         f2 = Mth.clamp(f1 / (keyframe1.timestamp() - keyframe.timestamp()), 0.0F, 1.0F);
-                    } else {
+                    } else
+                    {
                         f2 = 0.0F;
                     }
-                    if(i == akeyframe.length - 1) this.RUNNING_ANIMATION_DEFINITION = null;
+                    if (i == akeyframe.length - 1) this.RUNNING_ANIMATION_DEFINITION = null;
                     keyframe1.interpolation().apply(vector3f, f2, akeyframe, i, j, v);
-                    modelPart.xRot = 0; modelPart.yRot = 0; modelPart.zRot = 0;
+                    modelPart.xRot = 0;
+                    modelPart.yRot = 0;
+                    modelPart.zRot = 0;
                     //modelPart.x = 0; modelPart.y = 0; modelPart.z = 0;
                     animationChannel.target().apply(modelPart, vector3f);
                 }
@@ -92,34 +101,38 @@ public abstract class HumanoidModelMixin<T extends LivingEntity> extends Ageable
     }
 
     @Unique
-    private static ModelPart incandescentLib$acceptablePart(HumanoidModel<?> model, String key) {
+    private static ModelPart incandescentLib$acceptablePart (HumanoidModel<?> model, String key)
+    {
         return switch (key)
-                {
-                    case ("body") -> model.body;
-                    case ("head") -> model.head;
-                    case ("hat") -> model.hat;
-                    case ("right_arm") -> model.rightArm;
-                    case ("left_arm") -> model.leftArm;
-                    case ("right_leg") -> model.rightLeg;
-                    case ("left_leg") -> model.leftLeg;
-                    default -> null;
-                };
+        {
+            case ("body") -> model.body;
+            case ("head") -> model.head;
+            case ("hat") -> model.hat;
+            case ("right_arm") -> model.rightArm;
+            case ("left_arm") -> model.leftArm;
+            case ("right_leg") -> model.rightLeg;
+            case ("left_leg") -> model.leftLeg;
+            default -> null;
+        };
     }
 
     @Unique
-    private static float incandescentLib$getElapsedSeconds(AnimationDefinition definition, long l) {
-        float f = (float)l / 1000.0F;
+    private static float incandescentLib$getElapsedSeconds (AnimationDefinition definition, long l)
+    {
+        float f = (float) l / 1000.0F;
         return definition.looping() ? f % definition.lengthInSeconds() : f;
     }
 
     @Unique
-    private void incandescentLib$animate(AnimationState state, AnimationDefinition definition, float v) {
+    private void incandescentLib$animate (AnimationState state, AnimationDefinition definition, float v)
+    {
         this.incandescentLib$animate(state, definition, v, 1.0F);
     }
 
     @Unique
-    private void incandescentLib$animate(AnimationState state, AnimationDefinition definition, float v, float v1) {
-        if(definition == null)
+    private void incandescentLib$animate (AnimationState state, AnimationDefinition definition, float v, float v1)
+    {
+        if (definition == null)
         {
             state.stop();
             this.ANIMATION_VECTOR_CACHE.set(0);

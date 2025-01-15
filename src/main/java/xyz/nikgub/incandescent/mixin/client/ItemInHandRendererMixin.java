@@ -21,27 +21,33 @@ import xyz.nikgub.incandescent.common.item.ICustomSwingItem;
 
 @SuppressWarnings("unused")
 @Mixin(ItemInHandRenderer.class)
-public abstract class ItemInHandRendererMixin {
+public abstract class ItemInHandRendererMixin
+{
     @Final
     @Shadow
     private ItemRenderer itemRenderer;
-    @Shadow
-    public abstract void renderItem(LivingEntity entity, ItemStack itemStack, ItemDisplayContext displayContext, boolean b, PoseStack poseStack, MultiBufferSource bufferSource, int i);
-    @Shadow
-    protected abstract void applyItemArmTransform(PoseStack poseStack, HumanoidArm arm, float f);
 
-    @Shadow @Final private Minecraft minecraft;
+    @Shadow
+    public abstract void renderItem (LivingEntity entity, ItemStack itemStack, ItemDisplayContext displayContext, boolean b, PoseStack poseStack, MultiBufferSource bufferSource, int i);
+
+    @Shadow
+    protected abstract void applyItemArmTransform (PoseStack poseStack, HumanoidArm arm, float f);
+
+    @Shadow
+    @Final
+    private Minecraft minecraft;
 
     @Inject(method = "renderArmWithItem", at = @At("HEAD"), cancellable = true)
-    public void renderArmWithItemMixinHead(AbstractClientPlayer player,
-                                           float partialTick,
-                                           float pPitch, InteractionHand hand,
-                                           float swingProgress, ItemStack itemStack,
-                                           float equippedProgress,
-                                           PoseStack poseStack,
-                                           MultiBufferSource multiBufferSource,
-                                           int pCombinedLight,
-                                           CallbackInfo callbackInfo) {
+    public void renderArmWithItemMixinHead (AbstractClientPlayer player,
+                                            float partialTick,
+                                            float pPitch, InteractionHand hand,
+                                            float swingProgress, ItemStack itemStack,
+                                            float equippedProgress,
+                                            PoseStack poseStack,
+                                            MultiBufferSource multiBufferSource,
+                                            int pCombinedLight,
+                                            CallbackInfo callbackInfo)
+    {
         boolean flag = hand == InteractionHand.MAIN_HAND;
         HumanoidArm arm = flag ? player.getMainArm() : player.getMainArm().getOpposite();
         boolean isRight = (arm == HumanoidArm.RIGHT);

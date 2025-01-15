@@ -20,52 +20,59 @@ package xyz.nikgub.incandescent.common.item;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.ItemStack;
-import xyz.nikgub.incandescent.mixin.ItemStackMixin;
 import xyz.nikgub.incandescent.common.util.GeneralUtils;
+import xyz.nikgub.incandescent.mixin.ItemStackMixin;
 
 import java.util.function.Function;
 
 /**
  * Interface for {@link ItemStackMixin}'s getHoverNameMixinHead()
+ *
  * @author nikgub_
  */
 @SuppressWarnings("unused")
-public interface IGradientNameItem {
+public interface IGradientNameItem
+{
 
     /**
      * Method that provides an additional condition to display gradient name
-     * @param itemStack         ItemStack of this item
-     * @return                  boolean
+     *
+     * @param itemStack ItemStack of this item
+     * @return boolean
      */
 
-    boolean getGradientCondition(ItemStack itemStack);
+    boolean getGradientCondition (ItemStack itemStack);
+
     /**
      * Method that provides a pair of colors to switch between
-     * @return                  Pair of integer RGB color values
+     *
+     * @return Pair of integer RGB color values
      */
-    Pair<Integer, Integer> getGradientColors(ItemStack itemStack);
+    Pair<Integer, Integer> getGradientColors (ItemStack itemStack);
 
     /**
      * Method that provides time in ticks in which full color change happens
-     * @return                  Integer time in ticks
+     *
+     * @return Integer time in ticks
      */
-    int getGradientTickTime(ItemStack itemStack);
+    int getGradientTickTime (ItemStack itemStack);
 
     /**
      * Method that provides a function that defines how does the color change depending on tick
-     * @return                  Function that consumes an integer tick and returns an integer color code
+     *
+     * @return Function that consumes an integer tick and returns an integer color code
      */
-    default Function<Integer, Integer> getGradientFunction(ItemStack itemStack)
+    default Function<Integer, Integer> getGradientFunction (ItemStack itemStack)
     {
         final int redFirst = getGradientColors(itemStack).getFirst() / 65536, greenFirst = (getGradientColors(itemStack).getFirst() % 65536) / 256, blueFirst = getGradientColors(itemStack).getFirst() % 256;
         final int redSecond = getGradientColors(itemStack).getSecond() / 65536, greenSecond = (getGradientColors(itemStack).getSecond() % 65536) / 256, blueSecond = getGradientColors(itemStack).getSecond() % 256;
-        return (tick)->
+        return (tick) ->
         {
             final int cT = Math.abs(getGradientTickTime(itemStack) - tick % (getGradientTickTime(itemStack) * 2));
             return GeneralUtils.rgbToColorInteger(
-                    redFirst + ((redSecond - redFirst) / getGradientTickTime(itemStack)) * cT,
-                    greenFirst + ((greenSecond - greenFirst) / getGradientTickTime(itemStack)) * cT,
-                    blueFirst + ((blueSecond - blueFirst) / getGradientTickTime(itemStack)) * cT
+                redFirst + ((redSecond - redFirst) / getGradientTickTime(itemStack)) * cT,
+                greenFirst + ((greenSecond - greenFirst) / getGradientTickTime(itemStack)) * cT,
+                blueFirst + ((blueSecond - blueFirst) / getGradientTickTime(itemStack)) * cT
             );
         };
     }

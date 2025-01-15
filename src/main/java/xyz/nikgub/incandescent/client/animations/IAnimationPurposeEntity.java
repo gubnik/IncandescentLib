@@ -19,9 +19,10 @@ import java.util.List;
  *
  * @author nikgub_
  */
-public interface IAnimationPurposeEntity {
+public interface IAnimationPurposeEntity
+{
 
-    private Entity asEntity()
+    private Entity asEntity ()
     {
         return (Entity) this;
     }
@@ -40,46 +41,51 @@ public interface IAnimationPurposeEntity {
     {
         return this.asEntity().getEntityData().get(getAnimationStateDataAccessor());
     }
+
     /**
      * Method that determines animations <p>
      * If an AnimationState exists for an entity but is not provided via this method it is ignored for all methods of this interface
-     * @return      List of all entity animations
+     *
+     * @return List of all entity animations
      */
-    @NotNull List<DeterminedAnimation> getAllAnimations();
+    @NotNull
+    List<DeterminedAnimation> getAllAnimations ();
 
     /**
      * Default method that provides all currently running animations
-     * @return      List of all currently running animations
+     *
+     * @return List of all currently running animations
      */
-    default List<DeterminedAnimation> getRunningAnimations()
+    default List<DeterminedAnimation> getRunningAnimations ()
     {
         return getAllAnimations().stream().filter(determinedAnimation -> determinedAnimation.animationState().isStarted()).toList();
     }
 
     /**
      * Method that creates a list of AnimationState for all animations of certain purpose
-     * @param animationPurpose      AnimationPurpose acting as a search key
-     * @return                      List of AnimationState
+     *
+     * @param animationPurpose AnimationPurpose acting as a search key
+     * @return List of AnimationState
      */
-    default List<AnimationState> ofPurpose(DeterminedAnimation.AnimationPurpose animationPurpose)
+    default List<AnimationState> ofPurpose (DeterminedAnimation.AnimationPurpose animationPurpose)
     {
         return getAllAnimations().stream()
-                .filter(determinedAnimation -> determinedAnimation.animationPurpose() == animationPurpose)
-                .map(DeterminedAnimation::animationState).toList();
+            .filter(determinedAnimation -> determinedAnimation.animationPurpose() == animationPurpose)
+            .map(DeterminedAnimation::animationState).toList();
     }
 
     /**
      * Default method that stops all currently running animations
      */
-    default void stopAllAnimations()
+    default void stopAllAnimations ()
     {
-        for(DeterminedAnimation determinedAnimation : getAllAnimations())
+        for (DeterminedAnimation determinedAnimation : getAllAnimations())
         {
-            if(determinedAnimation.animationState().isStarted()) determinedAnimation.animationState().stop();
+            if (determinedAnimation.animationState().isStarted()) determinedAnimation.animationState().stop();
         }
     }
 
-    default AnimationState getAnimationOf(DeterminedAnimation.AnimationPurpose animationPurpose)
+    default AnimationState getAnimationOf (DeterminedAnimation.AnimationPurpose animationPurpose)
     {
         return getAllAnimations().stream().filter((determinedAnimation -> determinedAnimation.animationPurpose() == animationPurpose)).findFirst().orElseThrow().animationState();
     }

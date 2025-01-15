@@ -29,32 +29,37 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 
-public class GeneralUtils {
+public class GeneralUtils
+{
 
-    public static int rgbToColorInteger(int red, int green, int blue){
+    public static int rgbToColorInteger (int red, int green, int blue)
+    {
         return 65536 * red + 256 * green + blue;
     }
 
-    public static int rgbaToColorInteger(int red, int green, int blue, int alpha){
+    public static int rgbaToColorInteger (int red, int green, int blue, int alpha)
+    {
         return 16777216 * alpha + 65536 * red + 256 * green + blue;
     }
 
-    public static boolean hasCompletedTheAdvancement(ServerPlayer serverPlayer, Advancement advancement){
-        if(advancement == null) return false;
+    public static boolean hasCompletedTheAdvancement (ServerPlayer serverPlayer, Advancement advancement)
+    {
+        if (advancement == null) return false;
         return serverPlayer.getAdvancements()
-                .getOrStartProgress(advancement)
-                .isDone();
+            .getOrStartProgress(advancement)
+            .isDone();
     }
 
-    public static void addAdvancement(ServerPlayer serverPlayer, ResourceLocation resourceLocation)
+    public static void addAdvancement (ServerPlayer serverPlayer, ResourceLocation resourceLocation)
     {
         Advancement advancement = serverPlayer.server.getAdvancements().getAdvancement(resourceLocation);
-        if(advancement == null) return;
-        if(!hasCompletedTheAdvancement(serverPlayer, advancement))
+        if (advancement == null) return;
+        if (!hasCompletedTheAdvancement(serverPlayer, advancement))
         {
             AdvancementProgress advancementProgress = serverPlayer.getAdvancements().getOrStartProgress(advancement);
             {
-                for (String s : advancementProgress.getRemainingCriteria()) serverPlayer.getAdvancements().award(advancement, s);
+                for (String s : advancementProgress.getRemainingCriteria())
+                    serverPlayer.getAdvancements().award(advancement, s);
             }
         }
     }
@@ -66,18 +71,19 @@ public class GeneralUtils {
 
     public static void playSound (Level level, double x, double y, double z, SoundEvent soundEvent, SoundSource source, float volume, float pitch)
     {
-        if (!level.isClientSide()) level.playSound(null, BlockPos.containing(x, y, z), soundEvent, source, volume, pitch);
+        if (!level.isClientSide())
+            level.playSound(null, BlockPos.containing(x, y, z), soundEvent, source, volume, pitch);
         else level.playLocalSound(x, y, z, soundEvent, source, volume, pitch, false);
     }
 
-    public static DamageSource makeDamageSource(ResourceKey<DamageType> damageType, @NotNull Level level, @Nullable Entity trueSource, @Nullable Entity proxy)
+    public static DamageSource makeDamageSource (ResourceKey<DamageType> damageType, @NotNull Level level, @Nullable Entity trueSource, @Nullable Entity proxy)
     {
         Optional<Registry<DamageType>> registry = level.registryAccess().registry(Registries.DAMAGE_TYPE);
         if (registry.isPresent())
-            try {
+            try
+            {
                 return new DamageSource(registry.get().getHolderOrThrow(damageType), proxy, trueSource);
-            }
-            catch (IllegalStateException stateException)
+            } catch (IllegalStateException stateException)
             {
                 return new DamageSource(registry.get().getHolderOrThrow(DamageTypes.GENERIC), proxy, trueSource);
             }
@@ -85,8 +91,10 @@ public class GeneralUtils {
             throw new RuntimeException("Unable to locate damage type registry. How?");
     }
 
-    public static Vec3 findGround(Vec3 pos, Level level){
-        while (pos.y > -64 && !level.getBlockState(new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z))).canOcclude()){
+    public static Vec3 findGround (Vec3 pos, Level level)
+    {
+        while (pos.y > -64 && !level.getBlockState(new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z))).canOcclude())
+        {
             pos = new Vec3(pos.x, pos.y - 1, pos.z);
         }
         return pos;
@@ -102,7 +110,8 @@ public class GeneralUtils {
         return ret;
     }
 
-    public static Vec3 traceUntil(final LivingEntity entity, final BiConsumer<Vec3, Level> action, final double limit){
+    public static Vec3 traceUntil (final LivingEntity entity, final BiConsumer<Vec3, Level> action, final double limit)
+    {
         if (!(entity.level() instanceof ServerLevel level)) return Vec3.ZERO;
         final Vec3 angles = entity.getLookAngle();
         final double x = entity.getX();
@@ -112,8 +121,8 @@ public class GeneralUtils {
         Vec3 lookPos;
         ClipContext clip;
         while (EntityUtils.entityCollector(lookPos = new Vec3(x + angles.x * i, y + angles.y * i, z + angles.z * i), 0.25, entity.level()).isEmpty() &&
-                !level.getBlockState(new BlockPos(level.clip((clip = new ClipContext(entity.getEyePosition(1f), entity.getEyePosition(1f).add(entity.getViewVector(1f).scale(i)), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity))).getBlockPos().getX(), level.clip(clip).getBlockPos().getY(), level.clip(clip).getBlockPos().getZ())
-                ).canOcclude() && i < limit)
+            !level.getBlockState(new BlockPos(level.clip((clip = new ClipContext(entity.getEyePosition(1f), entity.getEyePosition(1f).add(entity.getViewVector(1f).scale(i)), ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, entity))).getBlockPos().getX(), level.clip(clip).getBlockPos().getY(), level.clip(clip).getBlockPos().getZ())
+            ).canOcclude() && i < limit)
         {
             action.accept(lookPos, level);
             i += 0.2;

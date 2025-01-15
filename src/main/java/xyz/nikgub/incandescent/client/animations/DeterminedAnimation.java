@@ -6,8 +6,9 @@ import net.minecraft.world.entity.AnimationState;
 
 /**
  * Record used by {@link IAnimationPurposeEntity}
- * @param animationState            AnimationState of an entity
- * @param animationPurpose          Type of animation, must be declared properly for generalized behaviour
+ *
+ * @param animationState   AnimationState of an entity
+ * @param animationPurpose Type of animation, must be declared properly for generalized behaviour
  */
 public record DeterminedAnimation(AnimationState animationState, AnimationPurpose animationPurpose)
 {
