@@ -22,13 +22,12 @@ public interface ICustomSwingItem
      * Method providing transformations of the third person swing animation.
      * Default value provides vanilla MC animation
      *
-     * @see xyz.nikgub.incandescent.mixin.client.HumanoidModelMixin
-     *
-     * @param itemStack {@link ItemStack} that performed the swing
-     * @param model {@link HumanoidModel} that is animated
-     * @param entity {@link net.minecraft.world.entity.Entity} for which the animation plays
+     * @param itemStack  {@link ItemStack} that performed the swing
+     * @param model      {@link HumanoidModel} that is animated
+     * @param entity     {@link net.minecraft.world.entity.Entity} for which the animation plays
      * @param ageInTicks {@link Float} representing how many ticks is the model alive
-     * @param <T> Generic type extending {@link LivingEntity}
+     * @param <T>        Generic type extending {@link LivingEntity}
+     * @see xyz.nikgub.incandescent.mixin.client.HumanoidModelMixin
      */
     default <T extends LivingEntity> void thirdPersonTransform (ItemStack itemStack, HumanoidModel<T> model, T entity, float ageInTicks)
     {
@@ -66,13 +65,12 @@ public interface ICustomSwingItem
      * Method providing transformations of the first person swing animation.
      * Default value provides vanilla MC animation
      *
-     * @see xyz.nikgub.incandescent.mixin.client.ItemInHandRendererMixin
-     *
-     * @param itemStack {@link ItemStack} that performed the swing
-     * @param poseStack {@link PoseStack} of arm transformations
-     * @param swingProgress Swing progress of an item
+     * @param itemStack        {@link ItemStack} that performed the swing
+     * @param poseStack        {@link PoseStack} of arm transformations
+     * @param swingProgress    Swing progress of an item
      * @param equippedProgress Equip progress of an item
-     * @param isRight Whether the arm is the right one or not
+     * @param isRight          Whether the arm is the right one or not
+     * @see xyz.nikgub.incandescent.mixin.client.ItemInHandRendererMixin
      */
     default void firstPersonTransform (ItemStack itemStack, PoseStack poseStack, float swingProgress, float equippedProgress, boolean isRight)
     {

@@ -62,7 +62,8 @@ public class Incandescent
 
     /**
      * Runs shake for a local player
-     * @param amount Strength of the shake
+     *
+     * @param amount     Strength of the shake
      * @param whenToStop Predicate for a local player
      */
     public static void runShakeFor (double amount, Predicate<LocalPlayer> whenToStop)

@@ -96,6 +96,7 @@ public class IncandescentNetwork
      * Subscriber that collects and signs packets to {@link IncandescentNetworkCore}.
      * It is powered by Java's Reflection, and may or may not cause performance issues on
      * the startup.
+     *
      * @param event FML setup event, running before everything else
      */
     @SubscribeEvent(priority = EventPriority.HIGHEST)

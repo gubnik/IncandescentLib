@@ -15,19 +15,17 @@ import java.util.Optional;
 /**
  * Interface providing methods to dynamically collect {@link Item} tooltip lines
  * from a translation.
- *
  */
 public interface IExtensibleTooltipItem
 {
     /**
      * Collects tooltip lines for this item.
      *
-     * @see Item#appendHoverText
-     *
-     * @param list {@link List} of all tooltip lines rendered
-     * @param hiddenKey Translation key shown while the lines are hidden
+     * @param list       {@link List} of all tooltip lines rendered
+     * @param hiddenKey  Translation key shown while the lines are hidden
      * @param subscriber Translation key subscriber
-     * @param key {@link xyz.nikgub.incandescent.Incandescent.Key} to show the collected lines
+     * @param key        {@link xyz.nikgub.incandescent.Incandescent.Key} to show the collected lines
+     * @see Item#appendHoverText
      */
     default void gatherTooltipLines (@NotNull List<Component> list, String hiddenKey, String subscriber, Incandescent.Key key)
     {
@@ -37,12 +35,11 @@ public interface IExtensibleTooltipItem
     /**
      * Collects tooltip lines for any item.
      *
-     * @see Item#appendHoverText
-     *
-     * @param list {@link List} of all tooltip lines rendered
-     * @param hiddenKey Translation key shown while the lines are hidden
+     * @param list       {@link List} of all tooltip lines rendered
+     * @param hiddenKey  Translation key shown while the lines are hidden
      * @param subscriber Translation key subscriber
-     * @param key {@link xyz.nikgub.incandescent.Incandescent.Key} to show the collected lines
+     * @param key        {@link xyz.nikgub.incandescent.Incandescent.Key} to show the collected lines
+     * @see Item#appendHoverText
      */
     default void gatherTooltipLines (Item item, @NotNull List<Component> list, String hiddenKey, String subscriber, Incandescent.Key key)
     {

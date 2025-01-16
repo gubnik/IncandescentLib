@@ -27,6 +27,7 @@ public @interface IncandescentPacket
 {
     /**
      * Mod ID of the mod this packet is attached to
+     *
      * @return Mod ID
      */
     String value ();
@@ -38,13 +39,12 @@ public @interface IncandescentPacket
      * <p>
      * Fields marked with this annotation are used to automatically
      * build decoder and encoder, should there be none predefined
-     *
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.FIELD)
     @interface Value
     {
-        int value() default Integer.MAX_VALUE;
+        int value () default Integer.MAX_VALUE;
     }
 
     /**
@@ -52,7 +52,6 @@ public @interface IncandescentPacket
      * <p>
      * Methods marked with this annotation are not used to process
      * encode data into packets to be sent
-     *
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -65,7 +64,6 @@ public @interface IncandescentPacket
      * <p>
      * Methods marked with this annotation are not used to process
      * their packets once received by the other side
-     *
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)

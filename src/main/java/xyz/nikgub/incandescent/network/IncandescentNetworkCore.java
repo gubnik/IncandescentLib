@@ -23,32 +23,35 @@ public class IncandescentNetworkCore
 {
     /**
      * Functional interface for packet decoding function
+     *
      * @param <T> Packet type
      */
     @FunctionalInterface
     public interface DecoderFunc<T>
     {
-        T decode(FriendlyByteBuf buf);
+        T decode (FriendlyByteBuf buf);
     }
 
     /**
      * Functional interface for packet encoding function
+     *
      * @param <T> Packet type
      */
     @FunctionalInterface
     public interface EncoderFunc<T>
     {
-        void encode(T obj, FriendlyByteBuf buf);
+        void encode (T obj, FriendlyByteBuf buf);
     }
 
     /**
      * Functional interface for packet handling function
+     *
      * @param <T> Packet type
      */
     @FunctionalInterface
     public interface HandlerFunc<T>
     {
-        void handle(T obj, Supplier<NetworkEvent.Context> supplier);
+        void handle (T obj, Supplier<NetworkEvent.Context> supplier);
     }
 
     /**
@@ -91,8 +94,9 @@ public class IncandescentNetworkCore
     /**
      * Signs the packet to the channel.
      * From here, other functions are invoked
+     *
      * @param clazz {@link IncandescentPacket} class
-     * @param <T> Packet type
+     * @param <T>   Packet type
      */
     public <T> void sign (Class<T> clazz)
     {
@@ -106,6 +110,7 @@ public class IncandescentNetworkCore
 
     /**
      * Getter for {@link #channelInstance}
+     *
      * @return {@link #channelInstance}
      */
     public SimpleChannel getChannelInstance ()
@@ -120,11 +125,10 @@ public class IncandescentNetworkCore
      * If not found, the function will attempt to run a generator
      * for a general reflection-powered decoder.
      *
-     * @see NetworkFunctionGenerators#generateDecoder(Class)
-     *
      * @param clazz {@link IncandescentPacket} class
+     * @param <T>   Packet type
      * @return {@link DecoderFunc} of a packet class
-     * @param <T> Packet type
+     * @see NetworkFunctionGenerators#generateDecoder(Class)
      */
     public static <T> DecoderFunc<T> getDecoder (Class<T> clazz)
     {
@@ -164,12 +168,11 @@ public class IncandescentNetworkCore
      * If not found, the function will attempt to run a generator
      * for a general reflection-powered encoder.
      *
+     * @param clazz {@link IncandescentPacket} class
+     * @param <T>   Packet type
+     * @return {@link EncoderFunc} of a packet class
      * @see NetworkFunctionGenerators#getEncoderMethod(Class)
      * @see NetworkFunctionGenerators#generateEncoder(Class)
-     *
-     * @param clazz {@link IncandescentPacket} class
-     * @return {@link EncoderFunc} of a packet class
-     * @param <T> Packet type
      */
     public static <T> EncoderFunc<T> getEncoder (Class<T> clazz)
     {
@@ -209,13 +212,12 @@ public class IncandescentNetworkCore
      * If not found, the function will throw an error with no fallback provided,
      * since the handler function is irreplaceable
      *
-     * @see NetworkFunctionGenerators#getHandlerMethod(Class)
-     *
      * @param clazz {@link IncandescentPacket} class
+     * @param <T>   Packet type
      * @return {@link HandlerFunc} of a packet class
-     * @param <T> Packet type
+     * @see NetworkFunctionGenerators#getHandlerMethod(Class)
      */
-    public static  <T> HandlerFunc<T> getHandler (Class<T> clazz)
+    public static <T> HandlerFunc<T> getHandler (Class<T> clazz)
     {
         if (HANDLER_CACHE.get(clazz) != null)
         {
@@ -244,10 +246,10 @@ public class IncandescentNetworkCore
      * If no such method is present, the {@link IllformedPacketException} will be thrown.
      * If multiple of such method are present, the function returns {@code null}.
      * If such a method is present but is illformed, the {@link IllformedPacketException} will be thrown.
-     * 
+     *
      * @param clazz {@link IncandescentPacket} class
+     * @param <T>   Packet type
      * @return {@link Method} that is the encoder of {@code T} packet, or {@code null} if it does not exist
-     * @param <T> Packet type
      */
     private static <T> @Nullable Method getEncoderMethod (Class<T> clazz)
     {
@@ -282,10 +284,10 @@ public class IncandescentNetworkCore
      * If no such method is present, the {@link IllformedPacketException} will be thrown.
      * If multiple of such method are present, the {@link IllformedPacketException} will be thrown.
      * If such a method is present but is illformed, the {@link IllformedPacketException} will be thrown.
-     * 
+     *
      * @param clazz {@link IncandescentPacket} class
-     * @return {@link Method} that is the handler of {@code T} packet 
-     * @param <T> Packet type
+     * @param <T>   Packet type
+     * @return {@link Method} that is the handler of {@code T} packet
      */
     private static <T> @NotNull Method getHandlerMethod (Class<T> clazz)
     {
@@ -320,13 +322,12 @@ public class IncandescentNetworkCore
      * Collects class' fields marked with {@link xyz.nikgub.incandescent.network.IncandescentPacket.Value}
      * and sorts them according to {@link IncandescentPacket.Value#value()}
      *
-     * @see xyz.nikgub.incandescent.network.IncandescentPacket.Value
-     *
      * @param clazz {@link IncandescentPacket} class
+     * @param <T>   Packet type
      * @return List of fields marked with {@link xyz.nikgub.incandescent.network.IncandescentPacket.Value}
-     * @param <T> Packet type
+     * @see xyz.nikgub.incandescent.network.IncandescentPacket.Value
      */
-    private static <T> List<Field> getAnnotatedMethods(Class<T> clazz)
+    private static <T> List<Field> getAnnotatedMethods (Class<T> clazz)
     {
         final Field[] fields = clazz.getDeclaredFields();
         final List<Field> retVal = new ArrayList<>();
@@ -376,11 +377,10 @@ public class IncandescentNetworkCore
          * function will throw a {@link IllformedPacketException}.
          * Intermediate mappings of reader functions are stored in {@link NetworkFunctionGenerators#READER_CACHE}
          *
-         * @see PacketIO#bufRead(Class)
-         *
          * @param clazz {@link IncandescentPacket} class
+         * @param <T>   Packet type
          * @return Generated {@link DecoderFunc}
-         * @param <T> Packet type
+         * @see PacketIO#bufRead(Class)
          */
         private static <T> DecoderFunc<T> generateDecoder (Class<T> clazz)
         {
@@ -446,11 +446,10 @@ public class IncandescentNetworkCore
          * function will throw a {@link IllformedPacketException}.
          * Intermediate mappings of writer functions are stored in {@link NetworkFunctionGenerators#WRITER_CACHE}
          *
-         * @see PacketIO#bufWrite(Class)
-         *
          * @param clazz {@link IncandescentPacket} class
+         * @param <T>   Packet type
          * @return Generated {@link EncoderFunc}
-         * @param <T> Packet type
+         * @see PacketIO#bufWrite(Class)
          */
         private static <T> EncoderFunc<T> generateEncoder (Class<T> clazz)
         {
@@ -509,10 +508,10 @@ public class IncandescentNetworkCore
          * Intermediate function that instantiates a default packet used in {@link #generateDecoder(Class)}.
          * For this exact purpose, the packet class should either have one accessible, or define a proper decoder.
          * If no such constructor is present, the {@link IllformedPacketException} will be thrown
-         * 
+         *
          * @param clazz {@link IncandescentPacket} class
+         * @param <T>   Packet type
          * @return Instance of {@code T} packet
-         * @param <T> Packet type
          */
         private static <T> @NotNull T instantiatePacket (Class<T> clazz)
         {
