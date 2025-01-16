@@ -60,6 +60,11 @@ public class Incandescent
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, IncandescentConfig.SPEC);
     }
 
+    /**
+     * Runs shake for a local player
+     * @param amount Strength of the shake
+     * @param whenToStop Predicate for a local player
+     */
     public static void runShakeFor (double amount, Predicate<LocalPlayer> whenToStop)
     {
         screenShakeMap.put(Minecraft.getInstance().player, Pair.of(amount, whenToStop));
@@ -69,6 +74,10 @@ public class Incandescent
     {
     }
 
+    /**
+     * Enum representing keys recognized by universal
+     * screen functions, also maps these function to enum values.
+     */
     @SuppressWarnings("unused")
     public enum Key
     {

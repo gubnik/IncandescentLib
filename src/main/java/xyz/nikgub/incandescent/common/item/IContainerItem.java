@@ -32,10 +32,8 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author nikgub_
  */
-@SuppressWarnings("unused")
 public interface IContainerItem
 {
-    @SuppressWarnings("unused")
     ICapabilityProvider initCapabilities (ItemStack stack, @Nullable CompoundTag nbt);
 
     /**

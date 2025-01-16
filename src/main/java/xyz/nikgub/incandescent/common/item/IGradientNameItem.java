@@ -30,7 +30,6 @@ import java.util.function.Function;
  *
  * @author nikgub_
  */
-@SuppressWarnings("unused")
 public interface IGradientNameItem
 {
 

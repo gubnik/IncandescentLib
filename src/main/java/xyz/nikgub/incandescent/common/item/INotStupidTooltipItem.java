@@ -34,7 +34,6 @@ import java.util.function.BiFunction;
  *
  * @author nikgub_
  */
-@SuppressWarnings("unused")
 public interface INotStupidTooltipItem
 {
     /**
