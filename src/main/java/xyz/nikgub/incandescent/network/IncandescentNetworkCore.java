@@ -243,8 +243,8 @@ public class IncandescentNetworkCore
 
     /**
      * Gathers an encoder method from packet {@code clazz} using reflection.
-     * If no such method is present, the {@link IllformedPacketException} will be thrown.
-     * If multiple of such method are present, the function returns {@code null}.
+     * If no such method is present, the {@link NetworkFunctionGenerators#generateEncoder(Class)} will be used instead.
+     * If multiple of such method are present, the {@link IllformedPacketException} will be thrown.
      * If such a method is present but is illformed, the {@link IllformedPacketException} will be thrown.
      *
      * @param clazz {@link IncandescentPacket} class
