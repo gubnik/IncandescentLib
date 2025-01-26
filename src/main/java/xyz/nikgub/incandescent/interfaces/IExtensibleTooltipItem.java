@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.common.item;
+package xyz.nikgub.incandescent.interfaces;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;

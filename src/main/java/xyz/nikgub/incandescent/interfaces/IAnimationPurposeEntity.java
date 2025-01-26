@@ -1,21 +1,17 @@
-package xyz.nikgub.incandescent.client.animations;
+package xyz.nikgub.incandescent.interfaces;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+import xyz.nikgub.incandescent.animation.DeterminedAnimation;
 
 import java.util.List;
 
 /**
- * <p>Interface that allows for safe interjection into entity's animation behaviour
- * by introducing generalized behaviour.</p>
- * <h3>Possibilities</h3>
- * <p>Starting and stopping animations solely by {@link AnimationState} or {@link DeterminedAnimation.AnimationPurpose}.</p>
- * <p>Generalized byte event handling via default method.</p>
- * <h3>Limitations</h3>
- * <p>Determined animations must have 70 as the smallest byte signal and must not exceed 153 animations total.</p>
- * <p>Generalized behaviour has no control over animation states that were not introduced by getAllAnimations().</p>
+ * Interface that allows for safe interjection into entity's animation behaviour
+ * by introducing generalized behaviour.
+ * Generalized behaviour has no control over animation states that were not introduced by getAllAnimations().
  *
  * @author nikgub_
  */
