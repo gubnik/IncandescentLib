@@ -44,9 +44,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.nikgub.incandescent.Incandescent;
-import xyz.nikgub.incandescent.common.item.AbstractItem;
-import xyz.nikgub.incandescent.common.item.IGradientNameItem;
-import xyz.nikgub.incandescent.common.item.INotStupidTooltipItem;
+import xyz.nikgub.incandescent.interfaces.IGradientNameItem;
+import xyz.nikgub.incandescent.interfaces.INotStupidTooltipItem;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -206,12 +205,12 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
                                 }
                             }
                             // vvv Default behaviour vvv
-                            if (attributemodifier.getId() == AbstractItem.BASE_DAMAGE)
+                            if (attributemodifier.getId() == Item.BASE_ATTACK_DAMAGE_UUID)
                             {
                                 d0 += player.getAttributeBaseValue(Attributes.ATTACK_DAMAGE);
                                 d0 += EnchantmentHelper.getDamageBonus(self, MobType.UNDEFINED);
                                 flag = true;
-                            } else if (attributemodifier.getId() == AbstractItem.BASE_SPEED)
+                            } else if (attributemodifier.getId() == Item.BASE_ATTACK_SPEED_UUID)
                             {
                                 d0 += player.getAttributeBaseValue(Attributes.ATTACK_SPEED);
                                 flag = true;
@@ -285,18 +284,16 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
         retVal.cancel();
     }
 
-    // what follows is a terrible workaround to provide vanilla functions from ItemStack without using accesstransformer.cfg
+    @Shadow
     private static boolean shouldShowInTooltip (int p_41627_, ItemStack.TooltipPart p_41628_)
     {
         return (p_41627_ & p_41628_.getMask()) == 0;
     }
 
-    public int getHideFlags ()
-    {
-        ItemStack self = (ItemStack) (Object) this;
-        return self.hasTag() && self.getOrCreateTag().contains("HideFlags", 99) ? self.getOrCreateTag().getInt("HideFlags") : this.getItem().getDefaultTooltipHideFlags(self);
-    }
+    @Shadow
+    public abstract int getHideFlags ();
 
+    @Shadow
     private static Collection<Component> expandBlockState (String p_41762_)
     {
         try
