@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.client.animations;
+package xyz.nikgub.incandescent.animation;
 
 import io.netty.util.internal.UnstableApi;
 import net.minecraft.client.animation.AnimationDefinition;

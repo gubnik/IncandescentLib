@@ -1,8 +1,9 @@
-package xyz.nikgub.incandescent.client.animations;
+package xyz.nikgub.incandescent.animation;
 
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.world.entity.AnimationState;
+import xyz.nikgub.incandescent.interfaces.IAnimationPurposeEntity;
 
 /**
  * Record used by {@link IAnimationPurposeEntity}
