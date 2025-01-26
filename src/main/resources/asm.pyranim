@@ -1,0 +1,16 @@
+.drtion 1.0 ; sets the duration to 1 second
+.doloop  ; makes the animation loop at the end
+
+left_arm:
+    .at 0
+    .intrpl "catmullrom"
+    mov 0, 1, 0
+    rot 2, 3, 4
+    scl 5, 6, 7
+
+left_arm:
+    .at 0.4
+    .intrpl "linear"
+    mov 1, 2, 3
+    rot 5, 6, 7
+    scl 6, 5, 4

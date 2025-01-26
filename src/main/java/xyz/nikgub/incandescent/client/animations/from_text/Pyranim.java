@@ -5,14 +5,13 @@ import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.KeyframeAnimations;
 import org.joml.Vector3f;
+import xyz.nikgub.incandescent.pyranim.PyranimParser;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <h2>Class to convert .pyranim format files into {@link AnimationDefinition}</h2>
@@ -34,10 +33,18 @@ import java.util.Map;
  * <p>R@0.0@(0 0 0)</p>
  * <p>R@0.5@(90 90 90)C</p>
  * <p>$$</p>
+ *
+ * @deprecated Use {@link PyranimParser} instead
  */
+@Deprecated
 public class Pyranim
 {
-
+    private static final Map<Character, AnimationChannel.Interpolation> INTERPOLATION_MAP = new HashMap<>(
+        Map.of(
+            'C', AnimationChannel.Interpolations.CATMULLROM,
+            'L', AnimationChannel.Interpolations.LINEAR
+        )
+    );
     /**
      * Creates an AnimationDefinition from .pyranim file for an entity.
      *
@@ -107,8 +114,11 @@ public class Pyranim
 
     private void toMap ()
     {
+        final Map<String, List<AnimationChannel>> resMap = new HashMap<>();
+        final List<Character> interpolationSymbols = INTERPOLATION_MAP.keySet().stream().toList();
+        final String interpolationRegex = interpolationSymbols.stream().map(String::valueOf).collect(Collectors.joining());
+        final String finalRegex = String.format("[RST]@[0-9]+(.[0-9]+)?@[(]-?[0-9]+(.[0-9]+)? -?[0-9]+(.[0-9]+)? -?[0-9]+(.[0-9]+)?[)][%s]?", interpolationRegex);
         Vector3f vector3f;
-        Map<String, List<AnimationChannel>> resMap = new HashMap<>();
         List<Keyframe> rotationKeyframes = new ArrayList<>();
         List<Keyframe> translationKeyframes = new ArrayList<>();
         List<Keyframe> scaleKeyframes = new ArrayList<>();
@@ -128,17 +138,18 @@ public class Pyranim
                     resMap.get(currKey).add(new AnimationChannel(AnimationChannel.Targets.POSITION, kfT));
                 if (kfR.length > 0)
                     resMap.get(currKey).add(new AnimationChannel(AnimationChannel.Targets.ROTATION, kfR));
-                if (kfS.length > 0) resMap.get(currKey).add(new AnimationChannel(AnimationChannel.Targets.SCALE, kfS));
+                if (kfS.length > 0)
+                    resMap.get(currKey).add(new AnimationChannel(AnimationChannel.Targets.SCALE, kfS));
                 rotationKeyframes = new ArrayList<>();
                 translationKeyframes = new ArrayList<>();
                 scaleKeyframes = new ArrayList<>();
                 continue;
             }
-            if (line.matches("[RST]@[0-9]+(.[0-9]+)?@[(]-?[0-9]+(.[0-9]+)? -?[0-9]+(.[0-9]+)? -?[0-9]+(.[0-9]+)?[)][LC]?"))
+            if (line.matches(finalRegex))
             {
-                vector3f = parseVector(line.substring(line.indexOf("@(") + 2, line.indexOf(")")) + ')');
+                vector3f = parseVector(line.substring(line.indexOf("@(") + 2, line.indexOf(")")) + ')');    
                 float moment = Float.parseFloat(line.substring(line.indexOf("T@") + 3, line.indexOf("@(")));
-                AnimationChannel.Interpolation interpolation = line.charAt(line.length() - 1) == 'C' ? AnimationChannel.Interpolations.CATMULLROM : AnimationChannel.Interpolations.LINEAR;
+                AnimationChannel.Interpolation interpolation = INTERPOLATION_MAP.get(line.charAt(line.length() - 1));
                 switch (line.charAt(0))
                 {
                     case ('T') -> translationKeyframes.add(new Keyframe(
