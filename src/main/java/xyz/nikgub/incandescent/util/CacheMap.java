@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.common.util;
+package xyz.nikgub.incandescent.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

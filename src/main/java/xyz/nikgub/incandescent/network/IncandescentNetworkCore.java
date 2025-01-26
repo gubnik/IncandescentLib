@@ -8,7 +8,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.nikgub.incandescent.Incandescent;
-import xyz.nikgub.incandescent.common.util.CacheMap;
+import xyz.nikgub.incandescent.util.CacheMap;
 
 import java.lang.reflect.*;
 import java.util.*;
@@ -384,10 +384,6 @@ public class IncandescentNetworkCore
          */
         private static <T> DecoderFunc<T> generateDecoder (Class<T> clazz)
         {
-            if (DECODER_CACHE.get(clazz) != null)
-            {
-                return (DecoderFunc<T>) DECODER_CACHE.get(clazz);
-            }
             final List<Field> fields = getAnnotatedMethods(clazz);
             for (var field : fields)
             {
@@ -400,9 +396,9 @@ public class IncandescentNetworkCore
                 {
                     throw new IllformedPacketException("Cannot decode " + field.getType().getName() + " because no such reader exists");
                 }
-                READER_CACHE.put(field, readFunc);
+                READER_CACHE.putIfAbsent(field, readFunc);
             }
-            DecoderFunc<T> decoder = (buf) ->
+            return (buf) ->
             {
                 T instance = instantiatePacket(clazz);
                 for (var field : fields)
@@ -433,8 +429,6 @@ public class IncandescentNetworkCore
                 }
                 return instance;
             };
-            DECODER_CACHE.putIfAbsent(clazz, decoder);
-            return decoder;
         }
 
         /**
@@ -453,10 +447,6 @@ public class IncandescentNetworkCore
          */
         private static <T> EncoderFunc<T> generateEncoder (Class<T> clazz)
         {
-            if (ENCODER_CACHE.get(clazz) != null)
-            {
-                return (EncoderFunc<T>) ENCODER_CACHE.get(clazz);
-            }
             final List<Field> fields = getAnnotatedMethods(clazz);
             for (var field : fields)
             {
@@ -469,9 +459,9 @@ public class IncandescentNetworkCore
                 {
                     throw new IllformedPacketException("Cannot encode " + field.getType().getName() + " because no such writer exists");
                 }
-                WRITER_CACHE.put(field, writeFunc);
+                WRITER_CACHE.putIfAbsent(field, writeFunc);
             }
-            EncoderFunc<T> encoder = (t, buf) ->
+            return (t, buf) ->
             {
                 for (var field : fields)
                 {
@@ -500,8 +490,6 @@ public class IncandescentNetworkCore
                     }
                 }
             };
-            ENCODER_CACHE.putIfAbsent(clazz, encoder);
-            return encoder;
         }
 
         /**

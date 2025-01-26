@@ -138,6 +138,7 @@ public class IncandescentNetwork
             for (var clazz : entry.getValue())
             {
                 core.sign(clazz);
+                Incandescent.LOGGER.info("Signed packet {} to mod {}", clazz.getName(), entry.getKey());
             }
             CORES.put(entry.getKey(), core);
         }
