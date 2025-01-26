@@ -25,7 +25,7 @@ public class SyncEntityNBTPacket
     @IncandescentPacket.Value
     private Integer entityId;
 
-    public static SyncEntityNBTPacket create(Integer entityId, CompoundTag serverNbt)
+    public static SyncEntityNBTPacket create (Integer entityId, CompoundTag serverNbt)
     {
         SyncEntityNBTPacket packet = new SyncEntityNBTPacket();
         packet.entityId = entityId;

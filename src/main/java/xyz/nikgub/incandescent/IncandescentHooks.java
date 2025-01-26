@@ -7,7 +7,7 @@ import xyz.nikgub.incandescent.event.SyncEntityNBTEvent;
 
 public class IncandescentHooks
 {
-    public static SyncEntityNBTEvent syncEntityNbtEvent(Entity entity, CompoundTag serverNbt)
+    public static SyncEntityNBTEvent syncEntityNbtEvent (Entity entity, CompoundTag serverNbt)
     {
         SyncEntityNBTEvent event = new SyncEntityNBTEvent(entity, serverNbt);
         MinecraftForge.EVENT_BUS.post(event);

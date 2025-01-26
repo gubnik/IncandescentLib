@@ -10,7 +10,10 @@ import xyz.nikgub.incandescent.pyranim.PyranimParser;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -45,6 +48,7 @@ public class Pyranim
             'L', AnimationChannel.Interpolations.LINEAR
         )
     );
+
     /**
      * Creates an AnimationDefinition from .pyranim file for an entity.
      *
@@ -147,7 +151,7 @@ public class Pyranim
             }
             if (line.matches(finalRegex))
             {
-                vector3f = parseVector(line.substring(line.indexOf("@(") + 2, line.indexOf(")")) + ')');    
+                vector3f = parseVector(line.substring(line.indexOf("@(") + 2, line.indexOf(")")) + ')');
                 float moment = Float.parseFloat(line.substring(line.indexOf("T@") + 3, line.indexOf("@(")));
                 AnimationChannel.Interpolation interpolation = INTERPOLATION_MAP.get(line.charAt(line.length() - 1));
                 switch (line.charAt(0))
