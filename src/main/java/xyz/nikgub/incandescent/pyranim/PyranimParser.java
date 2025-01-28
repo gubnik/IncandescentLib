@@ -51,13 +51,6 @@ public class PyranimParser
         return builder.build();
     }
 
-    public enum State
-    {
-        GLOBAL_HEADER,
-        PART_HEADER,
-        PART_INSTRUCTION
-    }
-
     public static final class LineContext
     {
         private final PyranimLexer.LineType lineType;

@@ -102,7 +102,7 @@ public final class PyranimLexer
             return Arrays.stream(values()).filter(lt -> lt.pattern.matcher(line).matches()).findFirst().orElse(WRONG);
         }
 
-        public PyranimParser.State handle (PyranimParser parser, AnimationIR animationIR, PyranimParser.LineContext context) throws PyranimLexerException
+        public State handle (PyranimParser parser, AnimationIR animationIR, PyranimParser.LineContext context) throws PyranimLexerException
         {
             Matcher matcher = pattern.matcher(context.line());
             if (!matcher.matches())
@@ -116,6 +116,13 @@ public final class PyranimLexer
             }
             return component.handle(parser, animationIR, matcher);
         }
+    }
+
+    public enum State
+    {
+        GLOBAL_HEADER,
+        PART_HEADER,
+        PART_INSTRUCTION
     }
 
     public enum GlobalDirective implements LexerComponent
@@ -138,22 +145,22 @@ public final class PyranimLexer
         }
 
         @Override
-        public PyranimParser.State handle (PyranimParser parser, AnimationIR animationIR, Matcher matcher) throws PyranimLexerException
+        public State handle (PyranimParser parser, AnimationIR animationIR, Matcher matcher) throws PyranimLexerException
         {
             Object arg = this.argumentPolicy.handle(parser, matcher.group(2));
-            if (animationIR.getCurrentState() == PyranimParser.State.GLOBAL_HEADER)
+            if (animationIR.getCurrentState() == State.GLOBAL_HEADER)
             {
                 switch (this)
                 {
                     case DURATION ->
                     {
                         animationIR.setLength((Float) arg);
-                        return PyranimParser.State.GLOBAL_HEADER;
+                        return State.GLOBAL_HEADER;
                     }
                     case LOOPING ->
                     {
                         animationIR.setDoLoop(true);
-                        return PyranimParser.State.GLOBAL_HEADER;
+                        return State.GLOBAL_HEADER;
                     }
                 }
             }
@@ -181,7 +188,7 @@ public final class PyranimLexer
         }
 
         @Override
-        public PyranimParser.State handle (PyranimParser parser, AnimationIR animationIR, Matcher matcher) throws PyranimLexerException
+        public State handle (PyranimParser parser, AnimationIR animationIR, Matcher matcher) throws PyranimLexerException
         {
             Object arg = this.argumentPolicy.handle(parser, matcher.group(2));
             switch (animationIR.getCurrentState())
@@ -193,12 +200,12 @@ public final class PyranimLexer
                         case ATTIMESTAMP ->
                         {
                             animationIR.setCurrentTime((Float) arg);
-                            return PyranimParser.State.PART_HEADER;
+                            return State.PART_HEADER;
                         }
                         case INTERPOLATION ->
                         {
                             animationIR.setCurrentInterpolation((AnimationChannel.Interpolation) arg);
-                            return PyranimParser.State.PART_HEADER;
+                            return State.PART_HEADER;
                         }
                     }
                 }
@@ -215,14 +222,14 @@ public final class PyranimLexer
         }
 
         @Override
-        public PyranimParser.State handle (PyranimParser parser, AnimationIR animationIR, Matcher matcher) throws PyranimLexerException
+        public State handle (PyranimParser parser, AnimationIR animationIR, Matcher matcher) throws PyranimLexerException
         {
             switch (animationIR.getCurrentState())
             {
                 case GLOBAL_HEADER, PART_INSTRUCTION ->
                 {
                     animationIR.setCurrentPart(this.value);
-                    return PyranimParser.State.PART_HEADER;
+                    return State.PART_HEADER;
                 }
             }
             throw new PyranimLexerException(animationIR);
@@ -255,7 +262,7 @@ public final class PyranimLexer
         }
 
         @Override
-        public PyranimParser.State handle (PyranimParser parser, AnimationIR animationIR, Matcher matcher) throws PyranimLexerException
+        public State handle (PyranimParser parser, AnimationIR animationIR, Matcher matcher) throws PyranimLexerException
         {
             float xVal = Float.parseFloat(matcher.group(2));
             float yVal = Float.parseFloat(matcher.group(5));
@@ -265,7 +272,7 @@ public final class PyranimLexer
                 case PART_HEADER, PART_INSTRUCTION ->
                 {
                     animationIR.addKeyframe(new KeyframeIR(this, xVal, yVal, zVal, animationIR.getCurrentInterpolation()));
-                    return PyranimParser.State.PART_INSTRUCTION;
+                    return State.PART_INSTRUCTION;
                 }
             }
             throw new PyranimLexerException(animationIR);
