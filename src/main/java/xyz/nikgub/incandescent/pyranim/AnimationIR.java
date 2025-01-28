@@ -12,7 +12,7 @@ public class AnimationIR
     private Float length = null;
 
     @NotNull
-    private PyranimParser.State currentState = PyranimParser.State.GLOBAL_HEADER;
+    private PyranimLexer.State currentState = PyranimLexer.State.GLOBAL_HEADER;
     private boolean doLoop = false;
 
     private String currentPart = "";
@@ -108,12 +108,12 @@ public class AnimationIR
     }
 
     @NotNull
-    public PyranimParser.State getCurrentState ()
+    public PyranimLexer.State getCurrentState ()
     {
         return currentState;
     }
 
-    public void setCurrentState (@NotNull PyranimParser.State currentState)
+    public void setCurrentState (@NotNull PyranimLexer.State currentState)
     {
         this.currentState = currentState;
     }
