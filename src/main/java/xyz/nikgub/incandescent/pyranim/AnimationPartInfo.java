@@ -1,72 +1,38 @@
 package xyz.nikgub.incandescent.pyranim;
 
+import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.Keyframe;
+import org.jetbrains.annotations.NotNull;
+import xyz.nikgub.incandescent.Incandescent;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.EnumMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class AnimationPartInfo
 {
-    private final Map<Float, KeyframeTriplet> animations = new HashMap<>();
+    private final EnumMap<PyranimLexer.Instruction, Queue<Keyframe>> keyframes = new EnumMap<>(PyranimLexer.Instruction.class);
 
-    public void addAnimation (float pointInTime, AnimationIR animationIR)
+    public void addKeyframe (float timestamp, KeyframeIR keyframeIR)
     {
-        if (animations.get(pointInTime) == null)
+        this.keyframes.putIfAbsent(keyframeIR.instruction(), new LinkedList<>());
+        Queue<Keyframe> keyframes = this.keyframes.get(keyframeIR.instruction());
+        keyframes.add(keyframeIR.toKeyframe(timestamp));
+        //Incandescent.LOGGER.info("{}\n\t{} {} {} {}", timestamp, keyframeIR.instruction(), keyframeIR.xValue(), keyframeIR.yValue(), keyframeIR.zValue());
+    }
+
+    @NotNull
+    public Queue<AnimationChannel> bakeIntoChannel ()
+    {
+        Queue<AnimationChannel> retVal = new LinkedList<>();
+        for (var unbaked : keyframes.entrySet())
         {
-            animations.put(pointInTime, new KeyframeTriplet());
-        }
-        var triplet = animations.get(pointInTime);
-        switch (animationIR.instruction())
-        {
-            case MOVE ->
+            retVal.add(new AnimationChannel(unbaked.getKey().getAnimationTarget(), unbaked.getValue().toArray(new Keyframe[3])));
+            for (var val : unbaked.getValue())
             {
-                if (triplet.movKeyframe != null)
-                {
-                    throw new RuntimeException("Redefinition of movement keyframe at the moment " + pointInTime);
-                }
-                triplet.movKeyframe = animationIR;
-            }
-            case ROTATE ->
-            {
-                if (triplet.rotKeyframe != null)
-                {
-                    throw new RuntimeException("Redefinition of rotation keyframe at the moment " + pointInTime);
-                }
-                triplet.rotKeyframe = animationIR;
-            }
-            case SCALE ->
-            {
-                if (triplet.sclKeyframe != null)
-                {
-                    throw new RuntimeException("Redefinition of scale keyframe at the moment " + pointInTime);
-                }
-                triplet.sclKeyframe = animationIR;
+                Incandescent.LOGGER.info("{} {}", unbaked.getKey(), val);
             }
         }
-        animations.put(pointInTime, triplet);
-    }
-
-    public List<Keyframe> getMov ()
-    {
-        return new ArrayList<>(animations.entrySet().stream().map(entry -> entry.getValue().movKeyframe.toKeyframe(entry.getKey())).toList());
-    }
-
-    public List<Keyframe> getRot ()
-    {
-        return new ArrayList<>(animations.entrySet().stream().map(entry -> entry.getValue().rotKeyframe.toKeyframe(entry.getKey())).toList());
-    }
-
-    public List<Keyframe> getScl ()
-    {
-        return new ArrayList<>(animations.entrySet().stream().map(entry -> entry.getValue().sclKeyframe.toKeyframe(entry.getKey())).toList());
-    }
-
-    private static class KeyframeTriplet
-    {
-        private AnimationIR movKeyframe = null;
-        private AnimationIR rotKeyframe = null;
-        private AnimationIR sclKeyframe = null;
+        return retVal;
     }
 }

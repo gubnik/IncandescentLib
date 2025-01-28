@@ -36,8 +36,8 @@ import java.util.stream.Collectors;
  * <p>R@0.5@(90 90 90)C</p>
  * <p>$$</p>
  *
- * @deprecated Use {@link PyranimParser} instead
  * @since 1.4
+ * @deprecated Use {@link PyranimParser} instead
  */
 @Deprecated(forRemoval = true, since = "1.4")
 public class LegacyPyranim

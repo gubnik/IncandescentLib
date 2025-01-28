@@ -75,8 +75,8 @@ public class Incandescent
 
     private void commonSetup (final FMLCommonSetupEvent event)
     {
-        PyranimParser parser = new PyranimParser(new PyranimLoader("asm.pyranim"));
-        parser.parse();
+        PyranimParser parser = new PyranimParser.Builder().build();
+        parser.parse(new PyranimLoader("asm.pyranim"));
     }
 
     /**

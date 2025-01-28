@@ -9,34 +9,22 @@ public class PyranimParserException extends RuntimeException
 
     public PyranimParserException (String message)
     {
-        super(message);
+        super(".pyranim file cannot be parsed: " + message);
     }
 
-    public PyranimParserException (String message, Throwable cause)
+    public PyranimParserException (String message, int lineNumber)
     {
-        super(message, cause);
+        super(".pyranim file cannot be parsed at line " + lineNumber + ": " + message);
     }
 
-    public PyranimParserException (Throwable cause)
+    public PyranimParserException (String message, int lineNumber, Throwable e)
     {
-        super(cause);
-    }
-
-    protected PyranimParserException (String message, Throwable cause,
-                                      boolean enableSuppression,
-                                      boolean writableStackTrace)
-    {
-        super(message, cause, enableSuppression, writableStackTrace);
-    }
-
-    public PyranimParserException (PyranimParser parser, int lineNumber)
-    {
-        super("File " + parser.getLoader().getFilename() + " cannot be parsed at line " + lineNumber);
+        super(".pyranim file cannot be parsed at line " + lineNumber + ": " + message, e);
     }
 
     public PyranimParserException (PyranimParser parser, int lineNumber, String message)
     {
-        super("File " + parser.getLoader().getFilename() + " cannot be parsed at line " + lineNumber + ": " + message);
+        super("File cannot be parsed at line at line " + lineNumber + ": " + message);
     }
 }
 

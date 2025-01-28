@@ -2,45 +2,18 @@ package xyz.nikgub.incandescent.pyranim;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
-import net.minecraft.client.animation.Keyframe;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class PyranimParser
 {
-    private boolean doneRunning = false;
-    private final PyranimLoader loader;
 
-    private final Map<String, AnimationChannel.Interpolation> interpolationMap = new HashMap<>(
-        Map.of(
-            "catmullrom", AnimationChannel.Interpolations.CATMULLROM,
-            "linear", AnimationChannel.Interpolations.LINEAR
-        )
-    );
+    private final Map<String, AnimationChannel.Interpolation> interpolationMap;
 
-    private static final Pattern DIRECTIVE_PATTERN = Pattern.compile(PyranimFormat.DIRECTIVE_DECLARATION_REGEX);
-    private static final Pattern PART_PATTERN = Pattern.compile(PyranimFormat.PART_DECLARATION_REGEX);
-    private static final Pattern INSTRUCTION_PATTERN = Pattern.compile(PyranimFormat.INSTRUCTION_LINE_REGEX);
-
-    private final Map<String, AnimationPartInfo> partsInfo = new HashMap<>();
-    private State state = State.HEADER;
-    private float duration = -1;
-    private boolean doLoop = false;
-    private String currentPart = "";
-    private AnimationChannel.Interpolation currentInterpolation = null;
-    private float currentTime = -1;
-
-    public PyranimParser (PyranimLoader loader)
+    private PyranimParser (Map<String, AnimationChannel.Interpolation> interpolationMap)
     {
-        this.loader = loader;
-    }
-
-    public PyranimLoader getLoader ()
-    {
-        return loader;
+        this.interpolationMap = interpolationMap;
     }
 
     @NotNull
@@ -55,153 +28,114 @@ public class PyranimParser
         return val;
     }
 
-    public void defineInterpolation (String s, AnimationChannel.Interpolation interpolation)
+    public AnimationDefinition parse (@NotNull PyranimLoader loader)
     {
-        interpolationMap.putIfAbsent(s, interpolation);
-    }
-
-    public AnimationDefinition parse ()
-    {
-        if (doneRunning)
-        {
-            throw new IllegalStateException("PyranimParser " + this + " cannot be reused");
-        }
+        final AnimationIR animationIR = new AnimationIR();
         final Queue<String> lines = new LinkedList<>(loader.getLines());
         int i = 0;
         while (!lines.isEmpty())
         {
             i++;
             final String line = lines.poll();
-            PyranimFormat.LineType lineType = PyranimFormat.LineType.match(line);
-            switch (lineType)
+            final PyranimLexer.LineType lineType = PyranimLexer.LineType.match(line);
+            final LineContext context = new LineContext(lineType, line, i);
+            try
             {
-                case WRONG -> throw new PyranimParserException(this, i);
-                case DIRECTIVE -> handleDirective(line, i);
-                case PART -> handlePart(line, i);
-                case INSTRUCTION -> handleInstruction(line, i);
+                animationIR.setCurrentState(lineType.handle(this, animationIR, context));
+            } catch (PyranimLexerException e)
+            {
+                throw new PyranimParserException("Lexing failed at line of type: " + lineType, i, e);
             }
         }
-        final AnimationDefinition.Builder builder = bakeAnimations();
-        AnimationDefinition definition = builder.build();
-        doneRunning = true;
-        return definition;
+        final AnimationDefinition.Builder builder = animationIR.bakeIntoBuilder();
+        return builder.build();
     }
 
-    private void handleDirective (String line, int i)
+    public enum State
     {
-        Matcher matcher = DIRECTIVE_PATTERN.matcher(line);
-        if (!matcher.matches())
-        {
-            throw new PyranimParserException(this, i, "Mystical directive failed to be parsed");
-        }
-        PyranimFormat.Directive directive = PyranimFormat.Directive.match(matcher.group(1));
-        var arg = directive.getArgumentPolicy().handle(this, matcher.group(2));
-        if (directive.getAppropriateState() != state)
-        {
-            throw new PyranimParserException(this, i, "Directive" + directive.getRepresentation() + " must be in " + directive.getAppropriateState());
-        }
-        switch (directive)
-        {
-            case DURATION -> duration = (Float) arg;
-            case LOOPING -> doLoop = true;
-            case AT ->
-            {
-                AnimationPartInfo partInfo = partsInfo.get(currentPart);
-                if (partInfo == null)
-                {
-                    throw new PyranimParserException(this, i, ".at directive for a non-existent part");
-                }
-                currentTime = (Float) arg;
-            }
-            case INTERPOLATION -> currentInterpolation = (AnimationChannel.Interpolation) arg;
-        }
-    }
-
-    private void handlePart (String line, int i)
-    {
-        if (state != State.HEADER && state != State.PART_BODY)
-        {
-            throw new PyranimParserException("File " + loader.getFilename() + " cannot be parsed at line " + i + ": unexpected part declaration");
-        }
-        state = State.PART_HEADER;
-        final Matcher matcher = PART_PATTERN.matcher(line);
-        if (!matcher.matches())
-        {
-            throw new PyranimParserException(this, i, "Bad part declaration");
-        }
-        final String partName = matcher.group(1);
-        partsInfo.putIfAbsent(partName, new AnimationPartInfo());
-        currentPart = partName;
-    }
-
-    private void handleInstruction (String line, int i)
-    {
-        if (state != State.PART_HEADER && state != State.PART_BODY)
-        {
-            throw new PyranimParserException(this, i, "Unexpected instruction");
-        }
-        state = State.PART_BODY;
-        final var animationInfo = partsInfo.get(currentPart);
-        if (animationInfo == null)
-        {
-            throw new PyranimParserException(this, i, "Instruction for a non-existent part");
-        }
-        final AnimationIR animationIR = parseInstructionLine(line, i);
-        animationInfo.addAnimation(currentTime, animationIR);
-    }
-
-    private AnimationIR parseInstructionLine (String line, int i)
-    {
-        final Matcher matcher = INSTRUCTION_PATTERN.matcher(line);
-        if (!matcher.matches())
-        {
-            throw new PyranimParserException(this, i, "Mystical instruction failed to be parsed");
-        }
-        final String instruction = matcher.group(1);
-        final float xVal = Float.parseFloat(matcher.group(2));
-        final float yVal = Float.parseFloat(matcher.group(5));
-        final float zVal = Float.parseFloat(matcher.group(8));
-        return new AnimationIR(PyranimFormat.Instruction.translate(instruction), xVal, yVal, zVal, currentInterpolation);
-    }
-
-    private AnimationDefinition.@NotNull Builder bakeAnimations ()
-    {
-        if (duration < 0)
-        {
-            throw new PyranimParserException("File " + loader.getFilename() + " cannot be parsed: duration not defined or defined as a negative number");
-        }
-        final AnimationDefinition.Builder builder = AnimationDefinition.Builder.withLength(duration);
-        if (doLoop)
-        {
-            builder.looping();
-        }
-        for (var entry : partsInfo.entrySet())
-        {
-            final String boneName = entry.getKey();
-            final AnimationPartInfo animationPartInfo = entry.getValue();
-            List<Keyframe> mov = animationPartInfo.getMov();
-            for (var keyframe : mov)
-            {
-                builder.addAnimation(boneName, new AnimationChannel(AnimationChannel.Targets.POSITION, keyframe));
-            }
-            List<Keyframe> rot = animationPartInfo.getRot();
-            for (var keyframe : rot)
-            {
-                builder.addAnimation(boneName, new AnimationChannel(AnimationChannel.Targets.ROTATION, keyframe));
-            }
-            List<Keyframe> scl = animationPartInfo.getScl();
-            for (var keyframe : scl)
-            {
-                builder.addAnimation(boneName, new AnimationChannel(AnimationChannel.Targets.SCALE, keyframe));
-            }
-        }
-        return builder;
-    }
-
-    enum State
-    {
-        HEADER,
+        GLOBAL_HEADER,
         PART_HEADER,
-        PART_BODY
+        PART_INSTRUCTION
+    }
+
+    public static final class LineContext
+    {
+        private final PyranimLexer.LineType lineType;
+        private final String line;
+        private final int lineNum;
+
+        private LineContext (PyranimLexer.LineType lineType, String line, int lineNum)
+        {
+            this.lineType = lineType;
+            this.line = line;
+            this.lineNum = lineNum;
+        }
+
+        public PyranimLexer.LineType lineType ()
+        {
+            return lineType;
+        }
+
+        public String line ()
+        {
+            return line;
+        }
+
+        public int lineNum ()
+        {
+            return lineNum;
+        }
+
+        @Override
+        public boolean equals (Object obj)
+        {
+            if (obj == this) return true;
+            if (obj == null || obj.getClass() != this.getClass()) return false;
+            var that = (LineContext) obj;
+            return Objects.equals(this.lineType, that.lineType) &&
+                Objects.equals(this.line, that.line) &&
+                this.lineNum == that.lineNum;
+        }
+
+        @Override
+        public int hashCode ()
+        {
+            return Objects.hash(lineType, line, lineNum);
+        }
+
+        @Override
+        public String toString ()
+        {
+            return "LineContext[" +
+                "lineType=" + lineType + ", " +
+                "s=" + line + ", " +
+                "lineNum=" + lineNum + ']';
+        }
+
+
+    }
+
+    public static class Builder
+    {
+        private final Map<String, AnimationChannel.Interpolation> interpolationMap = new HashMap<>(
+            Map.of(
+                "catmullrom", AnimationChannel.Interpolations.CATMULLROM,
+                "linear", AnimationChannel.Interpolations.LINEAR
+            )
+        );
+
+        public Builder defineInterpolation (String name, AnimationChannel.Interpolation interpolation)
+        {
+            if (interpolationMap.putIfAbsent(name, interpolation) != null)
+            {
+                throw new IllegalArgumentException("Interpolation '" + name + "' cannot be redefined");
+            }
+            return this;
+        }
+
+        public PyranimParser build ()
+        {
+            return new PyranimParser(interpolationMap);
+        }
     }
 }
