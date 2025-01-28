@@ -37,8 +37,9 @@ import java.util.stream.Collectors;
  * <p>$$</p>
  *
  * @deprecated Use {@link PyranimParser} instead
+ * @since 1.4
  */
-@Deprecated
+@Deprecated(forRemoval = true, since = "1.4")
 public class LegacyPyranim
 {
     private static final Map<Character, AnimationChannel.Interpolation> INTERPOLATION_MAP = new HashMap<>(
