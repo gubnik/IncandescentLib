@@ -5,6 +5,17 @@ import org.jetbrains.annotations.Nullable;
 import java.text.MessageFormat;
 import java.util.Arrays;
 
+/**
+ * <p>Pyranim format, assembly-like animation representation</p>
+ *
+ * Consists of 3 sections:
+ * <ul>
+ *     <li>Header</li>
+ *     <li>Part's header</li>
+ *     <li>Part's body</li>
+ * </ul>
+ *
+ */
 public final class PyranimFormat
 {
     public static final String EMPTY_LINE_REGEX = MessageFormat.format("{0}{1}",

@@ -1,11 +1,10 @@
-package xyz.nikgub.incandescent.client.animations.from_text;
+package xyz.nikgub.incandescent.pyranim;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.KeyframeAnimations;
 import org.joml.Vector3f;
-import xyz.nikgub.incandescent.pyranim.PyranimParser;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -40,7 +39,7 @@ import java.util.stream.Collectors;
  * @deprecated Use {@link PyranimParser} instead
  */
 @Deprecated
-public class Pyranim
+public class LegacyPyranim
 {
     private static final Map<Character, AnimationChannel.Interpolation> INTERPOLATION_MAP = new HashMap<>(
         Map.of(
@@ -57,7 +56,7 @@ public class Pyranim
      */
     public static AnimationDefinition ofEntity (String location)
     {
-        return new Pyranim(location).createEntity();
+        return new LegacyPyranim(location).createEntity();
     }
 
     /**
@@ -69,14 +68,14 @@ public class Pyranim
      */
     public static AnimationDefinition ofPlayer (String location)
     {
-        return new Pyranim(location).createPlayer();
+        return new LegacyPyranim(location).createPlayer();
     }
 
     private final List<String> contents;
     private Map<String, List<AnimationChannel>> map = new HashMap<>();
     private float animLength = 0f;
 
-    private Pyranim (String location)
+    private LegacyPyranim (String location)
     {
         if (!location.endsWith(".pyranim")) location += ".pyranim";
         float t = 0f;

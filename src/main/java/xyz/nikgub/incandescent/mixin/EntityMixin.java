@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.nikgub.incandescent.IncandescentHooks;
-import xyz.nikgub.incandescent.event.SyncEntityNBTEvent;
+import xyz.nikgub.incandescent.common.event.SyncEntityNBTEvent;
 import xyz.nikgub.incandescent.network.IncandescentNetwork;
 import xyz.nikgub.incandescent.network.s2c.SyncEntityNBTPacket;
 

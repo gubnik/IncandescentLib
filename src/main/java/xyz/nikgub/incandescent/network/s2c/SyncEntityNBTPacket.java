@@ -6,6 +6,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 import xyz.nikgub.incandescent.Incandescent;
+import xyz.nikgub.incandescent.common.event.SyncEntityNBTEvent;
 import xyz.nikgub.incandescent.network.IncandescentPacket;
 
 import java.util.function.Supplier;
@@ -14,7 +15,7 @@ import java.util.function.Supplier;
  * Packet class to sync entity's NBT between server and client
  * Sent from {@link xyz.nikgub.incandescent.mixin.EntityMixin}
  *
- * @see xyz.nikgub.incandescent.event.SyncEntityNBTEvent
+ * @see SyncEntityNBTEvent
  */
 @IncandescentPacket(value = Incandescent.MOD_ID, direction = NetworkDirection.PLAY_TO_CLIENT)
 public class SyncEntityNBTPacket

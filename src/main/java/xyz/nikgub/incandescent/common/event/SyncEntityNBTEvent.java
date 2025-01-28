@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.event;
+package xyz.nikgub.incandescent.common.event;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;

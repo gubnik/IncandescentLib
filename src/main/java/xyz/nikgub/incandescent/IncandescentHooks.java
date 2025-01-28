@@ -3,7 +3,7 @@ package xyz.nikgub.incandescent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.common.MinecraftForge;
-import xyz.nikgub.incandescent.event.SyncEntityNBTEvent;
+import xyz.nikgub.incandescent.common.event.SyncEntityNBTEvent;
 
 public class IncandescentHooks
 {

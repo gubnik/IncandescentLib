@@ -3,7 +3,7 @@ package xyz.nikgub.incandescent.animation;
 import io.netty.util.internal.UnstableApi;
 import net.minecraft.client.animation.AnimationDefinition;
 import net.minecraft.world.entity.player.Player;
-import xyz.nikgub.incandescent.client.animations.from_text.Pyranim;
+import xyz.nikgub.incandescent.pyranim.LegacyPyranim;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +21,7 @@ import java.util.Map;
 public class PlayerAnimationManager
 {
 
-    private static final AnimationDefinition EMPTY = Pyranim.ofPlayer("empty.pyranim");
+    private static final AnimationDefinition EMPTY = LegacyPyranim.ofPlayer("empty.pyranim");
 
     private static final Map<Player, AnimationInstance> runningAnimations = new HashMap<>();
 
