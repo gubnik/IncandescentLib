@@ -3,7 +3,7 @@
 
 left_arm:
     >attime 0
-    >intrpl "catmullrom"
+    >intrpl "catmullrom" ; defines interpolation
     mov 0, 1, 0
     rot 2, 3, 4
     scl 5, 6, 7
