@@ -3,7 +3,6 @@ package xyz.nikgub.incandescent.pyranim;
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.Keyframe;
 import org.jetbrains.annotations.NotNull;
-import xyz.nikgub.incandescent.Incandescent;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -18,7 +17,6 @@ public class AnimationPartInfo
         this.keyframes.putIfAbsent(keyframeIR.instruction(), new LinkedList<>());
         Queue<Keyframe> keyframes = this.keyframes.get(keyframeIR.instruction());
         keyframes.add(keyframeIR.toKeyframe(timestamp));
-        //Incandescent.LOGGER.info("{}\n\t{} {} {} {}", timestamp, keyframeIR.instruction(), keyframeIR.xValue(), keyframeIR.yValue(), keyframeIR.zValue());
     }
 
     @NotNull
@@ -27,11 +25,7 @@ public class AnimationPartInfo
         Queue<AnimationChannel> retVal = new LinkedList<>();
         for (var unbaked : keyframes.entrySet())
         {
-            retVal.add(new AnimationChannel(unbaked.getKey().getAnimationTarget(), unbaked.getValue().toArray(new Keyframe[3])));
-            for (var val : unbaked.getValue())
-            {
-                Incandescent.LOGGER.info("{} {}", unbaked.getKey(), val);
-            }
+            retVal.add(new AnimationChannel(unbaked.getKey().getAnimationTarget(), unbaked.getValue().toArray(new Keyframe[0])));
         }
         return retVal;
     }
