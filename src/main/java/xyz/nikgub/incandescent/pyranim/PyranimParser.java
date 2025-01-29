@@ -4,18 +4,55 @@ import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
 
+/**
+ * The {@code PyranimParser} class is responsible for parsing animations defined in the
+ * {@code .pyranim} format, which represents Minecraft's {@link AnimationDefinition} in a
+ * human-readable and easily generated format.
+ *
+ * <p>This parser can be reused for multiple {@code .pyranim} files and allows for user-defined
+ * interpolations through its builder.</p>
+ *
+ * <p>Animations are parsed into Minecraft's {@link AnimationDefinition} using the
+ * {@link PyranimParser#parse(PyranimLoader)} method.</p>
+ *
+ * <p>Example usage:</p>
+ * <pre>
+ * {@code
+ * PyranimParser parser = new PyranimParser.Builder().build();
+ * AnimationDefinition animation = parser.parse(new PyranimLoader("example.pyranim"));
+ * }
+ * </pre>
+ *
+ * @see PyranimLoader
+ * @see AnimationDefinition
+ * @see PyranimLexer
+ */
 public class PyranimParser
 {
-
     private final Map<String, AnimationChannel.Interpolation> interpolationMap;
 
+    /**
+     * Constructs the {@link PyranimParser} object. Used by {@link Builder#build()}.
+     *
+     * @param interpolationMap Mapped {@link net.minecraft.client.animation.AnimationChannel.Interpolation} objects
+     */
     private PyranimParser (Map<String, AnimationChannel.Interpolation> interpolationMap)
     {
         this.interpolationMap = interpolationMap;
     }
 
+    /**
+     * Gets the {@link net.minecraft.client.animation.AnimationChannel.Interpolation} from {@link #interpolationMap}.
+     * Should only be used in the context of {@link PyranimLexer} since it trims of any {@code "} symbols.
+     * that remain after lexing.
+     *
+     * @param s {@code String} name of the interpolation
+     * @return {@link net.minecraft.client.animation.AnimationChannel.Interpolation} from {@link #interpolationMap}
+     */
     @NotNull
     public AnimationChannel.Interpolation getInterpolation (String s)
     {
@@ -28,20 +65,30 @@ public class PyranimParser
         return val;
     }
 
+    /**
+     * Parses the provided {@link PyranimLoader} and converts its contents into an
+     * {@link AnimationDefinition}.
+     *
+     * @param loader the {@link PyranimLoader} containing the contents of the
+     *               {@code parse} file to be parsed
+     * @return {@link AnimationDefinition} representing the parsed animation
+     * @throws PyranimParserException if an error occurs during parsing, including
+     *                                issues with line placement or syntax errors
+     * @see PyranimLexer
+     */
     public AnimationDefinition parse (@NotNull PyranimLoader loader)
     {
         final AnimationIR animationIR = new AnimationIR();
-        final Queue<String> lines = new LinkedList<>(loader.getLines());
+        final Queue<String> lines = loader.getLines();
         int i = 0;
         while (!lines.isEmpty())
         {
             i++;
             final String line = lines.poll();
             final PyranimLexer.LineType lineType = PyranimLexer.LineType.match(line);
-            final LineContext context = new LineContext(lineType, line, i);
             try
             {
-                animationIR.setCurrentState(lineType.handle(this, animationIR, context));
+                animationIR.setCurrentState(lineType.handle(this, animationIR, line));
             } catch (PyranimLexerException e)
             {
                 throw new PyranimParserException("Lexing failed at line of type: " + lineType, i, e);
@@ -51,63 +98,12 @@ public class PyranimParser
         return builder.build();
     }
 
-    public static final class LineContext
-    {
-        private final PyranimLexer.LineType lineType;
-        private final String line;
-        private final int lineNum;
-
-        private LineContext (PyranimLexer.LineType lineType, String line, int lineNum)
-        {
-            this.lineType = lineType;
-            this.line = line;
-            this.lineNum = lineNum;
-        }
-
-        public PyranimLexer.LineType lineType ()
-        {
-            return lineType;
-        }
-
-        public String line ()
-        {
-            return line;
-        }
-
-        public int lineNum ()
-        {
-            return lineNum;
-        }
-
-        @Override
-        public boolean equals (Object obj)
-        {
-            if (obj == this) return true;
-            if (obj == null || obj.getClass() != this.getClass()) return false;
-            var that = (LineContext) obj;
-            return Objects.equals(this.lineType, that.lineType) &&
-                Objects.equals(this.line, that.line) &&
-                this.lineNum == that.lineNum;
-        }
-
-        @Override
-        public int hashCode ()
-        {
-            return Objects.hash(lineType, line, lineNum);
-        }
-
-        @Override
-        public String toString ()
-        {
-            return "LineContext[" +
-                "lineType=" + lineType + ", " +
-                "s=" + line + ", " +
-                "lineNum=" + lineNum + ']';
-        }
-
-
-    }
-
+    /**
+     * A builder class for constructing instances of {@link  PyranimParser}.
+     *
+     * <p>This builder allows for the configuration of user-defined interpolations
+     * before creating a {@link  PyranimParser} instance.</p>
+     */
     public static class Builder
     {
         private final Map<String, AnimationChannel.Interpolation> interpolationMap = new HashMap<>(
@@ -117,6 +113,13 @@ public class PyranimParser
             )
         );
 
+        /**
+         * Defines an interpolation to be recognized by the parser
+         *
+         * @param name          {@code String} name of the interpolation used in {@code .pyranim} file
+         * @param interpolation {@link AnimationChannel.Interpolation}
+         * @return {@link Builder}
+         */
         public Builder defineInterpolation (String name, AnimationChannel.Interpolation interpolation)
         {
             if (interpolationMap.putIfAbsent(name, interpolation) != null)
@@ -126,6 +129,11 @@ public class PyranimParser
             return this;
         }
 
+        /**
+         * Constructs a new {@link PyranimParser} instance with the specified configurations.
+         *
+         * @return a new instance of {@link PyranimParser}
+         */
         public PyranimParser build ()
         {
             return new PyranimParser(interpolationMap);

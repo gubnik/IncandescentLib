@@ -5,14 +5,30 @@ import java.net.URL;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * One-time use loader to provide the contents of {@code .pyranim} file
+ *
+ * @see PyranimParser
+ */
 public class PyranimLoader
 {
-    private final String filename;
+    /**
+     * Defines if the loader was previously used
+     */
+    private boolean wasAccessed = false;
+
+    /**
+     * Collected lines of the file
+     */
     private final Queue<String> lines = new LinkedList<>();
 
+    /**
+     * Constructs the object for the file {@code loc}
+     *
+     * @param loc {@code String} name of the file to be processed
+     */
     public PyranimLoader (String loc)
     {
-        filename = loc;
         try
         {
             load(loc);
@@ -22,6 +38,13 @@ public class PyranimLoader
         }
     }
 
+    /**
+     * '
+     * Loads and stores the contents of the file {@code loc}
+     *
+     * @param loc {@code String} name of the file to be processed
+     * @throws FileNotFoundException if the file was missing or could not be opened
+     */
     private void load (String loc) throws FileNotFoundException
     {
         final URL fileUrl = this.getClass().getClassLoader().getResource(loc);
@@ -43,13 +66,19 @@ public class PyranimLoader
         }
     }
 
-    public String getFilename ()
-    {
-        return filename;
-    }
-
+    /**
+     * Getter for {@link PyranimLoader#lines}
+     *
+     * @return {@link PyranimLoader#lines}
+     * @throws IllegalStateException if the loader was previously accessed
+     */
     public Queue<String> getLines ()
     {
+        if (wasAccessed)
+        {
+            throw new IllegalStateException("PyranimLoader objects must not be reused for multiple parsings");
+        }
+        wasAccessed = true;
         return lines;
     }
 }

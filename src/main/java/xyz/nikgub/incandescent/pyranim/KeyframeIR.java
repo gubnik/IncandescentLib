@@ -2,8 +2,10 @@ package xyz.nikgub.incandescent.pyranim;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.Keyframe;
+import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
 
+@ApiStatus.Internal
 public record KeyframeIR(PyranimLexer.Instruction instruction, float xValue, float yValue, float zValue,
                          AnimationChannel.Interpolation interpolation)
 {

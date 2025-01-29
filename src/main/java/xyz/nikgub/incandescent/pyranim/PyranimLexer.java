@@ -11,14 +11,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * <p>Pyranim format, assembly-like animation representation</p>
- * <p>
- * Consists of 3 sections:
- * <ul>
- *     <li>Header</li>
- *     <li>Part's header</li>
- *     <li>Part's body</li>
- * </ul>
+ * The class responsible for defining the syntax and parsing rules for the `{@code .pyranim} format.
+ * It provides regular expressions for matching various components of the format,
+ * including global directives, local directives, part declarations, and transformation instructions.
+ *
+ * <p>This class also includes enums and interfaces that define how to handle each
+ * component during the parsing process.</p>
+ *
+ * @see PyranimParser
  */
 public final class PyranimLexer
 {
@@ -102,12 +102,23 @@ public final class PyranimLexer
             return Arrays.stream(values()).filter(lt -> lt.pattern.matcher(line).matches()).findFirst().orElse(WRONG);
         }
 
-        public State handle (PyranimParser parser, AnimationIR animationIR, PyranimParser.LineContext context) throws PyranimLexerException
+        /**
+         * Method that handles state transition and handling policy for a certain {@link LineType}.
+         * It uses {@link Matcher} to match against {@link #pattern} and transfers down the handling to
+         * {@link LexerComponent#handle(PyranimParser, AnimationIR, Matcher)}.
+         *
+         * @param parser      {@link PyranimParser} object that will be used for interpolation definitions
+         * @param animationIR {@link AnimationIR} callback object
+         * @param line        {@code String} raw line of the {@code .pyranim} file
+         * @return {@link State} to transition to
+         * @throws PyranimLexerException if the line is malformed or could not be handled
+         */
+        public State handle (PyranimParser parser, AnimationIR animationIR, String line) throws PyranimLexerException
         {
-            Matcher matcher = pattern.matcher(context.line());
+            Matcher matcher = pattern.matcher(line);
             if (!matcher.matches())
             {
-                throw new PyranimLexerException(animationIR);
+                throw new PyranimLexerException(animationIR, "Malformed line could not be matched");
             }
             LexerComponent component = this.componentProvider.get(matcher.group(1));
             if (component == null)
@@ -118,6 +129,11 @@ public final class PyranimLexer
         }
     }
 
+    /**
+     * Represents the different states of the lexer during the
+     * parsing process. It indicates whether the lexer is in the global header, part
+     * header, or part instruction state.
+     */
     public enum State
     {
         GLOBAL_HEADER,
@@ -125,6 +141,16 @@ public final class PyranimLexer
         PART_INSTRUCTION
     }
 
+    /**
+     * Defines the global directives that can be used
+     * in the {@code .pyranim} format. Each directive has a representation and a policy for
+     * handling the provided argument.
+     *
+     * <p>If the argument was provided for a directive that does not take one, it will be
+     * swallowed and ignored.</p>
+     *
+     * @see LexerComponent
+     */
     public enum GlobalDirective implements LexerComponent
     {
         DURATION(".drtion", (l, s) -> Float.parseFloat(s)),
@@ -168,6 +194,16 @@ public final class PyranimLexer
         }
     }
 
+    /**
+     * Defines the local directives that can be used
+     * in the {@code .pyranim} format. Each directive has a representation and a policy for
+     * handling the provided argument.
+     *
+     * <p>If the argument was provided for a directive that does not take one, it will be
+     * swallowed and ignored.</p>
+     *
+     * @see LexerComponent
+     */
     public enum LocalDirective implements LexerComponent
     {
         ATTIMESTAMP(">attime", (l, s) -> Float.parseFloat(s)),
@@ -214,6 +250,9 @@ public final class PyranimLexer
         }
     }
 
+    /**
+     * The class representing a part declaration in the {@code .pyranim} format.
+     */
     public record PartDeclaration(String value) implements LexerComponent
     {
         public static PartDeclaration match (final String rep)
@@ -236,6 +275,11 @@ public final class PyranimLexer
         }
     }
 
+    /**
+     * The {@link  Instruction} enum defines the transformation instructions that can be
+     * used in the {@code .pyranim} format. Each instruction has a representation and a target
+     * for the animation channel.
+     */
     public enum Instruction implements LexerComponent
     {
         MOVE("mov", AnimationChannel.Targets.POSITION),
@@ -264,9 +308,16 @@ public final class PyranimLexer
         @Override
         public State handle (PyranimParser parser, AnimationIR animationIR, Matcher matcher) throws PyranimLexerException
         {
-            float xVal = Float.parseFloat(matcher.group(2));
-            float yVal = Float.parseFloat(matcher.group(5));
-            float zVal = Float.parseFloat(matcher.group(8));
+            float xVal, yVal, zVal;
+            try
+            {
+                xVal = Float.parseFloat(matcher.group(2));
+                yVal = Float.parseFloat(matcher.group(5));
+                zVal = Float.parseFloat(matcher.group(8));
+            } catch (NumberFormatException | NullPointerException e)
+            {
+                throw new PyranimLexerException(animationIR, e);
+            }
             switch (animationIR.getCurrentState())
             {
                 case PART_HEADER, PART_INSTRUCTION ->

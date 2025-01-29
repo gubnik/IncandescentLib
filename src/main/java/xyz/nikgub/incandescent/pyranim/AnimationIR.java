@@ -2,12 +2,14 @@ package xyz.nikgub.incandescent.pyranim;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class AnimationIR
+@ApiStatus.Internal
+public final class AnimationIR
 {
     private Float length = null;
 
@@ -57,15 +59,6 @@ public class AnimationIR
             builder.looping();
         }
         return builder;
-    }
-
-    public float getLength ()
-    {
-        if (length == null)
-        {
-            return -1;
-        }
-        return length;
     }
 
     public void setLength (float length)
