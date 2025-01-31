@@ -27,16 +27,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ViewportEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.slf4j.Logger;
-import xyz.nikgub.incandescent.pyranim.PyranimLoader;
-import xyz.nikgub.incandescent.pyranim.PyranimParser;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,8 +51,7 @@ public class Incandescent
 
     public Incandescent ()
     {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(this::commonSetup);
+        //final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, IncandescentClientConfig.SPEC);
     }
@@ -71,12 +65,6 @@ public class Incandescent
     public static void runShakeFor (double amount, Predicate<LocalPlayer> whenToStop)
     {
         screenShakeMap.put(Minecraft.getInstance().player, Pair.of(amount, whenToStop));
-    }
-
-    private void commonSetup (final FMLCommonSetupEvent event)
-    {
-        PyranimParser parser = new PyranimParser.Builder().build();
-        parser.parse(new PyranimLoader("asm.pyranim"));
     }
 
     /**

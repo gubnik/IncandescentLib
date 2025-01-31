@@ -4,7 +4,6 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
-import net.minecraft.core.Vec3i;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -24,49 +23,118 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.function.BiConsumer;
 
 public class GeneralUtils
 {
 
+    /**
+     * Turns the explicit RGB params into an integer.
+     *
+     * @param red   {@code int} value of red channel
+     * @param green {@code int} value of green channel
+     * @param blue  {@code int} value of blue channel
+     * @return {@code int} representing the color
+     */
     public static int rgbToColorInteger (int red, int green, int blue)
     {
-        return 65536 * red + 256 * green + blue;
+        return (red << 16) | (green << 8) | blue;
     }
 
+    /**
+     * Turns the explicit RGBA params into an integer.
+     * Alpha channel is assumed to be MSB.
+     *
+     * @param red   {@code int} value of red channel
+     * @param green {@code int} value of green channel
+     * @param blue  {@code int} value of blue channel
+     * @param alpha {@code int} value of alpha channel
+     * @return {@code int} representing the color
+     */
     public static int rgbaToColorInteger (int red, int green, int blue, int alpha)
     {
-        return 16777216 * alpha + 65536 * red + 256 * green + blue;
+        return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
 
-    public static boolean hasCompletedTheAdvancement (ServerPlayer serverPlayer, Advancement advancement)
+    /**
+     * Checks whether the {@code serverPlayer} has completed the {@code advancement}.
+     * This only works on the server-side, since {@code serverPlayer} cannot be normally obtained
+     * on the client.
+     *
+     * @param serverPlayer {@link ServerPlayer} for which to check the {@code advancement}
+     * @param advancement  {@link Advancement} that needs to be checked
+     * @return {@code true} if {@code serverPlayer} has completed the {@code advancement}, {@code false} otherwise
+     */
+    public static boolean hasCompletedTheAdvancement (@NotNull ServerPlayer serverPlayer, @NotNull Advancement advancement)
     {
-        if (advancement == null) return false;
         return serverPlayer.getAdvancements()
             .getOrStartProgress(advancement)
             .isDone();
     }
 
-    public static void addAdvancement (ServerPlayer serverPlayer, ResourceLocation resourceLocation)
+    /**
+     * Completes the {@code advancement} for {@code serverPlayer}.
+     * This only works on the server-side, since {@code serverPlayer} cannot be normally obtained
+     * on the client.
+     *
+     * @param serverPlayer{@link ServerPlayer} for which to complete the {@code advancement}
+     * @param advancement {@link Advancement} that needs to be completed
+     */
+    public static void addAdvancement (@NotNull ServerPlayer serverPlayer, @NotNull Advancement advancement)
     {
-        Advancement advancement = serverPlayer.server.getAdvancements().getAdvancement(resourceLocation);
-        if (advancement == null) return;
         if (!hasCompletedTheAdvancement(serverPlayer, advancement))
         {
             AdvancementProgress advancementProgress = serverPlayer.getAdvancements().getOrStartProgress(advancement);
+            for (String s : advancementProgress.getRemainingCriteria())
             {
-                for (String s : advancementProgress.getRemainingCriteria())
-                    serverPlayer.getAdvancements().award(advancement, s);
+                serverPlayer.getAdvancements().award(advancement, s);
             }
         }
     }
 
-    public static boolean isDirectDamage (final DamageSource damageSource)
+    /**
+     * Completes the {@link Advancement} at {@code resourceLocation} for {@code serverPlayer}.
+     * This only works on the server-side, since {@code serverPlayer} cannot be normally obtained
+     * on the client.
+     *
+     * @param serverPlayer{@link ServerPlayer} for which to complete the {@code advancement}
+     * @param resourceLocation {@link ResourceLocation} of the {@link Advancement} that needs to be completed
+     */
+    public static void addAdvancement (@NotNull ServerPlayer serverPlayer, @NotNull ResourceLocation resourceLocation)
+    {
+        Advancement advancement = serverPlayer.server.getAdvancements().getAdvancement(resourceLocation);
+        if (advancement == null) return;
+        addAdvancement(serverPlayer, advancement);
+    }
+
+    /**
+     * Checks whether the damage was inflicted by a direct source of damage.
+     * What classifies for 'direct damage' is a completely arbitrary defined characteristic,
+     * you should not use this method if you disagree with this classification.
+     *
+     * @param damageSource {@link DamageSource} to be checked
+     * @return {@code true} if {@code damageSource} is direct, {@code false} otherwise
+     */
+    public static boolean isDirectDamage (@NotNull final DamageSource damageSource)
     {
         return !damageSource.is(DamageTypeTags.IS_EXPLOSION) && !damageSource.is(DamageTypeTags.IS_PROJECTILE);
+    }
+
+    /**
+     * Checks whether the damage was inflicted by the same entity that authored the damage.
+     * An example of such damage is a melee attack.
+     *
+     * <p>If the damage was not inflicted by an entity, this will return false</p>
+     *
+     * @param damageSource {@link DamageSource} to be checked
+     * @return {@code true} if {@code damageSource} is direct, {@code false} otherwise
+     */
+    public static boolean isSelfServedDamage (@NotNull final DamageSource damageSource)
+    {
+        return damageSource.getEntity() != null && damageSource.getEntity().equals(damageSource.getDirectEntity());
     }
 
     public static void playSound (Level level, double x, double y, double z, SoundEvent soundEvent, SoundSource source, float volume, float pitch)
@@ -93,16 +161,16 @@ public class GeneralUtils
 
     public static Vec3 findGround (Vec3 pos, Level level)
     {
-        while (pos.y > -64 && !level.getBlockState(new BlockPos(new Vec3i((int) pos.x, (int) pos.y, (int) pos.z))).canOcclude())
+        while (pos.y > -64 && !level.getBlockState(BlockPos.containing(pos)).canOcclude())
         {
             pos = new Vec3(pos.x, pos.y - 1, pos.z);
         }
         return pos;
     }
 
-    public static List<Vec3> launchRay (final Vec3 pos, final Vec3 rotations, int iterations, double step)
+    public static Queue<Vec3> launchRay (final Vec3 pos, final Vec3 rotations, int iterations, double step)
     {
-        List<Vec3> ret = new ArrayList<>();
+        Queue<Vec3> ret = new LinkedList<>();
         for (int i = 0; i < iterations; i++)
         {
             ret.add(new Vec3(pos.x + rotations.x * i * step, pos.y + rotations.y * i * step, pos.z + rotations.z * i * step));

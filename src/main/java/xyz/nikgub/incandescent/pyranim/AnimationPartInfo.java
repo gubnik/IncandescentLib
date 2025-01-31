@@ -8,6 +8,12 @@ import java.util.EnumMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
+/**
+ * Wrapper class that provides controlled access to {@link EnumMap} containing the mappings
+ * for keyframes to their transform type.
+ *
+ * @see AnimationIR
+ */
 public class AnimationPartInfo
 {
     private final EnumMap<PyranimLexer.Instruction, Queue<Keyframe>> keyframes = new EnumMap<>(PyranimLexer.Instruction.class);
@@ -19,6 +25,10 @@ public class AnimationPartInfo
         keyframes.add(keyframeIR.toKeyframe(timestamp));
     }
 
+    /**
+     * Bakes the {@link #keyframes} into an {@link AnimationChannel}
+     * @return Queue of {@link AnimationChannel} to be used for the creation of {@link net.minecraft.client.animation.AnimationDefinition.Builder}
+     */
     @NotNull
     public Queue<AnimationChannel> bakeIntoChannel ()
     {

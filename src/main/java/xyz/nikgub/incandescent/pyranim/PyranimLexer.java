@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
  * component during the parsing process.</p>
  *
  * @see PyranimParser
+ *
+ * @author Nikolay Gubankov (aka nikgub)
  */
 public final class PyranimLexer
 {

@@ -17,6 +17,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Abstract entity representing an attack effect.
+ *
+ * <p>This entity has a limited lifetime, and will perish after it's over.</p>
+ */
 public abstract class AttackEffectEntity extends Entity
 {
     private static final EntityDataAccessor<Boolean> FOLLOW_PLAYER = SynchedEntityData.defineId(AttackEffectEntity.class, EntityDataSerializers.BOOLEAN);
@@ -53,7 +58,12 @@ public abstract class AttackEffectEntity extends Entity
 
     public final Optional<Player> getOwner ()
     {
-        return Optional.ofNullable(this.level().getPlayerByUUID(this.getPlayerUuid()));
+        UUID uuid = this.getPlayerUuid();
+        if (uuid == null)
+        {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(this.level().getPlayerByUUID(uuid));
     }
 
     public final float getSize ()
@@ -79,7 +89,7 @@ public abstract class AttackEffectEntity extends Entity
     {
         if (tag.contains("followPlayer", 1)) this.setDoFollowPlayer(tag.getBoolean("followPlayer"));
         if (tag.contains("owner", 1)) this.setPlayerUuid(tag.getUUID("owner"));
-        if (tag.contains("float", 1)) this.setSize(1f);
+        if (tag.contains("size", 1)) this.setSize(1f);
     }
 
     @Override
@@ -105,7 +115,7 @@ public abstract class AttackEffectEntity extends Entity
         if (this.tickCount > lifetime) this.remove(RemovalReason.DISCARDED);
         if (this.getDoFollowPlayer() && this.getPlayerUuid() != null)
         {
-            Player player = this.level().getPlayerByUUID(this.getPlayerUuid());
+            Player player = this.getOwner().orElse(null);
             assert player != null;
             this.moveTo(player.getX(), player.getY(), player.getZ());
         }

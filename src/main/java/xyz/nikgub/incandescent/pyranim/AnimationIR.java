@@ -8,6 +8,15 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Intermediate representation of {@link AnimationDefinition} that is allowed to have
+ * undefined fields be extended in more open way than {@link AnimationDefinition.Builder}.
+ *
+ * <p>This class is used solely in {@link PyranimParser} to construct the {@link AnimationDefinition.Builder}
+ * without having to hardcode the order of directives in {@link PyranimLexer}.</p>
+ *
+ * @author Nikolay Gubankov (aka nikgub)
+ */
 @ApiStatus.Internal
 public final class AnimationIR
 {

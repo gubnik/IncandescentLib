@@ -44,8 +44,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.nikgub.incandescent.Incandescent;
-import xyz.nikgub.incandescent.interfaces.IGradientNameItem;
-import xyz.nikgub.incandescent.interfaces.INotStupidTooltipItem;
+import xyz.nikgub.incandescent.item_interfaces.IGradientNameItem;
+import xyz.nikgub.incandescent.item_interfaces.INotStupidTooltipItem;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -70,6 +70,8 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
 
     @Shadow
     public abstract Item getItem ();
+
+    @Shadow public abstract boolean is (Item pItem);
 
     @Inject(method = "getHoverName", at = @At("HEAD"), cancellable = true)
     public void getHoverNameMixinHead (CallbackInfoReturnable<Component> retVal)
@@ -101,6 +103,12 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
         MutableComponent defaultComponent = this.getItem().getName(self).copy();
         defaultComponent = defaultComponent.withStyle(defaultComponent.getStyle().withColor(colorFunction.apply(Incandescent.clientTick)));
         retVal.setReturnValue(defaultComponent);
+    }
+
+    @Inject(method = "getTooltipLines", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getAttributeModifiers(Lnet/minecraft/world/entity/ai/attributes/Attribute;)Lcom/google/common/collect/Multimap;"), cancellable = true)
+    public void getTooltipLinesMixinInvoke (@Nullable Player player, TooltipFlag flag1, CallbackInfoReturnable<List<Component>> retVal)
+    {
+
     }
 
     /**
@@ -193,8 +201,9 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
                         Style style = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
                         if (player != null)
                         {
+                            // vvv Custom behaviour vvv
                             Map<Attribute, Pair<UUID, Style>> special = notStupidTooltipItem.specialColoredUUID(self);
-                            for (Attribute attribute : special.keySet().stream().toList())
+                            for (Attribute attribute : special.keySet())
                             {
                                 if (attributemodifier.getId() == special.get(attribute).getFirst())
                                 {
@@ -204,6 +213,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
                                     flag = true;
                                 }
                             }
+                            // ^^^ Custom behaviour ^^^
                             // vvv Default behaviour vvv
                             if (attributemodifier.getId() == Item.BASE_ATTACK_DAMAGE_UUID)
                             {

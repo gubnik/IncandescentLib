@@ -37,9 +37,11 @@ import java.util.stream.Collectors;
  * <p>$$</p>
  *
  * @since 1.4
- * @deprecated Use {@link PyranimParser} instead
+ * @deprecated Use {@link PyranimParser} instead. This format was deprecated in favour of more concise syntax
+ * as defined in {@link PyranimLexer} and must only be used to provide backwards compatibility with already existing
+ * animations.
  */
-@Deprecated(forRemoval = true, since = "1.4")
+@Deprecated(forRemoval = true, since = "1.4.0")
 public class LegacyPyranim
 {
     private static final Map<Character, AnimationChannel.Interpolation> INTERPOLATION_MAP = new HashMap<>(

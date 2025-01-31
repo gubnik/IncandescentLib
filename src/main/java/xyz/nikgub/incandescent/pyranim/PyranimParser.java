@@ -30,6 +30,8 @@ import java.util.Queue;
  * @see PyranimLoader
  * @see AnimationDefinition
  * @see PyranimLexer
+ *
+ * @author Nikolay Gubankov (aka nikgub)
  */
 public class PyranimParser
 {
