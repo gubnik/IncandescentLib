@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.interfaces;
+package xyz.nikgub.incandescent.item_interfaces;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +28,7 @@ import java.util.function.Function;
 /**
  * Interface for {@link ItemStackMixin}'s getHoverNameMixinHead()
  *
- * @author nikgub_
+ * @author Nikolay Gubankov (aka nikgub)
  */
 public interface IGradientNameItem
 {

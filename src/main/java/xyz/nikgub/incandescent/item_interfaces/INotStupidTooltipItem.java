@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.interfaces;
+package xyz.nikgub.incandescent.item_interfaces;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.chat.Style;
@@ -32,7 +32,7 @@ import java.util.function.BiFunction;
  * Interface for altering attribute tooltip's color <p>
  * Used in {@link xyz.nikgub.incandescent.mixin.ItemStackMixin}
  *
- * @author nikgub_
+ * @author Nikolay Gubankov (aka nikgub)
  */
 public interface INotStupidTooltipItem
 {

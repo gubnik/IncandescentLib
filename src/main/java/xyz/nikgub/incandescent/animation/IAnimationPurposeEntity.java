@@ -1,10 +1,9 @@
-package xyz.nikgub.incandescent.interfaces;
+package xyz.nikgub.incandescent.animation;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.AnimationState;
 import net.minecraft.world.entity.Entity;
 import org.jetbrains.annotations.NotNull;
-import xyz.nikgub.incandescent.animation.DeterminedAnimation;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
  * by introducing generalized behaviour.
  * Generalized behaviour has no control over animation states that were not introduced by getAllAnimations().
  *
- * @author nikgub_
+ * @author Nikolay Gubankov (aka nikgub)
  */
 public interface IAnimationPurposeEntity
 {

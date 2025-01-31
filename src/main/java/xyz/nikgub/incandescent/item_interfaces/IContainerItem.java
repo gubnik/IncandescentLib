@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.interfaces;
+package xyz.nikgub.incandescent.item_interfaces;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +30,7 @@ import java.util.concurrent.atomic.AtomicReference;
 /**
  * Interface for mod items that have associated inventory
  *
- * @author nikgub_
+ * @author Nikolay Gubankov (aka nikgub)
  */
 public interface IContainerItem
 {

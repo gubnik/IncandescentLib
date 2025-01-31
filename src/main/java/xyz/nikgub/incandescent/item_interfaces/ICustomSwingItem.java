@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.interfaces;
+package xyz.nikgub.incandescent.item_interfaces;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
