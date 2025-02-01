@@ -38,6 +38,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import org.slf4j.Logger;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -61,75 +63,61 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
 {
 
     @Shadow
+    @Final
+    private static Logger LOGGER;
+
+    @Shadow
     private static final Component DISABLED_ITEM_TOOLTIP = Component.translatable("item.disabled").withStyle(ChatFormatting.RED);
     @Shadow
     private static final Style LORE_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_PURPLE).withItalic(true);
 
-    @Shadow
-    public abstract CompoundTag getTagElement (String string);
-
-    @Shadow
-    public abstract Item getItem ();
-
-    @Shadow public abstract boolean is (Item pItem);
-
-    @Inject(method = "getHoverName", at = @At("HEAD"), cancellable = true)
-    public void getHoverNameMixinHead (CallbackInfoReturnable<Component> retVal)
+    @Inject(method = "getHoverName", at = @At("RETURN"), cancellable = true)
+    public void modifyReturnResult (CallbackInfoReturnable<Component> retVal)
     {
-        ItemStack self = (ItemStack) (Object) this;
-        Function<Integer, Integer> colorFunction;
-        if (self.getItem() instanceof IGradientNameItem iGradientNameItem)
+        final ItemStack self = (ItemStack) (Object) this;
+        if (!(self.getItem() instanceof IGradientNameItem iGradientNameItem))
         {
-            if (!(iGradientNameItem.getGradientCondition(self))) return;
-            colorFunction = iGradientNameItem.getGradientFunction(self);
-        } else return;
-        CompoundTag compoundtag = this.getTagElement("display");
-        if (compoundtag != null && compoundtag.contains("Name", 8))
+            return;
+        }
+        if (!(iGradientNameItem.getGradientCondition(self))) return;
+        final Function<Integer, Integer> colorFunction = iGradientNameItem.getGradientFunction(self);
+        Component component = retVal.getReturnValue();
+        retVal.setReturnValue(component.copy().withStyle(component.getStyle().withColor(colorFunction.apply((Incandescent.clientTick)))));
+    }
+
+    /* potentially a replacement for the mixin below this one, but right now I am not sure how to do this properly
+    @Inject(method = "getTooltipLines", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/attributes/AttributeModifier;getId()Ljava/util/UUID;")
+        , cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    public void getTooltipLinesMixinInvoke(Player pPlayer, TooltipFlag pIsAdvanced, CallbackInfoReturnable<List> cir, List list, MutableComponent mutablecomponent, int j, EquipmentSlot var6[], int var7, int var8, EquipmentSlot equipmentslot, Multimap multimap, Iterator var11, Map.Entry<Attribute, AttributeModifier> entry, AttributeModifier attributemodifier, double d0, boolean flag) {
+        // Method body
+        final ItemStack self = (ItemStack) (Object) this;
+        LOGGER.info("From NIGGERLICIOUS mixin 1");
+        if (!(self.getItem() instanceof INotStupidTooltipItem notStupidTooltipItem)) return;
+        // vvv Custom behaviour vvv
+        Map<Attribute, Pair<UUID, Style>> special = notStupidTooltipItem.specialColoredUUID(self);
+        for (Attribute attribute : special.keySet())
         {
-            try
+            if (attributemodifier.getId() == special.get(attribute).getFirst())
             {
-                MutableComponent component = Component.Serializer.fromJson(compoundtag.getString("Name"));
-                if (component != null)
-                {
-                    component = component.withStyle(component.getStyle().withColor(colorFunction.apply((Incandescent.clientTick))));
-                    retVal.setReturnValue(component);
-                }
-                compoundtag.remove("Name");
-            } catch (Exception exception)
-            {
-                compoundtag.remove("Name");
+                d0 += pPlayer.getAttributeValue(attribute);
+                d0 += notStupidTooltipItem.getAdditionalPlayerBonus(self).apply(pPlayer, attribute);
+                //style = special.get(attribute).getSecond();
+                flag = true;
             }
         }
-        MutableComponent defaultComponent = this.getItem().getName(self).copy();
-        defaultComponent = defaultComponent.withStyle(defaultComponent.getStyle().withColor(colorFunction.apply(Incandescent.clientTick)));
-        retVal.setReturnValue(defaultComponent);
+        // ^^^ Custom behaviour ^^^
     }
+    */
 
-    @Inject(method = "getTooltipLines", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getAttributeModifiers(Lnet/minecraft/world/entity/ai/attributes/Attribute;)Lcom/google/common/collect/Multimap;"), cancellable = true)
-    public void getTooltipLinesMixinInvoke (@Nullable Player player, TooltipFlag flag1, CallbackInfoReturnable<List<Component>> retVal)
-    {
 
-    }
-
-    /**
-     * <h1>What the fuck is this?</h1>
-     * <p>This is a <b>VERY</b> bad solution for a very stupid problem.</p>
-     * <p>Generally, this injected method is duplicating the functionality of the original method but changes
-     * the part about enchantment tooltips so that {@link INotStupidTooltipItem} functionality could be implemented</p>
-     * <p>If you have a better idea on how to make this work - please tell me, for now this should do because of conditional
-     * restrictions I put in it, casting objects C-style is generally one of faster operations so this condition shouldn't
-     * be too heavy on client</p>
-     * TODO: a better code
-     *
-     * @param player See original method's parameters
-     * @param flag1  See original method's parameters
-     * @param retVal Mixin callback information
+    /*
+    This mixin is to be reworked
      */
     @Inject(method = "getTooltipLines", at = @At("HEAD"), cancellable = true)
     public void getTooltipLinesMixinHead (@Nullable Player player, TooltipFlag flag1, CallbackInfoReturnable<List<Component>> retVal)
     {
         if (!(((ItemStack) (Object) this).getItem() instanceof INotStupidTooltipItem notStupidTooltipItem)) return;
-        ItemStack self = (ItemStack) (Object) this;
+        final ItemStack self = (ItemStack) (Object) this;
         List<Component> list = Lists.newArrayList();
         MutableComponent mutablecomponent = Component.empty().append(self.getHoverName()).withStyle(self.getRarity().getStyleModifier());
         if (self.hasCustomHoverName()) mutablecomponent.withStyle(ChatFormatting.ITALIC);
@@ -143,7 +131,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
 
         int j = this.getHideFlags();
         if (shouldShowInTooltip(j, ItemStack.TooltipPart.ADDITIONAL))
-            this.getItem().appendHoverText(self, player == null ? null : player.level(), list, flag1);
+            self.getItem().appendHoverText(self, player == null ? null : player.level(), list, flag1);
 
         if (self.hasTag())
         {
@@ -286,7 +274,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
             if (self.hasTag())
                 list.add(Component.translatable("item.nbt_tags", self.getOrCreateTag().getAllKeys().size()).withStyle(ChatFormatting.DARK_GRAY));
         }
-        if (player != null && !this.getItem().isEnabled(player.level().enabledFeatures()))
+        if (player != null && !self.getItem().isEnabled(player.level().enabledFeatures()))
             list.add(DISABLED_ITEM_TOOLTIP);
 
         net.minecraftforge.event.ForgeEventFactory.onItemTooltip(self, player, list, flag1);
