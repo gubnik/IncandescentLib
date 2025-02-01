@@ -61,6 +61,12 @@ public class HashCacheHypermap<AK, SK, V> implements Hypermap<AK, SK, V, CacheMa
     }
 
     @Override
+    public boolean containsKey (AK absoluteKey, SK smallerKey)
+    {
+        return storage.containsKey(absoluteKey) && storage.get(absoluteKey).containsKey(smallerKey);
+    }
+
+    @Override
     public boolean containsValue (V value)
     {
         return submaps().stream().anyMatch(skvCacheMap -> skvCacheMap.containsValue(value));

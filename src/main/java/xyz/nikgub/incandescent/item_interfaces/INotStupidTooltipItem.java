@@ -18,13 +18,12 @@
 
 package xyz.nikgub.incandescent.item_interfaces;
 
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import xyz.nikgub.incandescent.util.HashCacheHypermap;
 
-import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
@@ -42,7 +41,7 @@ public interface INotStupidTooltipItem
      *
      * @return Map of attributes and pairs of attribute's UUID and its new format
      */
-    Map<Attribute, Pair<UUID, Style>> specialColoredUUID (ItemStack itemStack);
+    HashCacheHypermap<Attribute, UUID, Style> specialColoredUUID (ItemStack itemStack);
 
     /**
      * Determines additional bonus in attribute's value <p>

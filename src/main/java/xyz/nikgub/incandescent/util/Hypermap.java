@@ -87,6 +87,14 @@ public interface Hypermap<AK, SK, V, SM extends Map<SK, V>, BM extends Map<AK, S
     boolean containsKey (AK absoluteKey);
 
     /**
+     * Checks if the hypermap contains an absolute key and a smaller key
+     * @param absoluteKey Absolute key to be checked
+     * @param smallerKey  Smaller key to be checked
+     * @return {@code true} if the hypermap has the value
+     */
+    boolean containsKey (AK absoluteKey, SK smallerKey);
+
+    /**
      * Checks if the hypermap contains a value
      * @param value Value to be checked
      * @return {@code true} if the hypermap has the value
