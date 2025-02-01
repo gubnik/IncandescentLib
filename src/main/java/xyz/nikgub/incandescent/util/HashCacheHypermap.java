@@ -2,7 +2,7 @@ package xyz.nikgub.incandescent.util;
 
 import java.util.*;
 
-public class HashCacheHypermap<AK, SK, V> implements Hypermap<AK, SK, V, CacheMap<SK, V>, HashMap<AK, CacheMap<SK, V>>>
+public class HashCacheHypermap<AK, SK, V> implements Hypermap<AK, SK, V>
 {
     private final HashMap<AK, CacheMap<SK, V>> storage = new HashMap<>();
 
@@ -19,33 +19,33 @@ public class HashCacheHypermap<AK, SK, V> implements Hypermap<AK, SK, V, CacheMa
     }
 
     @Override
-    public Optional<V> get (AK absoluteKey, SK smallerKey)
+    public Optional<V> get (AK absoluteKey, SK subKey)
     {
         CacheMap<SK, V> cacheMap = storage.get(absoluteKey);
         if (cacheMap == null)
         {
             return Optional.empty();
         }
-        return Optional.ofNullable(cacheMap.get(smallerKey));
+        return Optional.ofNullable(cacheMap.get(subKey));
     }
 
     @Override
-    public boolean put (AK absoluteKey, SK smallerKey, V value)
+    public boolean put (AK absoluteKey, SK subKey, V value)
     {
         storage.putIfAbsent(absoluteKey, new CacheMap<>(maxCacheSize));
         CacheMap<SK, V> cacheMap = storage.get(absoluteKey);
-        return cacheMap.putIfAbsent(smallerKey, value) == null;
+        return cacheMap.putIfAbsent(subKey, value) == null;
     }
 
     @Override
-    public Optional<V> remove (AK absoluteKey, SK smallerKey)
+    public Optional<V> remove (AK absoluteKey, SK subKey)
     {
         CacheMap<SK, V> cacheMap = storage.get(absoluteKey);
         if (cacheMap == null)
         {
             return Optional.empty();
         }
-        return Optional.ofNullable(cacheMap.remove(smallerKey));
+        return Optional.ofNullable(cacheMap.remove(subKey));
     }
 
     @Override
@@ -61,9 +61,9 @@ public class HashCacheHypermap<AK, SK, V> implements Hypermap<AK, SK, V, CacheMa
     }
 
     @Override
-    public boolean containsKey (AK absoluteKey, SK smallerKey)
+    public boolean containsKey (AK absoluteKey, SK subKey)
     {
-        return storage.containsKey(absoluteKey) && storage.get(absoluteKey).containsKey(smallerKey);
+        return storage.containsKey(absoluteKey) && storage.get(absoluteKey).containsKey(subKey);
     }
 
     @Override
@@ -73,11 +73,11 @@ public class HashCacheHypermap<AK, SK, V> implements Hypermap<AK, SK, V, CacheMa
     }
 
     @Override
-    public boolean containsValue (SK smallerKey, V value)
+    public boolean containsValue (SK subKey, V value)
     {
         for (var submap : submaps())
         {
-            if (submap.containsKey(smallerKey) && submap.get(smallerKey).equals(value))
+            if (submap.containsKey(subKey) && submap.get(subKey).equals(value))
             {
                 return true;
             }
@@ -86,10 +86,10 @@ public class HashCacheHypermap<AK, SK, V> implements Hypermap<AK, SK, V, CacheMa
     }
 
     @Override
-    public boolean containsValue (AK absoluteKey, SK smallerKey, V value)
+    public boolean containsValue (AK absoluteKey, SK subKey, V value)
     {
         CacheMap<SK, V> submap = storage.get(absoluteKey);
-        return submap != null && submap.containsKey(smallerKey) && submap.get(smallerKey).equals(value);
+        return submap != null && submap.containsKey(subKey) && submap.get(subKey).equals(value);
     }
 
     @Override
