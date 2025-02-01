@@ -4,12 +4,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.level.Level;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.nikgub.incandescent.IncandescentHooks;
 import xyz.nikgub.incandescent.common.event.DefineSyncedEntityDataEvent;
@@ -40,9 +41,10 @@ public abstract class EntityMixin
     @Shadow
     protected SynchedEntityData entityData;
 
-    @Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;defineSynchedData()V"))
-    public void modifyEntityData (Entity instance)
+    @Inject(method = "<init>", at = @At(value = "RETURN"))
+    public void modifyEntityData (EntityType<?> pEntityType, Level pLevel, CallbackInfo ci)
     {
+        final Entity instance = (Entity) (Object) this;
         DefineSyncedEntityDataEvent event = IncandescentHooks.defineSyncedEntityDataEvent(instance);
         if (event.getAdditionalData().isEmpty())
         {
