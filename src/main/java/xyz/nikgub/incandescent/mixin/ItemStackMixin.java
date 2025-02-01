@@ -21,7 +21,6 @@ package xyz.nikgub.incandescent.mixin;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.arguments.blocks.BlockStateParser;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -48,6 +47,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.nikgub.incandescent.Incandescent;
 import xyz.nikgub.incandescent.item_interfaces.IGradientNameItem;
 import xyz.nikgub.incandescent.item_interfaces.INotStupidTooltipItem;
+import xyz.nikgub.incandescent.util.HashCacheHypermap;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -190,14 +190,15 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
                         if (player != null)
                         {
                             // vvv Custom behaviour vvv
-                            Map<Attribute, Pair<UUID, Style>> special = notStupidTooltipItem.specialColoredUUID(self);
+                            HashCacheHypermap<Attribute, UUID, Style> special = notStupidTooltipItem.specialColoredUUID(self);
                             for (Attribute attribute : special.keySet())
                             {
-                                if (attributemodifier.getId() == special.get(attribute).getFirst())
+                                Optional<Style> optionalStyle = special.get(attribute, attributemodifier.getId());
+                                if (optionalStyle.isPresent())
                                 {
                                     d0 += player.getAttributeValue(attribute);
                                     d0 += notStupidTooltipItem.getAdditionalPlayerBonus(self).apply(player, attribute);
-                                    style = special.get(attribute).getSecond();
+                                    style = optionalStyle.get();
                                     flag = true;
                                 }
                             }
