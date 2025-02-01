@@ -47,7 +47,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.nikgub.incandescent.Incandescent;
 import xyz.nikgub.incandescent.item_interfaces.IGradientNameItem;
 import xyz.nikgub.incandescent.item_interfaces.INotStupidTooltipItem;
-import xyz.nikgub.incandescent.util.HashCacheHypermap;
+import xyz.nikgub.incandescent.util.Hypermap;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -190,7 +190,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
                         if (player != null)
                         {
                             // vvv Custom behaviour vvv
-                            HashCacheHypermap<Attribute, UUID, Style> special = notStupidTooltipItem.specialColoredUUID(self);
+                            Hypermap<Attribute, UUID, Style> special = notStupidTooltipItem.specialColoredUUID(self);
                             for (Attribute attribute : special.keySet())
                             {
                                 Optional<Style> optionalStyle = special.get(attribute, attributemodifier.getId());

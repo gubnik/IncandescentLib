@@ -27,6 +27,28 @@ import java.util.Set;
  *     and thus they do not enforce any particular kind of map. It is the implementation's
  *     liability to keep track of what map is returned, and if it is immutable or not, and
  *     base Hypermap always assumes that all of its methods are consistently compatible.
+ *     <h3>Example</h3>
+ *     <pre><code>
+ *         public class HashHashHypermap&lt;AK, SK, V&gt; implements Hypermap&lt;AK, SK, V&gt;
+ *         {
+ *              private final HashMap&lt;AK, HashMap&lt;SK, V&gt;&gt; storage = new HashMap&lt;&gt;();   // actual storage
+ *
+ *              public HashMap&lt;AK, HashMap&lt;SK, V&gt;&gt; raw () // correct usage
+ *              {
+ *                  return storage;
+ *              }
+ *
+ *              public LinkedHashMap&lt;AK, CacheMap&lt;SK, V&gt&gt raw () // wrong usage, mismatched maps
+ *              {
+ *                  return storage;
+ *              }
+ *
+ *              public ImmutableHashMap&lt;AK, ImmutableHashMap&lt;SK, V&gt&gt raw () // wrong usage, immutable maps
+ *              {
+ *                  return storage;
+ *              }
+ *         }
+ *     </code></pre>
  * </p>
  * <h2>Multithreading</h2>
  * <p>
@@ -48,11 +70,22 @@ import java.util.Set;
  * <p>
  *     Immutable implementations of Hypermap must consider both mappings immutable, for the sake
  *     of consistency.
+ *     <h3>Example</h3>
+ *     <pre><code>
+ *         public class ImmutableHashHashHypermap&lt;AK, SK, V&gt; implements Hypermap&lt;AK, SK, V&gt;
+ *         {
+ *              private final ImmutableHashMap&lt;AK, ImmutableHashMap&lt;SK, V&gt;&gt; storage = new HashMap&lt;&gt;();   // correct storage
+ *
+ *              private final ImmutableHashMap&lt;AK, HashMap&lt;SK, V&gt;&gt; storage = new HashMap&lt;&gt;();   // incorrect storage, used mutable submap
+ *     </code></pre>
+ * </p>
  * </p>
  *
  * @param <AK> The type of the absolute key.
  * @param <SK> The type of the sub key.
  * @param <V> The type of the value associated with the keys.
+ *
+ * @see HashCacheHypermap For an example implementation
  */
 public interface Hypermap<AK, SK, V> {
 

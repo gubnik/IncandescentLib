@@ -9,7 +9,7 @@ import java.util.Map;
  * @param <K> Key type
  * @param <V> Value type
  */
-public class CacheMap<K, V> extends LinkedHashMap<K, V>
+public class CacheMap<K, V> extends LinkedHashMap<K, V> implements Map<K, V>
 {
     /**
      * The maximum size of a cache map
