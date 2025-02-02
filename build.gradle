@@ -1,5 +1,4 @@
 plugins {
-    id "com.modrinth.minotaur" version "2.+"
     id("net.minecraftforge.gradle") version("${fg_plugin_version}")
     id("org.spongepowered.mixin") version("${mixin_plugin_version}")
     id("eclipse")
@@ -124,15 +123,6 @@ assemble.dependsOn shadowJar
 
 reobf {
     shadowJar {}
-}
-
-modrinth {
-    token = System.getenv('MODRINTH_TOKEN')
-    projectId = "incandescent-lib"
-    versionNumber = mod_id
-    versionType = "release"
-    uploadFile = jar
-    gameVersions = ["1.20.1"]
 }
 
 tasks.withType(JavaCompile).configureEach {
