@@ -32,7 +32,10 @@ import java.util.function.BiFunction;
  * Used in {@link xyz.nikgub.incandescent.mixin.ItemStackMixin}
  *
  * @author Nikolay Gubankov (aka nikgub)
+ *
+ * @deprecated Use {@link IDefaultAttributesItem} instead
  */
+@Deprecated(forRemoval = true, since = "1.5.0")
 public interface INotStupidTooltipItem
 {
     /**
