@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import xyz.nikgub.incandescent.IncandescentConfig;
 import xyz.nikgub.incandescent.IncandescentHooks;
 import xyz.nikgub.incandescent.common.event.DefineSyncedEntityDataEvent;
 import xyz.nikgub.incandescent.common.event.SyncEntityNBTEvent;
@@ -27,6 +28,11 @@ public abstract class EntityMixin
         final Entity self = (Entity) (Object) this;
         if (!(self.level() instanceof ServerLevel))
         {
+            return;
+        }
+        if (!IncandescentConfig.server_allow_forced_entity_nbt_sync || !IncandescentConfig.common_allow_forced_entity_nbt_sync)
+        {
+            // Quit processing if the configuration disallows NBT sync
             return;
         }
         final CompoundTag tag = self.getPersistentData();
