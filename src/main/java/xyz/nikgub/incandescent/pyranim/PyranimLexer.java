@@ -270,6 +270,8 @@ public final class PyranimLexer
                 case GLOBAL_HEADER, PART_INSTRUCTION ->
                 {
                     animationIR.setCurrentPart(this.value);
+                    animationIR.setCurrentTime(0);
+                    animationIR.setCurrentInterpolation(AnimationChannel.Interpolations.LINEAR);
                     return State.PART_HEADER;
                 }
             }
