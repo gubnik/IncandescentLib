@@ -3,6 +3,7 @@ package xyz.nikgub.incandescent.pyranim;
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.Keyframe;
 import org.jetbrains.annotations.NotNull;
+import xyz.nikgub.incandescent.Incandescent;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -35,7 +36,12 @@ public class AnimationPartInfo
         Queue<AnimationChannel> retVal = new LinkedList<>();
         for (var unbaked : keyframes.entrySet())
         {
+
             retVal.add(new AnimationChannel(unbaked.getKey().getAnimationTarget(), unbaked.getValue().toArray(new Keyframe[0])));
+            for (var k : unbaked.getValue())
+            {
+                Incandescent.LOGGER.info("NIGGER {} {}", unbaked.getKey(), k);
+            }
         }
         return retVal;
     }
