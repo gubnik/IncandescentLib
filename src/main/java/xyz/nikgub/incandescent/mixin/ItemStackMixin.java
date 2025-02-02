@@ -27,6 +27,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.*;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -43,8 +44,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import xyz.nikgub.incandescent.Incandescent;
+import xyz.nikgub.incandescent.item_interfaces.IDefaultAttributesItem;
 import xyz.nikgub.incandescent.item_interfaces.IGradientNameItem;
 import xyz.nikgub.incandescent.item_interfaces.INotStupidTooltipItem;
 import xyz.nikgub.incandescent.util.Hypermap;
@@ -85,34 +89,51 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
         retVal.setReturnValue(component.copy().withStyle(component.getStyle().withColor(colorFunction.apply((Incandescent.clientTick)))));
     }
 
-    /* potentially a replacement for the mixin below this one, but right now I am not sure how to do this properly
     @Inject(method = "getTooltipLines", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/ai/attributes/AttributeModifier;getId()Ljava/util/UUID;")
         , cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    public void getTooltipLinesMixinInvoke(Player pPlayer, TooltipFlag pIsAdvanced, CallbackInfoReturnable<List> cir, List list, MutableComponent mutablecomponent, int j, EquipmentSlot var6[], int var7, int var8, EquipmentSlot equipmentslot, Multimap multimap, Iterator var11, Map.Entry<Attribute, AttributeModifier> entry, AttributeModifier attributemodifier, double d0, boolean flag) {
-        // Method body
+    public void getTooltipLinesMixinInvoke(Player pPlayer, TooltipFlag pIsAdvanced, CallbackInfoReturnable<List> cir, List list, MutableComponent mutablecomponent, int j, EquipmentSlot var6[], int var7, int var8, EquipmentSlot equipmentslot, Multimap multimap, Iterator var11, Map.Entry<Attribute, AttributeModifier> entry, AttributeModifier attributemodifier, double d0, boolean flag)
+    {
         final ItemStack self = (ItemStack) (Object) this;
-        LOGGER.info("From NIGGERLICIOUS mixin 1");
-        if (!(self.getItem() instanceof INotStupidTooltipItem notStupidTooltipItem)) return;
-        // vvv Custom behaviour vvv
-        Map<Attribute, Pair<UUID, Style>> special = notStupidTooltipItem.specialColoredUUID(self);
+        if (!(self.getItem() instanceof IDefaultAttributesItem item)) return;
+        Map<Attribute,UUID> special = item.getDefaultAttributeModifiersUUID(self);
+        final UUID attrUUID = attributemodifier.getId();
         for (Attribute attribute : special.keySet())
         {
-            if (attributemodifier.getId() == special.get(attribute).getFirst())
+            if (attrUUID == special.get(attribute))
             {
                 d0 += pPlayer.getAttributeValue(attribute);
-                d0 += notStupidTooltipItem.getAdditionalPlayerBonus(self).apply(pPlayer, attribute);
-                //style = special.get(attribute).getSecond();
+                d0 += item.getAdditionalPlayerBonus(self, pPlayer, attribute, attrUUID);
                 flag = true;
             }
         }
-        // ^^^ Custom behaviour ^^^
     }
-    */
 
+    @ModifyVariable(method = "getTooltipLines", at = @At("RETURN"))
+    public List<Component> modifyReturnList (final List<Component> originalList)
+    {
+        final ItemStack self = (ItemStack) (Object) this;
+        if (!(self.getItem() instanceof IDefaultAttributesItem item)) return originalList;
+        final List<Component> savedList = new ArrayList<>(originalList);
+        originalList.clear();
+        for (var component : savedList)
+        {
+            MutableComponent copyComponent = component.copy();
+            List<Component> siblings = copyComponent.getSiblings();
+            if (siblings.stream().anyMatch(comp -> comp.getContents() instanceof TranslatableContents contents && contents.getKey().contains("attribute.modifier."))
+                && copyComponent.getStyle().getColor() != null && copyComponent.getStyle().getColor().getValue() == ChatFormatting.DARK_GREEN.getColor())
+            {
+                originalList.add(component.copy().withStyle(item.getOverridingStyle(self, copyComponent)));
+                continue;
+            }
+            originalList.add(component);
+        }
+        return originalList;
+    }
 
     /*
     This mixin is to be reworked
      */
+    @Deprecated(forRemoval = true, since = "1.5.0")
     @Inject(method = "getTooltipLines", at = @At("HEAD"), cancellable = true)
     public void getTooltipLinesMixinHead (@Nullable Player player, TooltipFlag flag1, CallbackInfoReturnable<List<Component>> retVal)
     {
