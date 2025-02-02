@@ -2,8 +2,8 @@ package xyz.nikgub.incandescent.pyranim;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import org.jetbrains.annotations.ApiStatus;
-import org.joml.Vector3f;
 
 /**
  * Intermediate representation of {@link Keyframe} that is allowed to have undefined timestamp.
@@ -22,6 +22,11 @@ public record KeyframeIR(PyranimLexer.Instruction instruction, float xValue, flo
 {
     public Keyframe toKeyframe (float time)
     {
-        return new Keyframe(time, new Vector3f(xValue, yValue, zValue), interpolation);
+        return new Keyframe(time, switch (instruction)
+        {
+            case MOVE -> KeyframeAnimations.posVec(xValue, yValue, zValue);
+            case ROTATE -> KeyframeAnimations.degreeVec(xValue, yValue, zValue);
+            case SCALE -> KeyframeAnimations.scaleVec(xValue, yValue, zValue);
+        }, interpolation);
     }
 }
