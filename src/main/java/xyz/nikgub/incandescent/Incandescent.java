@@ -53,7 +53,9 @@ public class Incandescent
     {
         //final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.register(this);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, IncandescentClientConfig.SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, IncandescentConfig.COMMON_SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, IncandescentConfig.SERVER_SPEC);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, IncandescentConfig.CLIENT_SPEC);
     }
 
     /**
@@ -110,7 +112,7 @@ public class Incandescent
             if (player == null) return;
             float delta = Minecraft.getInstance().getFrameTime();
             float ticksExistedDelta = player.tickCount + delta;
-            double intensity = IncandescentClientConfig.screen_shake_intensity;
+            double intensity = IncandescentConfig.screen_shake_intensity;
             double amount;
             if (!Minecraft.getInstance().isPaused() && player.level().isClientSide()
                 && screenShakeMap.containsKey(player)
