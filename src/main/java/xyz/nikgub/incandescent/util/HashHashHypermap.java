@@ -18,67 +18,49 @@
 
 package xyz.nikgub.incandescent.util;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
-public class LimitedHypermap<AK, SK, V> implements Hypermap<AK, SK, V>
+public class HashHashHypermap<AK, SK, V> implements Hypermap<AK, SK, V>
 {
-    private final CacheMap<AK, CacheMap<SK, V>> storage;
+    private final HashMap<AK, HashMap<SK, V>> storage = new HashMap<>();
 
-    private final int outerCapacity;
-    private final int innerCapacity;
 
-    public LimitedHypermap (int outerCapacity, int innerCapacity)
+    public HashHashHypermap ()
     {
-        this.storage = new CacheMap<>(outerCapacity);
-        this.outerCapacity = outerCapacity;
-        this.innerCapacity = innerCapacity;
-    }
-
-    public int getOuterCapacity ()
-    {
-        return outerCapacity;
-    }
-
-    public int getInnerCapacity ()
-    {
-        return innerCapacity;
     }
 
     @Override
     public Optional<V> get (AK absoluteKey, SK subKey)
     {
-        CacheMap<SK, V> cacheMap = storage.get(absoluteKey);
-        if (cacheMap == null)
+        HashMap<SK, V> submap = storage.get(absoluteKey);
+        if (submap == null)
         {
             return Optional.empty();
         }
-        return Optional.ofNullable(cacheMap.get(subKey));
+        return Optional.ofNullable(submap.get(subKey));
     }
 
     @Override
     public boolean put (AK absoluteKey, SK subKey, V value)
     {
-        storage.putIfAbsent(absoluteKey, new CacheMap<>(outerCapacity));
-        CacheMap<SK, V> cacheMap = storage.get(absoluteKey);
-        return cacheMap.putIfAbsent(subKey, value) == null;
+        storage.putIfAbsent(absoluteKey, new HashMap<>());
+        HashMap<SK, V> submap = storage.get(absoluteKey);
+        return submap.putIfAbsent(subKey, value) == null;
     }
 
     @Override
     public Optional<V> remove (AK absoluteKey, SK subKey)
     {
-        CacheMap<SK, V> cacheMap = storage.get(absoluteKey);
-        if (cacheMap == null)
+        HashMap<SK, V> submap = storage.get(absoluteKey);
+        if (submap == null)
         {
             return Optional.empty();
         }
-        return Optional.ofNullable(cacheMap.remove(subKey));
+        return Optional.ofNullable(submap.remove(subKey));
     }
 
     @Override
-    public Optional<CacheMap<SK, V>> removeAll (AK absoluteKey)
+    public Optional<HashMap<SK, V>> removeAll (AK absoluteKey)
     {
         return Optional.ofNullable(storage.remove(absoluteKey));
     }
@@ -117,18 +99,18 @@ public class LimitedHypermap<AK, SK, V> implements Hypermap<AK, SK, V>
     @Override
     public boolean containsValue (AK absoluteKey, SK subKey, V value)
     {
-        CacheMap<SK, V> submap = storage.get(absoluteKey);
+        HashMap<SK, V> submap = storage.get(absoluteKey);
         return submap != null && submap.containsKey(subKey) && submap.get(subKey).equals(value);
     }
 
     @Override
-    public CacheMap<AK, CacheMap<SK, V>> raw ()
+    public HashMap<AK, HashMap<SK, V>> raw ()
     {
         return storage;
     }
 
     @Override
-    public Set<Map.Entry<AK, CacheMap<SK, V>>> entrySet ()
+    public Set<Map.Entry<AK, HashMap<SK, V>>> entrySet ()
     {
         return storage.entrySet();
     }
@@ -140,7 +122,7 @@ public class LimitedHypermap<AK, SK, V> implements Hypermap<AK, SK, V>
     }
 
     @Override
-    public Collection<CacheMap<SK, V>> submaps ()
+    public Collection<HashMap<SK, V>> submaps ()
     {
         return storage.values();
     }

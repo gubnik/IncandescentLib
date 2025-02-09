@@ -10,7 +10,6 @@ import net.minecraftforge.common.IExtensibleEnum;
  *
  * @param animationState   AnimationState of an entity
  * @param animationPurpose Type of animation, must be declared properly for generalized behaviour
- *
  * @see IAnimationPurposeEntity
  */
 public record DeterminedAnimation(AnimationState animationState, AnimationPurpose animationPurpose)
@@ -51,10 +50,9 @@ public record DeterminedAnimation(AnimationState animationState, AnimationPurpos
          *
          * @param name {@code String} representation of the created enum entry
          * @return Newly created instance of {@link AnimationPurpose}
-         *
          * @see IExtensibleEnum
          */
-        public static AnimationPurpose create(String name)
+        public static AnimationPurpose create (String name)
         {
             throw new IllegalStateException("Enum not extended");
         }

@@ -1,3 +1,21 @@
+/*
+    Incandescent Lib, Minecraft Forge light-weight library
+    Copyright (C) 2025, nikgub_
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package xyz.nikgub.incandescent.network;
 
 import net.minecraftforge.network.NetworkDirection;
@@ -22,9 +40,8 @@ import java.lang.annotation.Target;
  * you must ensure that there is an available default constructor.
  * </p>
  *
- * @see IncandescentNetworkCore
- *
  * @author Nikolay Gubankov (aka nikgub)
+ * @see IncandescentNetworkCore
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
@@ -52,6 +69,7 @@ public @interface IncandescentPacket
         /**
          * Used to sort fields in a guaranteed way during encoder/decoder autogen,
          * since Java reflection does not guarantee that the order of the fields is preserved.
+         *
          * @return {@code int} numeric ID of a field
          */
         int value () default Integer.MAX_VALUE;

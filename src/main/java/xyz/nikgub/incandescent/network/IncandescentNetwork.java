@@ -1,3 +1,21 @@
+/*
+    Incandescent Lib, Minecraft Forge light-weight library
+    Copyright (C) 2025, nikgub_
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package xyz.nikgub.incandescent.network;
 
 import net.minecraft.server.level.ServerPlayer;
@@ -81,8 +99,9 @@ public class IncandescentNetwork
     /**
      * Send the packet to its appropriate side.
      * Packets that should be played to the client are assumed to be played for all client players.
+     *
      * @param packet Packet object of a class annotated with {@link IncandescentPacket}
-     * @param <T> Type of the packet
+     * @param <T>    Type of the packet
      */
     public static <T> void sendPacket (T packet)
     {
