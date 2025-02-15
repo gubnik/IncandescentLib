@@ -36,6 +36,19 @@ public class ImmutableHypermap<AK, SK, V> implements Hypermap<AK, SK, V>
         storage = builder.build();
     }
 
+    public static <AK, SK, V> ImmutableHypermap<AK, SK, V> copyOf (Hypermap<AK, SK, V> hypermap)
+    {
+        Builder<AK, SK, V> builder = new Builder<>();
+        for (var aEntry : hypermap.entrySet())
+        {
+            for (var sEntry : aEntry.getValue().entrySet())
+            {
+                builder.put(aEntry.getKey(), sEntry.getKey(), sEntry.getValue());
+            }
+        }
+        return builder.build();
+    }
+
     @SuppressWarnings("unchecked")
     public static <AK, SK, V> ImmutableHypermap<AK, SK, V> of (Object... input)
     {
