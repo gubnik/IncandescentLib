@@ -33,7 +33,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.nikgub.incandescent.Incandescent;
-import xyz.nikgub.incandescent.item_interfaces.IAdvancedAttributeTooltipHandlingItem;
+import xyz.nikgub.incandescent.item_interfaces.IBetterAttributeTooltipItem;
 import xyz.nikgub.incandescent.item_interfaces.IGradientNameItem;
 
 import javax.annotation.Nullable;
@@ -74,7 +74,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
     public void getTooltipLinesMixinHead (@Nullable Player player, TooltipFlag tooltipFlag, CallbackInfoReturnable<List<Component>> cir)
     {
         final ItemStack self = (ItemStack) (Object) this;
-        if (!(((ItemStack) (Object) this).getItem() instanceof IAdvancedAttributeTooltipHandlingItem tooltipHandlingItem))
+        if (!(((ItemStack) (Object) this).getItem() instanceof IBetterAttributeTooltipItem tooltipHandlingItem))
         {
             return;
         }
