@@ -44,7 +44,7 @@ import static net.minecraft.world.item.ItemStack.ATTRIBUTE_MODIFIER_FORMAT;
 /**
  * @author Nikolay Gubankov (aka nikgub)
  */
-public interface IAdvancedAttributeTooltipHandlingItem
+public interface IBetterAttributeTooltipItem
 {
 
     /**
@@ -96,6 +96,16 @@ public interface IAdvancedAttributeTooltipHandlingItem
     default Style defaultStyle (final ItemStack itemStack)
     {
         return Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
+    }
+
+    default Style additionModifiertStyle (final ItemStack itemStack)
+    {
+        return Style.EMPTY.withColor(ChatFormatting.BLUE);
+    }
+
+    default Style subtractionModifiertStyle (final ItemStack itemStack)
+    {
+        return Style.EMPTY.withColor(ChatFormatting.RED);
     }
 
     /**
@@ -152,10 +162,10 @@ public interface IAdvancedAttributeTooltipHandlingItem
                     list.add(CommonComponents.space().append(Component.translatable("attribute.modifier.equals." + modifierValue, formatValueString, Component.translatable(attributeDescriptionId))).withStyle(style));
                 } else if (initialAmount > 0.0D)
                 {
-                    list.add(Component.translatable("attribute.modifier.plus." + modifierValue, formatValueString, Component.translatable(attributeDescriptionId)).withStyle(ChatFormatting.BLUE));
+                    list.add(Component.translatable("attribute.modifier.plus." + modifierValue, formatValueString, Component.translatable(attributeDescriptionId)).withStyle(this.additionModifiertStyle(self)));
                 } else if (initialAmount < 0.0D)
                 {
-                    list.add(Component.translatable("attribute.modifier.take." + modifierValue, formatValueString, Component.translatable(attributeDescriptionId)).withStyle(ChatFormatting.RED));
+                    list.add(Component.translatable("attribute.modifier.take." + modifierValue, formatValueString, Component.translatable(attributeDescriptionId)).withStyle(this.subtractionModifiertStyle(self)));
                 }
             }
         }
