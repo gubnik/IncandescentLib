@@ -2,6 +2,7 @@ package xyz.nikgub.incandescent.itemgen_config;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -26,7 +27,7 @@ public class ItemGenConfigProvider
         try
         {
             Type type = TypeToken.getParameterized(Map.class, String.class, TypeToken.getParameterized(Map.class, String.class, Object.class).getType()).getType();
-            Map<String, Map<String, Object>> map = gson.fromJson(Files.readString(Path.of(System.getProperty("user.dir"),"config", loc)), type);
+            Map<String, Map<String, Object>> map = gson.fromJson(Files.readString(Path.of(FMLPaths.CONFIGDIR.toString(),"config", loc)), type);
             itemObjects = map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, stringMapEntry -> new ItemGenObjectInfo(stringMapEntry.getValue())));
         } catch (IOException e)
         {
