@@ -56,9 +56,7 @@ public class PyranimLoader
         }
     }
 
-
     /**
-     * '
      * Loads and stores the contents of the file {@code loc}
      *
      * @param loc {@code String} name of the file to be processed
