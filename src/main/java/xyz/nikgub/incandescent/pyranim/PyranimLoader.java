@@ -19,7 +19,6 @@
 package xyz.nikgub.incandescent.pyranim;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.LinkedList;
 import java.util.Queue;
