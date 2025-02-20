@@ -18,8 +18,10 @@
 
 package xyz.nikgub.incandescent.itemgen;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.nikgub.incandescent.itemgen.interfaces.IConverter;
@@ -30,6 +32,7 @@ import xyz.nikgub.incandescent.util.ImmutableOrderedMap;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -80,14 +83,16 @@ import java.util.function.Supplier;
  *         .finishConstructor()
  *         .propertyWithConverter("durability", int.class, Item.Properties::durability, Number::intValue)
  *         .build()
- *         .generateAutoConstructor(new ItemGenConfigProvider("testconf.json"));
+ *         .generateAutoConstructor(new ItemGenConfigProvider("test_config.json"));
  *
- *     // static lifetime somewhere
  *     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MOD_ID);
  *
- *     // within mod's setup
- *     SWORD_DEFINITION.register(ITEMS);
- *     ITEMS.register(modEventBus);
+ *     public ModName ()
+ *     {
+ *          // within mod's setup
+ *          SWORD_DEFINITION.register(ITEMS);
+ *          ITEMS.register(modEventBus);
+ *     }
  *     }
  * </pre>
  *
@@ -121,6 +126,13 @@ public class ItemGenDefinition<I extends Item>
     private final ImmutableOrderedMap<String, PropertyDefinition<?, ?>> propertyMutators;
 
     /**
+     * View of post-registration effects that will be executed
+     * within {@link #generate(ItemGenConfigProvider, IPseudoConstructor)} and {@link #generateAutoConstructor(ItemGenConfigProvider)}
+     * methods after an item was registered.
+     */
+    private final ImmutableList<Consumer<RegistryObject<I>>> postRegistrationEffects;
+
+    /**
      * Cached classes of the expected transformed constructor arguments.
      */
     private final Class<?>[] constructorArgsClasses;
@@ -135,14 +147,16 @@ public class ItemGenDefinition<I extends Item>
     /**
      * Constructor to be used by {@link Builder}.
      *
-     * @param constructorArguments View of a {@link LinkedHashMap} to be copied into {@link #constructorArguments}
-     * @param propertyMutators     View of a {@link LinkedHashMap} to be copied into {@link #propertyMutators}
+     * @param constructorArguments    View of a {@link LinkedHashMap} to be used for {@link #constructorArguments}
+     * @param propertyMutators        View of a {@link LinkedHashMap} to be used for {@link #propertyMutators}
+     * @param postRegistrationEffects View of a {@link LinkedHashMap} to be used for {@link #postRegistrationEffects}
      */
-    private ItemGenDefinition (Class<I> clazz, LinkedHashMap<String, ConstructorArgDefinition<?, ?>> constructorArguments, LinkedHashMap<String, PropertyDefinition<?, ?>> propertyMutators)
+    private ItemGenDefinition (Class<I> clazz, LinkedHashMap<String, ConstructorArgDefinition<?, ?>> constructorArguments, LinkedHashMap<String, PropertyDefinition<?, ?>> propertyMutators, List<Consumer<RegistryObject<I>>> postRegistrationEffects)
     {
         this.clazz = clazz;
         this.constructorArguments = ImmutableOrderedMap.of(constructorArguments);
         this.propertyMutators = ImmutableOrderedMap.of(propertyMutators);
+        this.postRegistrationEffects = ImmutableList.copyOf(postRegistrationEffects);
         this.constructorArgsClasses = this.constructorArguments.values().stream().map(ConstructorArgDefinition::clazz).toArray(Class<?>[]::new);
     }
 
@@ -165,7 +179,7 @@ public class ItemGenDefinition<I extends Item>
             final Object[] constructorValues = this.provideConstructorArgs(objectInfo, properties);
             resultingMap.put(candidateName, () -> pseudoConstructor.create(constructorValues)); //this.instantiate(constructor, constructorValues));
         }
-        return new Product<>(resultingMap);
+        return new Product<>(resultingMap, postRegistrationEffects);
     }
 
     /**
@@ -178,27 +192,17 @@ public class ItemGenDefinition<I extends Item>
      */
     public Product<I> generateAutoConstructor (ItemGenConfigProvider configProvider)
     {
-        final Map<String, Supplier<I>> resultingMap = new HashMap<>();
         final Constructor<I> optionalConstructor = fetchConstructor();
-        for (var definedCandidate : configProvider.getItemObjects().entrySet())
+        return this.generate(configProvider, (Object... args) ->
         {
-            final String candidateName = definedCandidate.getKey();
-            final ItemGenObjectInfo objectInfo = definedCandidate.getValue();
-            final Item.Properties properties = this.mutateProperties(objectInfo);
-            final Object[] constructorValues = this.provideConstructorArgs(objectInfo, properties);
-            resultingMap.put(candidateName, () ->
+            try
             {
-                try
-                {
-                    return optionalConstructor.newInstance(constructorValues);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
-                {
-                    throw new RuntimeException("Constructor execution failed for an item definition " + candidateName +
-                        ", with classes " + Arrays.toString(constructorArgsClasses), e);
-                }
-            });
-        }
-        return new Product<>(resultingMap);
+                return optionalConstructor.newInstance(args);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
+            {
+                throw new RuntimeException("Constructor execution failed for an item definition with classes " + Arrays.toString(constructorArgsClasses), e);
+            }
+        });
     }
 
     /**
@@ -272,7 +276,7 @@ public class ItemGenDefinition<I extends Item>
     }
 
     @SafeVarargs
-    public static <T> T[] closestArray (T[] targetArray, T[]... arrays) {
+    private static <T> T[] closestArray (T[] targetArray, T[]... arrays) {
         int maxMatches = 0;
         int bestIndex = -1;
         Set<T> targetSet = new HashSet<>(Arrays.asList(targetArray));
@@ -285,7 +289,6 @@ public class ItemGenDefinition<I extends Item>
                 bestIndex = i;
             }
         }
-
         if (bestIndex < 0)
         {
             return null;
@@ -304,6 +307,7 @@ public class ItemGenDefinition<I extends Item>
     {
         private final LinkedHashMap<String, ConstructorArgDefinition<?, ?>> constructorArguments = new LinkedHashMap<>();
         private final LinkedHashMap<String, PropertyDefinition<?, ?>> propertyMutators = new LinkedHashMap<>();
+        private final ArrayList<Consumer<RegistryObject<I>>> postRegistrationEffects = new ArrayList<>();
 
         private final Class<I> clazz;
 
@@ -417,10 +421,16 @@ public class ItemGenDefinition<I extends Item>
             return this;
         }
 
+        public Builder<I> postRegistrationEffect (Consumer<RegistryObject<I>> effect)
+        {
+            postRegistrationEffects.add(effect);
+            return this;
+        }
+
         @NotNull
         public ItemGenDefinition<I> build ()
         {
-            return new ItemGenDefinition<>(clazz, constructorArguments, propertyMutators);
+            return new ItemGenDefinition<>(clazz, constructorArguments, propertyMutators, postRegistrationEffects);
         }
 
         private void validateConstructorArg (final String argName)
@@ -473,17 +483,23 @@ public class ItemGenDefinition<I extends Item>
     public static class Product<I extends Item>
     {
         private final Map<String, Supplier<I>> generatedItems;
+        private final ImmutableList<Consumer<RegistryObject<I>>> postRegistrationEffects;
 
-        public Product (Map<String, Supplier<I>> generatedItems)
+        public Product (Map<String, Supplier<I>> generatedItems, ImmutableList<Consumer<RegistryObject<I>>> postRegistrationEffects)
         {
             this.generatedItems = generatedItems;
+            this.postRegistrationEffects = postRegistrationEffects;
         }
 
         public void register (DeferredRegister<Item> register)
         {
             for (var itemEntry : generatedItems.entrySet())
             {
-                register.register(itemEntry.getKey(), itemEntry.getValue());
+                final RegistryObject<I> iter = register.register(itemEntry.getKey(), itemEntry.getValue());
+                for (var effect : postRegistrationEffects)
+                {
+                    effect.accept(iter);
+                }
             }
         }
     }
