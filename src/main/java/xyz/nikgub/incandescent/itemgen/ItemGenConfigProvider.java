@@ -1,8 +1,28 @@
+/*
+    Incandescent Lib, Minecraft Forge light-weight library
+    Copyright (C) 2025, nikgub_
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package xyz.nikgub.incandescent.itemgen;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraftforge.fml.loading.FMLPaths;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -30,7 +50,8 @@ public class ItemGenConfigProvider
         itemObjects = map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, stringMapEntry -> new ItemGenObjectInfo(stringMapEntry.getValue())));
     }
 
-    public static ItemGenConfigProvider inAnyDir (String rawLocation)
+    @Contract("_ -> new")
+    public static @NotNull ItemGenConfigProvider inAnyDir (String rawLocation)
     {
         final String jsonString;
         try
@@ -43,7 +64,8 @@ public class ItemGenConfigProvider
         return new ItemGenConfigProvider(jsonString);
     }
 
-    public static ItemGenConfigProvider inConfigDir (String configLocation)
+    @Contract("_ -> new")
+    public static @NotNull ItemGenConfigProvider inConfigDir (String configLocation)
     {
         final String jsonString;
         try
@@ -56,10 +78,11 @@ public class ItemGenConfigProvider
         return new ItemGenConfigProvider(jsonString);
     }
 
-    public static ItemGenConfigProvider inDataDir (String dataLocation)
+    @Contract("_ -> new")
+    public static @NotNull ItemGenConfigProvider inDataDir (String dataLocation)
     {
         final String jsonString;
-        final URL url = ItemGenConfigProvider.class.getClassLoader().getResource(dataLocation);
+        final URL url = ItemGenConfigProvider.class.getClassLoader().getResource("data/" + dataLocation);
         if (url == null)
         {
             throw new RuntimeException("Unable to open file \"" + dataLocation + "\" in data folder");
