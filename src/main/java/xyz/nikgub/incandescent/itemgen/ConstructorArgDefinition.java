@@ -1,8 +1,8 @@
-package xyz.nikgub.incandescent.itemgen_config;
+package xyz.nikgub.incandescent.itemgen;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.nikgub.incandescent.itemgen_config.interfaces.IConverter;
+import xyz.nikgub.incandescent.itemgen.interfaces.IConverter;
 
 import java.util.NoSuchElementException;
 

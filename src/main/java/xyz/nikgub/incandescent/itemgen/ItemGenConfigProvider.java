@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.itemgen_config;
+package xyz.nikgub.incandescent.itemgen;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;

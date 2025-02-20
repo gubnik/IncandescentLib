@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.itemgen_config.interfaces;
+package xyz.nikgub.incandescent.itemgen.interfaces;
 
 @FunctionalInterface
 public interface IConverter<FT, TT>

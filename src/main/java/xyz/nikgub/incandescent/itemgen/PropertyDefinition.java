@@ -1,10 +1,10 @@
-package xyz.nikgub.incandescent.itemgen_config;
+package xyz.nikgub.incandescent.itemgen;
 
 import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.nikgub.incandescent.itemgen_config.interfaces.IConverter;
-import xyz.nikgub.incandescent.itemgen_config.interfaces.IPropertyMutator;
+import xyz.nikgub.incandescent.itemgen.interfaces.IConverter;
+import xyz.nikgub.incandescent.itemgen.interfaces.IPropertyMutator;
 
 import java.util.NoSuchElementException;
 

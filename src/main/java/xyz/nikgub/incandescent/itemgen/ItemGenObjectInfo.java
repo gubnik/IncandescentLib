@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.itemgen_config;
+package xyz.nikgub.incandescent.itemgen;
 
 import java.util.HashMap;
 import java.util.Map;

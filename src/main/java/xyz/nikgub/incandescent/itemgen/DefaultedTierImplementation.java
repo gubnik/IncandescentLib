@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.itemgen_config;
+package xyz.nikgub.incandescent.itemgen;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Tier;
@@ -17,7 +17,7 @@ import java.util.Map;
  *     be required.
  * </p>
  *
- * @see xyz.nikgub.incandescent.itemgen_config.interfaces.IConverter
+ * @see xyz.nikgub.incandescent.itemgen.interfaces.IConverter
  * @see ItemGenDefinition
  */
 public class DefaultedTierImplementation implements Tier

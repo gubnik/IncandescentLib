@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.itemgen_config.interfaces;
+package xyz.nikgub.incandescent.itemgen.interfaces;
 
 import net.minecraft.world.item.Item;
 
