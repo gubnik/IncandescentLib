@@ -76,7 +76,7 @@ Objects of this class are disposable, and store only file's provided name and th
 
 ```java
 private final PyranimParser parser = new PyranimParser.Builder().build();
-private final AnimationDefinition ASM = parser.parse(new PyranimLoader("asm.pyranim"));
+private final AnimationDefinition ASM = parser.parse(new PyranimLoader("example.pyranim"));
 ```
 
 ## Parsing process

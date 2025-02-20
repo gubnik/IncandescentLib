@@ -95,7 +95,7 @@ public class PyranimParser
      *                                issues with line placement or syntax errors
      * @see PyranimLexer
      */
-    public AnimationDefinition parse (@NotNull PyranimLoader loader)
+    private AnimationDefinition parse (@NotNull PyranimLoader loader)
     {
         final AnimationIR animationIR = new AnimationIR();
         final Queue<String> lines = loader.getLines();
@@ -115,6 +115,11 @@ public class PyranimParser
         }
         final AnimationDefinition.Builder builder = animationIR.bakeIntoBuilder();
         return builder.build();
+    }
+
+    public AnimationDefinition parse (@NotNull String fileLocation)
+    {
+        return this.parse(new PyranimLoader(fileLocation));
     }
 
     /**

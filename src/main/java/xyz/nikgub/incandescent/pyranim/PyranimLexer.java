@@ -225,7 +225,7 @@ public final class PyranimLexer
      */
     public enum LocalDirective implements LexerComponent
     {
-        ATTIMESTAMP(">attime", (l, s) -> Float.parseFloat(s)),
+        AT_TIME(">attime", (l, s) -> Float.parseFloat(s)),
         INTERPOLATION(">intrpl", PyranimParser::getInterpolation);
 
         private final String representation;
@@ -252,7 +252,7 @@ public final class PyranimLexer
                 {
                     switch (this)
                     {
-                        case ATTIMESTAMP ->
+                        case AT_TIME ->
                         {
                             animationIR.setCurrentTime((Float) arg);
                             return State.PART_HEADER;
