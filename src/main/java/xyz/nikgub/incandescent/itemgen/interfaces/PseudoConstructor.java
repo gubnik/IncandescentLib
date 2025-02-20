@@ -19,9 +19,11 @@
 package xyz.nikgub.incandescent.itemgen.interfaces;
 
 import net.minecraft.world.item.Item;
+import org.jetbrains.annotations.Contract;
 
 
-public interface IPseudoConstructor<I extends Item>
+public interface PseudoConstructor<I extends Item>
 {
+    @Contract("_ -> new")
     I create (Object... args);
 }

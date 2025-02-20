@@ -20,7 +20,7 @@ package xyz.nikgub.incandescent.itemgen;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.nikgub.incandescent.itemgen.interfaces.IConverter;
+import xyz.nikgub.incandescent.itemgen.interfaces.Converter;
 
 import java.util.NoSuchElementException;
 
@@ -31,12 +31,12 @@ import java.util.NoSuchElementException;
  *
  * @param clazz        {@link Class} of the argument
  * @param defaultValue {@code T} value that will be used if no value was parsed
- * @param converter    {@link IConverter} used to create convert objects of one type to another
+ * @param converter    {@link Converter} used to create convert objects of one type to another
  * @param <FT>         Type of the expected parsed argument
  * @param <TT>         Type of the transformed argument
  */
 public record ConstructorArgDefinition<FT, TT>(@NotNull Class<TT> clazz, @Nullable TT defaultValue,
-                                               @Nullable IConverter<FT, TT> converter)
+                                               @Nullable Converter<FT, TT> converter)
 {
     @NotNull
     TT getValue (@Nullable FT constructorArgValue)

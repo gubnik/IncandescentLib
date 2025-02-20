@@ -23,6 +23,7 @@ import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
+import xyz.nikgub.incandescent.itemgen.interfaces.Converter;
 
 import java.util.Map;
 
@@ -35,7 +36,7 @@ import java.util.Map;
  *     be required.
  * </p>
  *
- * @see xyz.nikgub.incandescent.itemgen.interfaces.IConverter
+ * @see Converter
  * @see ItemGenDefinition
  */
 public class DefaultedTierImplementation implements Tier

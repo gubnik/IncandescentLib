@@ -21,7 +21,7 @@ package xyz.nikgub.incandescent.itemgen.interfaces;
 import net.minecraft.world.item.Item;
 
 @FunctionalInterface
-public interface IPropertyMutator<T>
+public interface PropertyMutator<T>
 {
     Item.Properties set (Item.Properties properties, T val);
 }

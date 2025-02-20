@@ -24,9 +24,9 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import xyz.nikgub.incandescent.itemgen.interfaces.IConverter;
-import xyz.nikgub.incandescent.itemgen.interfaces.IPropertyMutator;
-import xyz.nikgub.incandescent.itemgen.interfaces.IPseudoConstructor;
+import xyz.nikgub.incandescent.itemgen.interfaces.Converter;
+import xyz.nikgub.incandescent.itemgen.interfaces.PropertyMutator;
+import xyz.nikgub.incandescent.itemgen.interfaces.PseudoConstructor;
 import xyz.nikgub.incandescent.util.ImmutableOrderedMap;
 
 import java.lang.reflect.Constructor;
@@ -49,7 +49,7 @@ import java.util.function.Supplier;
  *
  * <h2>Constructor arguments definition</h2>
  * <p>
- * The constructor can be defined either with a manually provided {@link IPseudoConstructor},
+ * The constructor can be defined either with a manually provided {@link PseudoConstructor},
  * which takes in an {@code Object...} varargs and returns an instance of the item,
  * or using reflection {@link #generateAutoConstructor(ItemGenConfigProvider)}, which tries
  * to search for a constructor within the class' definition based on known args' transformed types.
@@ -66,7 +66,7 @@ import java.util.function.Supplier;
  *
  * <h2>Property definitions</h2>
  * <p>
- * Properties are defined by their name and {@link IPropertyMutator}, which is expected to be a method
+ * Properties are defined by their name and {@link PropertyMutator}, which is expected to be a method
  * that performs an operation on an instance of {@link Item.Properties} and returns it, but it is not
  * enforced for it to act in exactly this way.
  * </p>
@@ -127,7 +127,7 @@ public class ItemGenDefinition<I extends Item>
 
     /**
      * View of post-registration effects that will be executed
-     * within {@link #generate(ItemGenConfigProvider, IPseudoConstructor)} and {@link #generateAutoConstructor(ItemGenConfigProvider)}
+     * within {@link #generate(ItemGenConfigProvider, PseudoConstructor)} and {@link #generateAutoConstructor(ItemGenConfigProvider)}
      * methods after an item was registered.
      */
     private final ImmutableList<Consumer<RegistryObject<I>>> postRegistrationEffects;
@@ -162,13 +162,13 @@ public class ItemGenDefinition<I extends Item>
 
     /**
      * Main generator of the definition. Processes an {@link ItemGenConfigProvider} into
-     * validated properties and constructor arguments to be later passed into {@link IPseudoConstructor}.
+     * validated properties and constructor arguments to be later passed into {@link PseudoConstructor}.
      *
      * @param configProvider    {@link ItemGenConfigProvider} for the gathered JSON objects.
-     * @param pseudoConstructor {@link IPseudoConstructor} to be used in item creation.
+     * @param pseudoConstructor {@link PseudoConstructor} to be used in item creation.
      * @return {@link Product} containing definitions of items ready to be registered
      */
-    public Product<I> generate (ItemGenConfigProvider configProvider, IPseudoConstructor<I> pseudoConstructor)
+    public Product<I> generate (ItemGenConfigProvider configProvider, PseudoConstructor<I> pseudoConstructor)
     {
         final Map<String, Supplier<I>> resultingMap = new HashMap<>();
         for (var definedCandidate : configProvider.getItemObjects().entrySet())
@@ -359,7 +359,7 @@ public class ItemGenDefinition<I extends Item>
         }
 
         @NotNull
-        public <FT, TT> Builder<I> constructorArgConverted (@NotNull String argName, @NotNull Class<TT> clazz, @NotNull IConverter<FT, TT> converter)
+        public <FT, TT> Builder<I> constructorArgConverted (@NotNull String argName, @NotNull Class<TT> clazz, @NotNull Converter<FT, TT> converter)
         {
             this.validateConstructorArg(argName);
             constructorArguments.put(argName, new ConstructorArgDefinition<>(clazz, null, converter));
@@ -375,7 +375,7 @@ public class ItemGenDefinition<I extends Item>
         }
 
         @NotNull
-        public <FT, TT> Builder<I> constructorArgConvertedOrDefault (@NotNull String argName, @NotNull Class<TT> clazz, @NotNull IConverter<FT, TT> converter, @NotNull TT defaultValue)
+        public <FT, TT> Builder<I> constructorArgConvertedOrDefault (@NotNull String argName, @NotNull Class<TT> clazz, @NotNull Converter<FT, TT> converter, @NotNull TT defaultValue)
         {
             this.validateConstructorArg(argName);
             constructorArguments.put(argName, new ConstructorArgDefinition<>(clazz, defaultValue, converter));
@@ -390,7 +390,7 @@ public class ItemGenDefinition<I extends Item>
         }
 
         @NotNull
-        public <T> Builder<I> property (@NotNull String propertyName, @NotNull Class<T> clazz, @NotNull IPropertyMutator<T> mutator)
+        public <T> Builder<I> property (@NotNull String propertyName, @NotNull Class<T> clazz, @NotNull PropertyMutator<T> mutator)
         {
             this.validateProperty(propertyName);
             propertyMutators.put(propertyName, new PropertyDefinition<>(clazz, mutator, null, null));
@@ -398,7 +398,7 @@ public class ItemGenDefinition<I extends Item>
         }
 
         @NotNull
-        public <FT, TT> Builder<I> propertyConverted (@NotNull String propertyName, @NotNull Class<TT> clazz, @NotNull IPropertyMutator<TT> mutator, @NotNull IConverter<FT, TT> converter)
+        public <FT, TT> Builder<I> propertyConverted (@NotNull String propertyName, @NotNull Class<TT> clazz, @NotNull PropertyMutator<TT> mutator, @NotNull Converter<FT, TT> converter)
         {
             this.validateProperty(propertyName);
             propertyMutators.put(propertyName, new PropertyDefinition<>(clazz, mutator, null, converter));
@@ -406,7 +406,7 @@ public class ItemGenDefinition<I extends Item>
         }
 
         @NotNull
-        public <T> Builder<I> propertyOrDefault (@NotNull String propertyName, @NotNull Class<T> clazz, @NotNull IPropertyMutator<T> mutator, @NotNull T defaultValue)
+        public <T> Builder<I> propertyOrDefault (@NotNull String propertyName, @NotNull Class<T> clazz, @NotNull PropertyMutator<T> mutator, @NotNull T defaultValue)
         {
             this.validateProperty(propertyName);
             propertyMutators.put(propertyName, new PropertyDefinition<>(clazz, mutator, defaultValue, null));
@@ -414,7 +414,7 @@ public class ItemGenDefinition<I extends Item>
         }
 
         @NotNull
-        public <FT, TT> Builder<I> propertyConvertedOrDefault (@NotNull String propertyName, @NotNull Class<TT> clazz, @NotNull IPropertyMutator<TT> mutator, @NotNull IConverter<FT, TT> converter, @NotNull TT defaultValue)
+        public <FT, TT> Builder<I> propertyConvertedOrDefault (@NotNull String propertyName, @NotNull Class<TT> clazz, @NotNull PropertyMutator<TT> mutator, @NotNull Converter<FT, TT> converter, @NotNull TT defaultValue)
         {
             this.validateProperty(propertyName);
             propertyMutators.put(propertyName, new PropertyDefinition<>(clazz, mutator, defaultValue, converter));
