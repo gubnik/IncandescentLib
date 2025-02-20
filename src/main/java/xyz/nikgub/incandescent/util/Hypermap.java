@@ -56,12 +56,12 @@ import java.util.Set;
  *                  return storage;
  *              }
  *
- *              public LinkedHashMap&lt;AK, CacheMap&lt;SK, V&gt&gt raw () // wrong usage, mismatched maps
+ *              public LinkedHashMap&lt;AK, CacheMap&lt;SK, V&gt;&gt; raw () // wrong usage, mismatched maps
  *              {
  *                  return storage;
  *              }
  *
- *              public ImmutableHashMap&lt;AK, ImmutableHashMap&lt;SK, V&gt&gt raw () // wrong usage, immutable maps
+ *              public ImmutableHashMap&lt;AK, ImmutableHashMap&lt;SK, V&gt;&gt; raw () // wrong usage, immutable maps
  *              {
  *                  return storage;
  *              }
@@ -102,7 +102,8 @@ import java.util.Set;
  * @param <AK> The type of the absolute key.
  * @param <SK> The type of the sub key.
  * @param <V>  The type of the value associated with the keys.
- * @see HashCacheHypermap For an example implementation
+ * @see HashHashHypermap Common implementation
+ * @see ImmutableHypermap Immutable implementation
  */
 public interface Hypermap<AK, SK, V>
 {
@@ -216,6 +217,18 @@ public interface Hypermap<AK, SK, V>
      */
     Collection<? extends Map<SK, V>> submaps ();
 
+    /**
+     * Creates an immutable hypermap from the provided elements.
+     * <p>
+     *     This method performs no type checking whatsoever and expects elements of the correct type
+     *     to be provided, otherwise it will crash with a cast exception.
+     * </p>
+     * @param input {@code Object} varargs, must come in triplets representing absolute and sub keys and a value.
+     * @return {@link Hypermap} view instance containing all the elements.
+     * @param <AK> The type of the absolute key.
+     * @param <SK> The type of the sub key.
+     * @param <V>  The type of the value associated with the keys.
+     */
     @SuppressWarnings("unchecked")
     static <AK, SK, V> Hypermap<AK, SK, V> of (Object... input)
     {
