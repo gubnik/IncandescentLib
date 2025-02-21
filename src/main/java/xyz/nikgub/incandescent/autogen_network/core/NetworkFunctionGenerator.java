@@ -3,7 +3,7 @@ package xyz.nikgub.incandescent.autogen_network.core;
 import org.jetbrains.annotations.NotNull;
 import xyz.nikgub.incandescent.autogen_network.IncandescentNetworkAPI;
 import xyz.nikgub.incandescent.autogen_network.IncandescentPacket;
-import xyz.nikgub.incandescent.autogen_network.exception.IllformedPacketException;
+import xyz.nikgub.incandescent.autogen_network.exception.MalformedPacketException;
 import xyz.nikgub.incandescent.autogen_network.interfaces.DecoderFunc;
 import xyz.nikgub.incandescent.autogen_network.interfaces.EncoderFunc;
 import xyz.nikgub.incandescent.autogen_network.interfaces.PacketReadFunc;
@@ -47,7 +47,7 @@ class NetworkFunctionGenerator
      * that are being used for automated reader matching.
      * Readers are gathered from {@link PacketIOMapping#bufRead(Class)},
      * and should it not contain a reader for a field's class, this
-     * function will throw a {@link IllformedPacketException}.
+     * function will throw a {@link MalformedPacketException}.
      * Intermediate mappings of reader functions are stored in {@link NetworkFunctionGenerator#READER_CACHE}
      *
      * @param clazz {@link IncandescentPacket} class
@@ -67,7 +67,7 @@ class NetworkFunctionGenerator
             PacketReadFunc<?> readFunc = PacketIOMapping.bufRead(field.getType());
             if (readFunc == null)
             {
-                throw new IllformedPacketException("Cannot decode " + field.getType().getName() + " because no such reader exists");
+                throw new MalformedPacketException("Cannot decode " + field.getType().getName() + " because no such reader exists");
             }
             READER_CACHE.putIfAbsent(field, readFunc);
         }
@@ -84,14 +84,14 @@ class NetworkFunctionGenerator
                 PacketReadFunc<Object> readFunc = (PacketReadFunc<Object>) READER_CACHE.get(field);
                 if (readFunc == null)
                 {
-                    throw new IllformedPacketException("Cannot decode " + field.getType().getName() + " because no such reader exists");
+                    throw new MalformedPacketException("Cannot decode " + field.getType().getName() + " because no such reader exists");
                 }
                 try
                 {
                     field.set(instance, readFunc.read(buf));
                 } catch (IllegalAccessException e)
                 {
-                    throw new IllformedPacketException("Cannot decode " + field.getType().getName() + " because the access was denied");
+                    throw new MalformedPacketException("Cannot decode " + field.getType().getName() + " because the access was denied");
                 } finally
                 {
                     if (wasPrivate)
@@ -110,7 +110,7 @@ class NetworkFunctionGenerator
      * that are being used for automated writer matching.
      * Readers are gathered from {@link PacketIOMapping#bufWrite(Class)},
      * and should it not contain a writer for a field's class, this
-     * function will throw a {@link IllformedPacketException}.
+     * function will throw a {@link MalformedPacketException}.
      * Intermediate mappings of writer functions are stored in {@link NetworkFunctionGenerator#WRITER_CACHE}
      *
      * @param clazz {@link IncandescentPacket} class
@@ -130,7 +130,7 @@ class NetworkFunctionGenerator
             PacketWriteFunc<?> writeFunc = PacketIOMapping.bufWrite(field.getType());
             if (writeFunc == null)
             {
-                throw new IllformedPacketException("Cannot encode " + field.getType().getName() + " because no such writer exists");
+                throw new MalformedPacketException("Cannot encode " + field.getType().getName() + " because no such writer exists");
             }
             WRITER_CACHE.putIfAbsent(field, writeFunc);
         }
@@ -146,14 +146,14 @@ class NetworkFunctionGenerator
                 PacketWriteFunc<Object> writeFunc = (PacketWriteFunc<Object>) WRITER_CACHE.get(field);
                 if (writeFunc == null)
                 {
-                    throw new IllformedPacketException("Cannot encode " + field.getType().getName() + " because no such writer exists");
+                    throw new MalformedPacketException("Cannot encode " + field.getType().getName() + " because no such writer exists");
                 }
                 try
                 {
                     writeFunc.write(buf, field.get(t));
                 } catch (IllegalAccessException e)
                 {
-                    throw new IllformedPacketException("Cannot encode " + field.getType().getName() + " because the access was denied");
+                    throw new MalformedPacketException("Cannot encode " + field.getType().getName() + " because the access was denied");
                 } finally
                 {
                     if (wasPrivate)
@@ -168,7 +168,7 @@ class NetworkFunctionGenerator
     /**
      * Intermediate function that instantiates a default packet used in {@link #generateDecoder(Class)}.
      * For this exact purpose, the packet class should either have one accessible, or define a proper decoder.
-     * If no such constructor is present, the {@link IllformedPacketException} will be thrown
+     * If no such constructor is present, the {@link MalformedPacketException} will be thrown
      *
      * @param clazz {@link IncandescentPacket} class
      * @param <T>   Packet type
@@ -179,7 +179,7 @@ class NetworkFunctionGenerator
         final Constructor<?>[] constructors = clazz.getConstructors();
         if (Arrays.stream(constructors).noneMatch(constructor -> constructor.getParameterCount() == 0))
         {
-            throw new IllformedPacketException("Cannot decode " + clazz.getName() + " because there is no accessible default no-args constructor");
+            throw new MalformedPacketException("Cannot decode " + clazz.getName() + " because there is no accessible default no-args constructor");
         }
         Constructor<T> constructor;
         try
@@ -195,7 +195,7 @@ class NetworkFunctionGenerator
             instance = constructor.newInstance();
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException e)
         {
-            throw new IllformedPacketException("Cannot decode " + clazz.getName() + " because there is no accessible default no-args constructor");
+            throw new MalformedPacketException("Cannot decode " + clazz.getName() + " because there is no accessible default no-args constructor");
         }
         return instance;
     }

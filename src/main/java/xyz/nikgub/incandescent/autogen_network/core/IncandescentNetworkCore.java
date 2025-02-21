@@ -27,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.nikgub.incandescent.Incandescent;
 import xyz.nikgub.incandescent.autogen_network.IncandescentPacket;
-import xyz.nikgub.incandescent.autogen_network.exception.IllformedPacketException;
+import xyz.nikgub.incandescent.autogen_network.exception.MalformedPacketException;
 import xyz.nikgub.incandescent.autogen_network.interfaces.DecoderFunc;
 import xyz.nikgub.incandescent.autogen_network.interfaces.EncoderFunc;
 import xyz.nikgub.incandescent.autogen_network.interfaces.HandlerFunc;
@@ -159,7 +159,7 @@ public class IncandescentNetworkCore
                     return constructor.newInstance(buf);
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e)
                 {
-                    throw new IllformedPacketException("FriendlyByteBuffer constructor is not accessible within packet class " + clazz);
+                    throw new MalformedPacketException("FriendlyByteBuffer constructor is not accessible within packet class " + clazz);
                 }
             };
             this.DECODER_CACHE.putIfAbsent(clazz, decoderFunc);
@@ -207,10 +207,10 @@ public class IncandescentNetworkCore
                 encoderMethod.invoke(t, buf);
             } catch (IllegalAccessException e)
             {
-                throw new IllformedPacketException("Encoder method is not accessible within packet class " + clazz);
+                throw new MalformedPacketException("Encoder method is not accessible within packet class " + clazz);
             } catch (InvocationTargetException e)
             {
-                throw new IllformedPacketException("Encoder method is not invocable within packet class " + clazz);
+                throw new MalformedPacketException("Encoder method is not invocable within packet class " + clazz);
             }
         };
         this.ENCODER_CACHE.putIfAbsent(clazz, encoderFunc);
@@ -243,10 +243,10 @@ public class IncandescentNetworkCore
                 handlerMethod.invoke(t, sup);
             } catch (IllegalAccessException e)
             {
-                throw new IllformedPacketException("Handler method is not accessible within packet class " + clazz);
+                throw new MalformedPacketException("Handler method is not accessible within packet class " + clazz);
             } catch (InvocationTargetException e)
             {
-                throw new IllformedPacketException("Handler method is not invocable within packet class " + clazz);
+                throw new MalformedPacketException("Handler method is not invocable within packet class " + clazz);
             }
         };
         this.HANDLER_CACHE.putIfAbsent(clazz, handlerFunc);
@@ -256,8 +256,8 @@ public class IncandescentNetworkCore
     /**
      * Gathers an encoder method from packet {@code clazz} using reflection.
      * If no such method is present, the {@link NetworkFunctionGenerator#generateEncoder(Class)} will be used instead.
-     * If multiple of such method are present, the {@link IllformedPacketException} will be thrown.
-     * If such a method is present but is illformed, the {@link IllformedPacketException} will be thrown.
+     * If multiple of such method are present, the {@link MalformedPacketException} will be thrown.
+     * If such a method is present but is illformed, the {@link MalformedPacketException} will be thrown.
      *
      * @param clazz {@link IncandescentPacket} class
      * @param <T>   Packet type
@@ -275,7 +275,7 @@ public class IncandescentNetworkCore
             }
             if (encoder != null)
             {
-                throw new IllformedPacketException("Encoder method is not unique within packet class " + clazz);
+                throw new MalformedPacketException("Encoder method is not unique within packet class " + clazz);
             }
             encoder = method;
         }
@@ -286,16 +286,16 @@ public class IncandescentNetworkCore
         if (encoder.getReturnType() != void.class || encoder.getParameterCount() != 1
             || encoder.getParameters()[0].getType() != FriendlyByteBuf.class)
         {
-            throw new IllformedPacketException("Encoder method is present within packet class " + clazz + " but is illformed");
+            throw new MalformedPacketException("Encoder method is present within packet class " + clazz + " but is illformed");
         }
         return encoder;
     }
 
     /**
      * Gathers a handler method from packet {@code clazz} using reflection.
-     * If no such method is present, the {@link IllformedPacketException} will be thrown.
-     * If multiple of such method are present, the {@link IllformedPacketException} will be thrown.
-     * If such a method is present but is illformed, the {@link IllformedPacketException} will be thrown.
+     * If no such method is present, the {@link MalformedPacketException} will be thrown.
+     * If multiple of such method are present, the {@link MalformedPacketException} will be thrown.
+     * If such a method is present but is illformed, the {@link MalformedPacketException} will be thrown.
      *
      * @param clazz {@link IncandescentPacket} class
      * @param <T>   Packet type
@@ -313,19 +313,19 @@ public class IncandescentNetworkCore
             }
             if (handler != null)
             {
-                throw new IllformedPacketException("Handler method is not unique within packet class " + clazz);
+                throw new MalformedPacketException("Handler method is not unique within packet class " + clazz);
             }
             handler = method;
         }
         if (handler == null)
         {
-            throw new IllformedPacketException("Handler method is not present within packet class " + clazz);
+            throw new MalformedPacketException("Handler method is not present within packet class " + clazz);
         }
         if (handler.getReturnType() != boolean.class || handler.getParameterCount() != 1
             || !(handler.getParameters()[0].getParameterizedType() instanceof ParameterizedType type && type.getRawType() == Supplier.class
             && type.getActualTypeArguments().length == 1 && type.getActualTypeArguments()[0] == NetworkEvent.Context.class))
         {
-            throw new IllformedPacketException("Handler method is present within packet class " + clazz + " but is illformed");
+            throw new MalformedPacketException("Handler method is present within packet class " + clazz + " but is illformed");
         }
         return handler;
     }

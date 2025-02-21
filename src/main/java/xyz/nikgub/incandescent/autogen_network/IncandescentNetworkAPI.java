@@ -30,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.nikgub.incandescent.Incandescent;
 import xyz.nikgub.incandescent.autogen_network.core.IncandescentNetworkCore;
 import xyz.nikgub.incandescent.autogen_network.exception.FaultyPacketLoadException;
-import xyz.nikgub.incandescent.autogen_network.exception.IllformedPacketException;
+import xyz.nikgub.incandescent.autogen_network.exception.MalformedPacketException;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -114,7 +114,7 @@ public class IncandescentNetworkAPI
         IncandescentPacket incandescentPacket = packet.getClass().getAnnotation(IncandescentPacket.class);
         if (incandescentPacket == null)
         {
-            throw new IllformedPacketException("Packet " + packet.getClass().getName() + " is not properly annotated");
+            throw new MalformedPacketException("Packet " + packet.getClass().getName() + " is not properly annotated");
         }
         IncandescentNetworkCore core = CORES.get(incandescentPacket.value());
         if (incandescentPacket.direction() == NetworkDirection.PLAY_TO_SERVER)
@@ -130,12 +130,12 @@ public class IncandescentNetworkAPI
         IncandescentPacket incandescentPacket = packet.getClass().getAnnotation(IncandescentPacket.class);
         if (incandescentPacket == null)
         {
-            throw new IllformedPacketException("Packet " + packet.getClass().getName() + " is not properly annotated");
+            throw new MalformedPacketException("Packet " + packet.getClass().getName() + " is not properly annotated");
         }
         IncandescentNetworkCore core = CORES.get(incandescentPacket.value());
         if (incandescentPacket.direction() == NetworkDirection.PLAY_TO_SERVER)
         {
-            throw new IllformedPacketException("Packet " + packet.getClass().getName() + " cannot be sent to client because it is a server packet");
+            throw new MalformedPacketException("Packet " + packet.getClass().getName() + " cannot be sent to client because it is a server packet");
         }
         core.getChannelInstance().send(PacketDistributor.PLAYER.with(() -> player), packet);
     }
@@ -145,12 +145,12 @@ public class IncandescentNetworkAPI
         IncandescentPacket incandescentPacket = packet.getClass().getAnnotation(IncandescentPacket.class);
         if (incandescentPacket == null)
         {
-            throw new IllformedPacketException("Packet " + packet.getClass().getName() + " is not properly annotated");
+            throw new MalformedPacketException("Packet " + packet.getClass().getName() + " is not properly annotated");
         }
         IncandescentNetworkCore core = CORES.get(incandescentPacket.value());
         if (incandescentPacket.direction() == NetworkDirection.PLAY_TO_SERVER)
         {
-            throw new IllformedPacketException("Packet " + packet.getClass().getName() + " cannot be sent to client because it is a server packet");
+            throw new MalformedPacketException("Packet " + packet.getClass().getName() + " cannot be sent to client because it is a server packet");
         }
         core.getChannelInstance().send(PacketDistributor.TRACKING_ENTITY.with(() -> player), packet);
     }
@@ -160,12 +160,12 @@ public class IncandescentNetworkAPI
         IncandescentPacket incandescentPacket = packet.getClass().getAnnotation(IncandescentPacket.class);
         if (incandescentPacket == null)
         {
-            throw new IllformedPacketException("Packet " + packet.getClass().getName() + " is not properly annotated");
+            throw new MalformedPacketException("Packet " + packet.getClass().getName() + " is not properly annotated");
         }
         IncandescentNetworkCore core = CORES.get(incandescentPacket.value());
         if (incandescentPacket.direction() == NetworkDirection.PLAY_TO_SERVER)
         {
-            throw new IllformedPacketException("Packet " + packet.getClass().getName() + " cannot be sent to client because it is a server packet");
+            throw new MalformedPacketException("Packet " + packet.getClass().getName() + " cannot be sent to client because it is a server packet");
         }
         core.getChannelInstance().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), packet);
     }

@@ -26,14 +26,14 @@ import xyz.nikgub.incandescent.autogen_network.IncandescentPacket;
  *
  * @see IncandescentNetworkCore
  */
-public class IllformedPacketException extends RuntimeException
+public class MalformedPacketException extends RuntimeException
 {
-    public IllformedPacketException (String message)
+    public MalformedPacketException (String message)
     {
         super(message);
     }
 
-    public IllformedPacketException (String message, Throwable cause)
+    public MalformedPacketException (String message, Throwable cause)
     {
         super(message, cause);
     }
