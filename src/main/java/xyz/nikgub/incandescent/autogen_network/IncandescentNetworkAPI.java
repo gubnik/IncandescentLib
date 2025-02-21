@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.network;
+package xyz.nikgub.incandescent.autogen_network;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -28,11 +28,11 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import xyz.nikgub.incandescent.Incandescent;
+import xyz.nikgub.incandescent.autogen_network.exception.FaultyPacketLoadException;
+import xyz.nikgub.incandescent.autogen_network.exception.IllformedPacketException;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * Class responsible for networking API
@@ -40,11 +40,16 @@ import java.util.Set;
  * @author Nikolay Gubankov (aka nikgub)
  */
 @Mod.EventBusSubscriber(modid = Incandescent.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class IncandescentNetwork
+public class IncandescentNetworkAPI
 {
+    private IncandescentNetworkAPI ()
+    {
+        // This class is not instantiatable
+    }
+
     /**
      * Mapping of {@link IncandescentNetworkCore} to mod IDs
-     * It is populated at the end of {@link IncandescentNetwork#registerCores(FMLCommonSetupEvent)}
+     * It is populated at the end of {@link IncandescentNetworkAPI#registerCores(FMLCommonSetupEvent)}
      */
     private static final Map<String, IncandescentNetworkCore> CORES = new HashMap<>();
 
@@ -162,5 +167,38 @@ public class IncandescentNetwork
             throw new IllformedPacketException("Packet " + packet.getClass().getName() + " cannot be sent to client because it is a server packet");
         }
         core.getChannelInstance().send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), packet);
+    }
+
+    /**
+     * Collects class' fields marked with {@link IncandescentPacket.Value}
+     * and sorts them according to {@link IncandescentPacket.Value#value()}
+     *
+     * @param clazz {@link IncandescentPacket} class
+     * @param <T>   Packet type
+     * @return List of fields marked with {@link IncandescentPacket.Value}
+     * @see IncandescentPacket.Value
+     */
+    public static <T> List<Field> getAnnotatedMethods (Class<T> clazz)
+    {
+        final Field[] fields = clazz.getDeclaredFields();
+        final List<Field> retVal = new ArrayList<>();
+        for (Field field : fields)
+        {
+            if (!field.isAnnotationPresent(IncandescentPacket.Value.class))
+            {
+                continue;
+            }
+            retVal.add(field);
+        }
+        retVal.sort(Comparator.comparingInt(field ->
+        {
+            IncandescentPacket.Value value = field.getAnnotation(IncandescentPacket.Value.class);
+            if (value == null)
+            {
+                return Integer.MAX_VALUE;
+            }
+            return value.value();
+        }));
+        return retVal;
     }
 }

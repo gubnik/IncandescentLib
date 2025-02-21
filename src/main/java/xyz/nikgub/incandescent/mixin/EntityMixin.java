@@ -32,9 +32,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import xyz.nikgub.incandescent.IncandescentConfig;
 import xyz.nikgub.incandescent.IncandescentHooks;
+import xyz.nikgub.incandescent.autogen_network.IncandescentNetworkAPI;
 import xyz.nikgub.incandescent.common.event.DefineSyncedEntityDataEvent;
 import xyz.nikgub.incandescent.common.event.SyncEntityNBTEvent;
-import xyz.nikgub.incandescent.network.IncandescentNetwork;
 import xyz.nikgub.incandescent.network.s2c.SyncEntityNBTPacket;
 
 @Mixin(Entity.class)
@@ -57,7 +57,7 @@ public abstract class EntityMixin
         final SyncEntityNBTEvent event = IncandescentHooks.syncEntityNbtEvent(self, tag);
         if (event.doSync())
         {
-            IncandescentNetwork.sendPacket(SyncEntityNBTPacket.create(self.getId(), tag));
+            IncandescentNetworkAPI.sendPacket(SyncEntityNBTPacket.create(self.getId(), tag));
         }
     }
 

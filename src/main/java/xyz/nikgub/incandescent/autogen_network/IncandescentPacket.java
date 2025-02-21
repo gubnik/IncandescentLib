@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.network;
+package xyz.nikgub.incandescent.autogen_network;
 
 import net.minecraftforge.network.NetworkDirection;
 

@@ -16,7 +16,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.network;
+package xyz.nikgub.incandescent.autogen_network.exception;
+
+import xyz.nikgub.incandescent.autogen_network.IncandescentNetworkCore;
+import xyz.nikgub.incandescent.autogen_network.IncandescentPacket;
 
 /**
  * Exception thrown if the {@link IncandescentPacket} is not properly formed

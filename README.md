@@ -20,7 +20,7 @@ dependancies {
 
 # Features
 
-## [Autogen Networking](src/main/java/xyz/nikgub/incandescent/network/README.md)
+## [Autogen Networking](src/main/java/xyz/nikgub/incandescent/autogen_network/README.md)
 Allows automated registration and assembly of packets from but a few annotations, using Java's Reflection API
 ### Example:
 ```java

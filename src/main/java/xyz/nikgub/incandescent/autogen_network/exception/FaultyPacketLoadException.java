@@ -16,12 +16,15 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.network;
+package xyz.nikgub.incandescent.autogen_network.exception;
+
+import xyz.nikgub.incandescent.autogen_network.IncandescentNetworkAPI;
+import xyz.nikgub.incandescent.autogen_network.IncandescentPacket;
 
 /**
  * Exception thrown if the {@link IncandescentPacket} failed to load
  *
- * @see IncandescentNetwork
+ * @see IncandescentNetworkAPI
  */
 public class FaultyPacketLoadException extends RuntimeException
 {
