@@ -98,9 +98,9 @@ public class IncandescentNetworkCore
             .serverAcceptedVersions(s -> true)
             .simpleChannel();
         this.generator = new NetworkFunctionGenerator();
-        DECODER_CACHE = new CacheMap<>(maxCacheSize);
-        ENCODER_CACHE = new CacheMap<>(maxCacheSize);
-        HANDLER_CACHE = new CacheMap<>(maxCacheSize);
+        this.DECODER_CACHE = new CacheMap<>(maxCacheSize);
+        this.ENCODER_CACHE = new CacheMap<>(maxCacheSize);
+        this.HANDLER_CACHE = new CacheMap<>(maxCacheSize);
     }
 
     /**
@@ -114,9 +114,9 @@ public class IncandescentNetworkCore
     {
         IncandescentPacket packet = clazz.getAnnotation(IncandescentPacket.class);
         this.channelInstance.messageBuilder(clazz, lastPacket++, packet.direction())
-            .decoder(getDecoder(clazz)::decode)
-            .encoder(getEncoder(clazz)::encode)
-            .consumerMainThread(getHandler(clazz)::handle)
+            .decoder(this.getDecoder(clazz)::decode)
+            .encoder(this.getEncoder(clazz)::encode)
+            .consumerMainThread(this.getHandler(clazz)::handle)
             .add();
     }
 
