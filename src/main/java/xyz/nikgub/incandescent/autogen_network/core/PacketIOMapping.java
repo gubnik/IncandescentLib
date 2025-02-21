@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.autogen_network;
+package xyz.nikgub.incandescent.autogen_network.core;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

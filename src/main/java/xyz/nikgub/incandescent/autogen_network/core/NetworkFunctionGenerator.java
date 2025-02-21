@@ -1,6 +1,8 @@
-package xyz.nikgub.incandescent.autogen_network;
+package xyz.nikgub.incandescent.autogen_network.core;
 
 import org.jetbrains.annotations.NotNull;
+import xyz.nikgub.incandescent.autogen_network.IncandescentNetworkAPI;
+import xyz.nikgub.incandescent.autogen_network.IncandescentPacket;
 import xyz.nikgub.incandescent.autogen_network.exception.IllformedPacketException;
 import xyz.nikgub.incandescent.autogen_network.interfaces.DecoderFunc;
 import xyz.nikgub.incandescent.autogen_network.interfaces.EncoderFunc;

@@ -28,6 +28,7 @@ import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import xyz.nikgub.incandescent.Incandescent;
+import xyz.nikgub.incandescent.autogen_network.core.IncandescentNetworkCore;
 import xyz.nikgub.incandescent.autogen_network.exception.FaultyPacketLoadException;
 import xyz.nikgub.incandescent.autogen_network.exception.IllformedPacketException;
 

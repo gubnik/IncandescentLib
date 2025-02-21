@@ -18,7 +18,7 @@
 
 package xyz.nikgub.incandescent.autogen_network.exception;
 
-import xyz.nikgub.incandescent.autogen_network.IncandescentNetworkCore;
+import xyz.nikgub.incandescent.autogen_network.core.IncandescentNetworkCore;
 import xyz.nikgub.incandescent.autogen_network.IncandescentPacket;
 
 /**

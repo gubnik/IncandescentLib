@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.autogen_network;
+package xyz.nikgub.incandescent.autogen_network.core;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -26,6 +26,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import xyz.nikgub.incandescent.Incandescent;
+import xyz.nikgub.incandescent.autogen_network.IncandescentPacket;
 import xyz.nikgub.incandescent.autogen_network.exception.IllformedPacketException;
 import xyz.nikgub.incandescent.autogen_network.interfaces.DecoderFunc;
 import xyz.nikgub.incandescent.autogen_network.interfaces.EncoderFunc;

@@ -19,6 +19,7 @@
 package xyz.nikgub.incandescent.autogen_network;
 
 import net.minecraftforge.network.NetworkDirection;
+import xyz.nikgub.incandescent.autogen_network.core.IncandescentNetworkCore;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
