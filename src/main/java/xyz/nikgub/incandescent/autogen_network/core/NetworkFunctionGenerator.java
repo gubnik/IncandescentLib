@@ -37,8 +37,8 @@ class NetworkFunctionGenerator
 
     public NetworkFunctionGenerator ()
     {
-        READER_CACHE = new CacheMap<>(128);
-        WRITER_CACHE = new CacheMap<>(128);
+        READER_CACHE = new CacheMap<>(32);
+        WRITER_CACHE = new CacheMap<>(32);
     }
 
     /**
