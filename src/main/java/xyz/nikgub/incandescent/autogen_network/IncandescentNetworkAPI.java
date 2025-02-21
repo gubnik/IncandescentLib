@@ -92,7 +92,7 @@ public class IncandescentNetworkAPI
         });
         for (var entry : loadPacketInfo.entrySet())
         {
-            IncandescentNetworkCore core = new IncandescentNetworkCore(entry.getKey());
+            IncandescentNetworkCore core = IncandescentNetworkCore.withCacheSize(entry.getKey(), entry.getValue().size());
             for (var clazz : entry.getValue())
             {
                 core.sign(clazz);

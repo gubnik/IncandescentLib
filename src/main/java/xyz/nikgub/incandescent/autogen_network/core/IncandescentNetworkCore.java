@@ -48,11 +48,6 @@ import java.util.function.Supplier;
 public class IncandescentNetworkCore
 {
     /**
-     * ID of the last packet signed. Doubles as total packet count.
-     */
-    private int lastPacket = 0;
-
-    /**
      * Actual channel through which the packets are sent;
      */
     private final SimpleChannel channelInstance;
@@ -66,21 +61,36 @@ public class IncandescentNetworkCore
      * Cache for a decoding function of a packet class.
      * Is being collected in {@link #getDecoder(Class)}
      */
-    private final Map<Class<?>, DecoderFunc<?>> DECODER_CACHE = new CacheMap<>(32);
+    private final Map<Class<?>, DecoderFunc<?>> DECODER_CACHE;
 
     /**
      * Cache for an encoding function of a packet class.
      * Is being collected in {@link #getEncoder(Class)}
      */
-    private final Map<Class<?>, EncoderFunc<?>> ENCODER_CACHE = new CacheMap<>(32);
+    private final Map<Class<?>, EncoderFunc<?>> ENCODER_CACHE;
 
     /**
      * Cache for a handling function of a packet class.
      * Is being collected in {@link #getHandler(Class)}
      */
-    private final Map<Class<?>, HandlerFunc<?>> HANDLER_CACHE = new CacheMap<>(32);
+    private final Map<Class<?>, HandlerFunc<?>> HANDLER_CACHE;
 
-    public IncandescentNetworkCore (String modId)
+    /**
+     * ID of the last packet signed. Doubles as total packet count.
+     */
+    private int lastPacket = 0;
+
+    public static IncandescentNetworkCore simple (String modId)
+    {
+        return new IncandescentNetworkCore(modId, 8);
+    }
+
+    public static IncandescentNetworkCore withCacheSize (String modId, int maxCacheSize)
+    {
+        return new IncandescentNetworkCore(modId, maxCacheSize);
+    }
+
+    private IncandescentNetworkCore (String modId, int maxCacheSize)
     {
         this.channelInstance = NetworkRegistry.ChannelBuilder.named(new ResourceLocation(modId, "messages"))
             .networkProtocolVersion(() -> "1.0")
@@ -88,6 +98,9 @@ public class IncandescentNetworkCore
             .serverAcceptedVersions(s -> true)
             .simpleChannel();
         this.generator = new NetworkFunctionGenerator();
+        DECODER_CACHE = new CacheMap<>(maxCacheSize);
+        ENCODER_CACHE = new CacheMap<>(maxCacheSize);
+        HANDLER_CACHE = new CacheMap<>(maxCacheSize);
     }
 
     /**
