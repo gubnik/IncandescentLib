@@ -16,13 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.pyranim;
+package xyz.nikgub.incandescent.pyranim.parser;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.Keyframe;
 import net.minecraft.client.animation.KeyframeAnimations;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
+import xyz.nikgub.incandescent.pyranim.lexer.impl.Instruction;
 
 /**
  * Intermediate representation of {@link Keyframe} that is allowed to have undefined timestamp.
@@ -35,7 +36,7 @@ import org.joml.Vector3f;
  * @see AnimationPartInfo
  */
 @ApiStatus.Internal
-public record KeyframeIR(PyranimLexer.Instruction instruction, float xValue, float yValue, float zValue,
+public record KeyframeIR(Instruction instruction, float xValue, float yValue, float zValue,
                          AnimationChannel.Interpolation interpolation)
 {
     public Keyframe toKeyframe (float time)

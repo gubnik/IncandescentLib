@@ -16,11 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.pyranim;
+package xyz.nikgub.incandescent.pyranim.parser;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.Keyframe;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import xyz.nikgub.incandescent.pyranim.lexer.impl.Instruction;
 
 import java.util.EnumMap;
 import java.util.LinkedList;
@@ -32,9 +34,10 @@ import java.util.Queue;
  *
  * @see AnimationIR
  */
+@ApiStatus.Internal
 public class AnimationPartInfo
 {
-    private final EnumMap<PyranimLexer.Instruction, Queue<Keyframe>> keyframes = new EnumMap<>(PyranimLexer.Instruction.class);
+    private final EnumMap<Instruction, Queue<Keyframe>> keyframes = new EnumMap<>(Instruction.class);
 
     public void addKeyframe (float timestamp, KeyframeIR keyframeIR)
     {

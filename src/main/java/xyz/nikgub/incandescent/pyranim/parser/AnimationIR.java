@@ -16,12 +16,13 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.pyranim;
+package xyz.nikgub.incandescent.pyranim.parser;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import xyz.nikgub.incandescent.pyranim.lexer.PyranimLexer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,18 +51,6 @@ public final class AnimationIR
 
     private final Map<String, AnimationPartInfo> mappedBoneAnimations = new HashMap<>();
 
-    public AnimationIR ()
-    {
-
-    }
-
-    public void addKeyframe (@NotNull KeyframeIR keyframeIR)
-    {
-        this.mappedBoneAnimations.putIfAbsent(currentPart, new AnimationPartInfo());
-        AnimationPartInfo partInfo = mappedBoneAnimations.get(currentPart);
-        partInfo.addKeyframe(currentTime, keyframeIR);
-    }
-
     @NotNull
     public AnimationDefinition.Builder bakeIntoBuilder ()
     {
@@ -86,6 +75,13 @@ public final class AnimationIR
             builder.looping();
         }
         return builder;
+    }
+
+    public void addKeyframe (@NotNull KeyframeIR keyframeIR)
+    {
+        this.mappedBoneAnimations.putIfAbsent(currentPart, new AnimationPartInfo());
+        AnimationPartInfo partInfo = mappedBoneAnimations.get(currentPart);
+        partInfo.addKeyframe(currentTime, keyframeIR);
     }
 
     public void setLength (float length)

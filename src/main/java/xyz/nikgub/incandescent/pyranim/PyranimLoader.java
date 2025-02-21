@@ -18,6 +18,8 @@
 
 package xyz.nikgub.incandescent.pyranim;
 
+import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
+
 import java.io.*;
 import java.net.URL;
 import java.util.LinkedList;

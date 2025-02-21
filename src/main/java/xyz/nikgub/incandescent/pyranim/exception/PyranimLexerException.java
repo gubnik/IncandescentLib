@@ -16,7 +16,10 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.pyranim;
+package xyz.nikgub.incandescent.pyranim.exception;
+
+import xyz.nikgub.incandescent.pyranim.parser.AnimationIR;
+import xyz.nikgub.incandescent.pyranim.lexer.PyranimLexer;
 
 /**
  * Checked exception thrown by {@link PyranimLexer}

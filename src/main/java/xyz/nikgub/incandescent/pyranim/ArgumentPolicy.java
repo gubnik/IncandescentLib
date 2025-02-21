@@ -18,24 +18,12 @@
 
 package xyz.nikgub.incandescent.pyranim;
 
-/**
- * Unchecked exception thrown by {@link PyranimParser}
- *
- * @see PyranimParserException
- */
-public class PyranimParserException extends RuntimeException
+import org.jetbrains.annotations.Nullable;
+import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
+
+@FunctionalInterface
+public interface ArgumentPolicy<T>
 {
-
-    /**
-     * Wraps the {@link PyranimLexerException} to be thrown in {@link PyranimParser#parse(PyranimLoader)}
-     *
-     * @param message    {@code String} additional information
-     * @param lineNumber {@code int} number of the line that failed to be tokenized
-     * @param e          {@link PyranimLexerException} thrown by {@link PyranimLexer.LineType#handle(PyranimParser, AnimationIR, String)}
-     */
-    public PyranimParserException (String message, int lineNumber, PyranimLexerException e)
-    {
-        super(".pyranim file cannot be parsed at line " + lineNumber + ": " + message, e);
-    }
+    @Nullable
+    T handle (PyranimParser parser, String arg);
 }
-
