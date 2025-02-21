@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.pyranim.parser;
+package xyz.nikgub.incandescent.pyranim.parser.intrep;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.Keyframe;
@@ -24,6 +24,7 @@ import net.minecraft.client.animation.KeyframeAnimations;
 import org.jetbrains.annotations.ApiStatus;
 import org.joml.Vector3f;
 import xyz.nikgub.incandescent.pyranim.lexer.impl.Instruction;
+import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
 
 /**
  * Intermediate representation of {@link Keyframe} that is allowed to have undefined timestamp.

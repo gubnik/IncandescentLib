@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.item_interfaces;
+package xyz.nikgub.incandescent.common.item_interfaces;
 
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;

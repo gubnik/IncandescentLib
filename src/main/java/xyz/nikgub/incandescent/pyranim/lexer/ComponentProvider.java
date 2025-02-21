@@ -16,9 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.pyranim;
-
-import xyz.nikgub.incandescent.pyranim.lexer.LexerComponent;
+package xyz.nikgub.incandescent.pyranim.lexer;
 
 @FunctionalInterface
 public interface ComponentProvider

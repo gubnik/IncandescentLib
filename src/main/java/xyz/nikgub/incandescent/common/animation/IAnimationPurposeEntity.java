@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.animation;
+package xyz.nikgub.incandescent.common.animation;
 
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.entity.AnimationState;

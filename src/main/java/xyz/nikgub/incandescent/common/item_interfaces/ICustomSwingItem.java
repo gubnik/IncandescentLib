@@ -16,7 +16,7 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.item_interfaces;
+package xyz.nikgub.incandescent.common.item_interfaces;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;

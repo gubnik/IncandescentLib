@@ -1,4 +1,4 @@
-package xyz.nikgub.incandescent.animation;
+package xyz.nikgub.incandescent.common.animation;
 
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;

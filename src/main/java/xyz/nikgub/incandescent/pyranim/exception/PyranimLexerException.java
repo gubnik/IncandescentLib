@@ -18,7 +18,7 @@
 
 package xyz.nikgub.incandescent.pyranim.exception;
 
-import xyz.nikgub.incandescent.pyranim.parser.AnimationIR;
+import xyz.nikgub.incandescent.pyranim.parser.intrep.AnimationIR;
 import xyz.nikgub.incandescent.pyranim.lexer.PyranimLexer;
 
 /**

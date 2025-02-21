@@ -19,7 +19,7 @@
 package xyz.nikgub.incandescent.pyranim.lexer;
 
 import xyz.nikgub.incandescent.pyranim.exception.PyranimLexerException;
-import xyz.nikgub.incandescent.pyranim.parser.AnimationIR;
+import xyz.nikgub.incandescent.pyranim.parser.intrep.AnimationIR;
 import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
 
 import java.util.regex.Matcher;

@@ -25,6 +25,7 @@ import xyz.nikgub.incandescent.pyranim.PyranimLoader;
 import xyz.nikgub.incandescent.pyranim.exception.PyranimLexerException;
 import xyz.nikgub.incandescent.pyranim.exception.PyranimParserException;
 import xyz.nikgub.incandescent.pyranim.lexer.PyranimLexer;
+import xyz.nikgub.incandescent.pyranim.parser.intrep.AnimationIR;
 
 import java.util.HashMap;
 import java.util.Map;

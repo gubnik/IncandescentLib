@@ -16,10 +16,9 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.pyranim;
+package xyz.nikgub.incandescent.pyranim.parser;
 
 import org.jetbrains.annotations.Nullable;
-import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
 
 @FunctionalInterface
 public interface ArgumentPolicy<T>

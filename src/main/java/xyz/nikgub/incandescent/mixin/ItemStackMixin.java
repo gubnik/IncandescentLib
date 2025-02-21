@@ -33,8 +33,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import xyz.nikgub.incandescent.Incandescent;
-import xyz.nikgub.incandescent.item_interfaces.IBetterAttributeTooltipItem;
-import xyz.nikgub.incandescent.item_interfaces.IGradientNameItem;
+import xyz.nikgub.incandescent.common.item_interfaces.IBetterAttributeTooltipItem;
+import xyz.nikgub.incandescent.common.item_interfaces.IGradientNameItem;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

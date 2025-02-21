@@ -4,8 +4,8 @@ import net.minecraft.client.animation.AnimationChannel;
 import xyz.nikgub.incandescent.pyranim.exception.PyranimLexerException;
 import xyz.nikgub.incandescent.pyranim.lexer.LexerComponent;
 import xyz.nikgub.incandescent.pyranim.lexer.PyranimLexer;
-import xyz.nikgub.incandescent.pyranim.parser.AnimationIR;
-import xyz.nikgub.incandescent.pyranim.parser.KeyframeIR;
+import xyz.nikgub.incandescent.pyranim.parser.intrep.AnimationIR;
+import xyz.nikgub.incandescent.pyranim.parser.intrep.KeyframeIR;
 import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
 
 import java.util.Arrays;

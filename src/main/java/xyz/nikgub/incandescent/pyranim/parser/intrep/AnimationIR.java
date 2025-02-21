@@ -16,13 +16,14 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package xyz.nikgub.incandescent.pyranim.parser;
+package xyz.nikgub.incandescent.pyranim.parser.intrep;
 
 import net.minecraft.client.animation.AnimationChannel;
 import net.minecraft.client.animation.AnimationDefinition;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import xyz.nikgub.incandescent.pyranim.lexer.PyranimLexer;
+import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
 
 import java.util.HashMap;
 import java.util.Map;

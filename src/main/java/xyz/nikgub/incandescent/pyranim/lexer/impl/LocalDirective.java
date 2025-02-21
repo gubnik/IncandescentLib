@@ -1,11 +1,11 @@
 package xyz.nikgub.incandescent.pyranim.lexer.impl;
 
 import net.minecraft.client.animation.AnimationChannel;
-import xyz.nikgub.incandescent.pyranim.*;
 import xyz.nikgub.incandescent.pyranim.exception.PyranimLexerException;
 import xyz.nikgub.incandescent.pyranim.lexer.LexerComponent;
 import xyz.nikgub.incandescent.pyranim.lexer.PyranimLexer;
-import xyz.nikgub.incandescent.pyranim.parser.AnimationIR;
+import xyz.nikgub.incandescent.pyranim.parser.intrep.AnimationIR;
+import xyz.nikgub.incandescent.pyranim.parser.ArgumentPolicy;
 import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
 
 import java.util.Arrays;
