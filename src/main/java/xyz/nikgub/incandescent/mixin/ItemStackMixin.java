@@ -84,6 +84,7 @@ public abstract class ItemStackMixin implements net.minecraftforge.common.extens
         {
             itemName.withStyle(ChatFormatting.ITALIC);
         }
+        list.add(itemName);
         final int hideBitMask = this.getHideFlags();
         if (ItemStack.shouldShowInTooltip(hideBitMask, ItemStack.TooltipPart.ADDITIONAL))
         {
