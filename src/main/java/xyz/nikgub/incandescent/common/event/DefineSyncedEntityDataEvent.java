@@ -23,6 +23,7 @@ import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.entity.EntityEvent;
+import org.jetbrains.annotations.ApiStatus;
 import xyz.nikgub.incandescent.util.HashCacheHypermap;
 
 import java.util.HashSet;
@@ -35,7 +36,11 @@ import java.util.Set;
  * any errors caused by its misuse.
  *
  * @see xyz.nikgub.incandescent.mixin.EntityMixin
+ *
+ * @apiNote As of 1.5.0.x, this does not work due to an unknown reason. It is suggested to avoid using this
+ * event until this notice is removed.
  */
+@ApiStatus.Experimental
 public class DefineSyncedEntityDataEvent extends EntityEvent
 {
     /**
