@@ -36,11 +36,11 @@ public class IncandescentConfig
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> COMMON_ALLOW_FORCED_ENTITY_NBT_SYNC = COMMON_BUILDER
         .comment("Set true if you want to allow to sync entity NBTs via SyncEntityNBTEvent. This will not override server config.")
-        .define("allow_forced_entity_nbt_sync", false);
+        .define("allow_forced_entity_nbt_sync", true);
 
     public static final ForgeConfigSpec.ConfigValue<Boolean> SERVER_ALLOW_FORCED_ENTITY_NBT_SYNC = SERVER_BUILDER
         .comment("Set true if you want to allow to sync entity NBTs via SyncEntityNBTEvent on the server")
-        .define("allow_forced_entity_nbt_sync", false);
+        .define("allow_forced_entity_nbt_sync", true);
 
     static final ForgeConfigSpec COMMON_SPEC = COMMON_BUILDER.build();
     static final ForgeConfigSpec SERVER_SPEC = SERVER_BUILDER.build();
