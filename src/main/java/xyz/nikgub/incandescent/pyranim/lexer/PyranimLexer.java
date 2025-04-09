@@ -18,13 +18,13 @@
 
 package xyz.nikgub.incandescent.pyranim.lexer;
 
-import xyz.nikgub.incandescent.pyranim.parser.intrep.AnimationIR;
 import xyz.nikgub.incandescent.pyranim.exception.PyranimLexerException;
-import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
 import xyz.nikgub.incandescent.pyranim.lexer.impl.GlobalDirective;
 import xyz.nikgub.incandescent.pyranim.lexer.impl.Instruction;
 import xyz.nikgub.incandescent.pyranim.lexer.impl.LocalDirective;
 import xyz.nikgub.incandescent.pyranim.lexer.impl.PartDeclaration;
+import xyz.nikgub.incandescent.pyranim.parser.PyranimParser;
+import xyz.nikgub.incandescent.pyranim.parser.intrep.AnimationIR;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -98,7 +98,7 @@ public final class PyranimLexer
         "[\t ]*",
         "(mov|rot|scl)",
         "[\t ]+",
-        "[-+]?([0-9]+([.][0-9]*)?|[.][0-9]+)([eE][-+]?[0-9]+)?",
+        "([-+]?[0-9]+([.][0-9]*)?|[.][0-9]+)([eE][-+]?[0-9]+)?",
         "(;.*)?");
 
     public enum LineType
